@@ -6,14 +6,24 @@ library("ggdist")
 ## Data import
 ##############
 
-apisum_fecundity <- read.csv("01.data/acyrthospipon_pisum_fecundity_on_faba_collection.csv", 
+### Genetic structure info (Jonathan, UMR Agroécologie/ECP)
+igepp_to_ivip <- read.csv("01.data/03.genetic_structure_jonathan_dijon/faba_bean_ivip_ids.csv") %>% 
+  rename("ivip" = "seedbank_id") %>% 
+  rename("genotype" = "igepp_id")
+
+genetic_structure <- read.csv("01.data/03.genetic_structure_jonathan_dijon/genetic_groups_K_equal_to_6.csv") %>% 
+  rename("ivip" = "genotype")
+
+igepp_ivip_genetic_group <- inner_join(igepp_to_ivip, genetic_structure)
+
+### Fecundity data
+apisum_fecundity <- read.csv("01.data/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", 
                             stringsAsFactors = F) %>% 
   mutate(type = gsub(pattern = "Equina", x = type, replacement = "Vicia faba var. equina")) %>% 
   mutate(type = gsub(pattern = "Minor", x = type, replacement = "Vicia faba var. minor")) %>% 
   mutate(type = gsub(pattern = "Major", x = type, replacement = "Vicia faba var. major")) %>% 
   mutate(type = gsub(pattern = "Paucijuga", x = type, replacement = "Vicia paucijuga")) %>% 
-  filter(larvae_total_number != 0) %>% # Larvae probably died
-  drop_na()
+  filter(larvae_total_number != 0) # Larvae probably died
 
 ##############################
 ## Faba collection description
@@ -52,6 +62,7 @@ apisum_n_rep_per_genotype <-
   labs(x = "Number of biological replicates (plants)", y = "Genotype occurences") +
   ggtitle("A. pisum screen") +
   scale_x_continuous(breaks = seq(0,14,1))
+apisum_n_rep_per_genotype
 
 ggsave(plot = apisum_n_rep_per_genotype,
        filename = "02.analyses/01.acyrtosiphon_pisum_on_faba_collection/plot02_nb_rep_per_genotype.pdf")  
@@ -68,6 +79,8 @@ apisum_fecundity %>%
   geom_histogram(aes(y = ..density..), fill = "lightgrey", color = "black", bins = 30) +
   geom_density() +
   ggtitle("Distribution of the number of A. pisum larvae across all genotypes")
+
+ggsave(filename = "02.analyses/01.acyrtosiphon_pisum_on_faba_collection/plot03_distribution_larvae_number.pdf")  
 
 # Model 01: only genotype
 fit1 <- 
@@ -154,49 +167,61 @@ ggplot(stat_res_table_pisum, aes(x = genotype, y = median_larvae)) +
   geom_point() + 
   geom_segment(aes(x=genotype, xend=genotype, y=0, yend=median_larvae))
 
-order_apisum <- 
-  stat_res_table_pisum %>% 
-  pull(genotype)
-
-apisum_fecundity$genotype <- factor(x = apisum_fecundity$genotype, 
-                                   levels = order_apisum)
+order_apisum <- apisum_fecundity %>% 
+  group_by(genotype) %>% 
+  summarise(median_apisum = median(larvae_total_number)) %>% 
+  arrange(median_apisum) %>% 
+  pull(genotype) %>% 
+  unique()
 
 apisum_fecundity %>% 
   drop_na() %>% 
   ggplot(aes(x = genotype, y = larvae_total_number)) + 
   stat_lineribbon(.width = c(0.50, 0.90, 0.95), group=1) +
   scale_fill_brewer() + 
-  geom_point(alpha=0.1) +
   coord_flip() +
   theme(axis.text.y = element_text(size = 4)) +
   labs(x = "Vicia faba genotype", y = "Number of A. pisum larvae obtained from one L1 (Median -/+ CI)")
+ggplot(filename="02.analyses/01.acyrtosiphon_pisum_on_faba_collection/plot03_apisum_ribbonplot.pdf")
 
 #################
 # 10 most extreme
 #################
-ten_most_res_genotypes <- 
-  stat_res_table_pisum %>% 
-  tail(n = 10) %>% 
+ten_most_resistant_genotypes_apisum <- 
+  apisum_fecundity %>% 
+  group_by(genotype) %>% 
+  summarise(median_apisum = median(larvae_total_number)) %>% 
+  arrange(median_apisum) %>% 
+  head(n = 10) %>% 
   mutate(phenotype = "Ten most resistant")
 
-ten_most_sensitive_genotypes <- 
-  stat_res_table_pisum %>% 
-  head(n = 10) %>% 
+ten_most_sensitive_genotypes_apisum <- 
+  apisum_fecundity %>% 
+  group_by(genotype) %>% 
+  summarise(median_apisum = median(larvae_total_number)) %>% 
+  arrange(median_apisum) %>% 
+  tail(n = 10) %>%
   mutate(phenotype = "Ten most sensitive") 
 
-most_extreme_genotype_apisum <- bind_rows(ten_most_res_genotypes, ten_most_sensitive_genotypes) %>% 
-  select(genotype, phenotype)
+most_extreme_genotype_apisum <- bind_rows(ten_most_resistant_genotypes_apisum, ten_most_sensitive_genotypes_apisum) %>% 
+  inner_join(n_per_genotype, by = "genotype") %>%
+  mutate(n_rep = paste("n=",n_rep, sep = "")) %>% 
+  inner_join(igepp_ivip_genetic_group, by = "genotype") %>% 
+  select(genotype, phenotype, n_rep, clusterName, cluster) %>% # add n replicates + genetic cluster info
+  mutate(cluster = paste("genetic-group",cluster,sep = ""))
+  
 
 apisum_fecundity %>% 
   inner_join(., most_extreme_genotype_apisum) %>%
   mutate(genotype = factor(genotype, levels = order_apisum)) %>% 
-  ggplot(., aes(x = genotype, y = larvae_total_number, fill = phenotype)) +
+  ggplot(., aes(x = genotype, y = larvae_total_number, fill = phenotype, label = paste(n_rep, cluster,sep = ", "))) +
   geom_boxplot() +
   geom_point(alpha=0.3) +
   scale_fill_brewer(type = 'qual', palette = 2) +
   ggtitle("Most contrasted genotypes\n (A. pisum screen)") +
   coord_flip() +
   labs(x = "Vicia faba genotype", y = "Total number of A. pisum larvae (from one L1)") +
-  scale_y_continuous(limits = c(0,80))
+  scale_y_continuous(limits = c(0,80)) +
+  geom_text(y = 75)
 
 ggsave(filename = "02.analyses/01.acyrtosiphon_pisum_on_faba_collection/plot03_apisum_10_most_contrasted_genotypes.pdf")
