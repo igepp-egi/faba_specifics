@@ -162,6 +162,14 @@ ten_most_sensitive_genotypes_apisum <-
   tail(n = 10) %>%
   mutate(phenotype = "Ten most sensitive") 
 
+# Number of biological replicate per genotype (to add to the graph)
+n_per_genotype <- 
+  apisum_fecundity_n6 %>% 
+  select(genotype, replicate) %>%
+  group_by(genotype) %>% 
+  tally() %>% 
+  dplyr::rename("n_rep" = "n")
+
 most_extreme_genotype_apisum <- bind_rows(ten_most_resistant_genotypes_apisum, ten_most_sensitive_genotypes_apisum) %>% 
   inner_join(n_per_genotype, by = "genotype") %>%
   mutate(n_rep = paste("n=",n_rep, sep = "")) %>% 
@@ -178,12 +186,23 @@ most_contrasted_pisum <-
   geom_boxplot() +
   geom_point(alpha=0.3) +
   scale_fill_brewer(type = 'qual', palette = 2) +
-  ggtitle("Most contrasted genotypes\n (A. pisum screen)") +
+  ggtitle("Most contrasted genotypes to A. pisum\n(N>=6 and zeros removed)") +
   coord_flip() +
   labs(x = "Vicia faba genotype", y = "Total number of A. pisum larvae (from one L1)") +
   scale_y_continuous(limits = c(0,80)) +
   geom_text(y = 75)
+
 most_contrasted_pisum
+
 ggsave(plot = most_contrasted_pisum, 
-       filename = "02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_10_most_contrasted_genotypes.pdf", width = 12, height = 9)
-ggsave(plot = most_contrasted_pisum, filename = "02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_10_most_contrasted_genotypes.png")
+       filename = "02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_most_contrasted_genotypes.pdf", 
+       width = 12, height = 9)
+ggsave(plot = most_contrasted_pisum, 
+       filename = "02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_most_contrasted_genotypes.png")
+
+#####################
+## Liste of genotypes
+#####################
+
+apisum_fecundity_n6 %>% 
+  inner_join(., most_extreme_genotype_apisum)
