@@ -205,4 +205,11 @@ ggsave(plot = most_contrasted_pisum,
 #####################
 
 apisum_fecundity_n6 %>% 
-  inner_join(., most_extreme_genotype_apisum)
+  inner_join(., most_extreme_genotype_apisum) %>% 
+  select(genotype, larvae_total_number, phenotype) %>% 
+  group_by(genotype, phenotype) %>% 
+  summarise(median_larvae = median(larvae_total_number, na.rm=T)) %>% 
+  arrange(median_larvae) %>% 
+  knitr::kable()
+
+
