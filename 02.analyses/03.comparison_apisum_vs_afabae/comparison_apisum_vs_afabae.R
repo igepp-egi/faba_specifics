@@ -4,46 +4,40 @@ library("patchwork")
 library("ggrepel")
 
 ###################################################
-# Execute single analysis of A. pisum and A. fabae
+## Execute single analysis of A. pisum and A. fabae
+## Analysis 01: without zeros and N>=6
 ##################################################
 
-source("02.analyses/01.acyrtosiphon_pisum_on_faba_collection/apisum_on_faba_analysis.R")
-source("02.analyses/02.aphis_fabae_on_faba_collection/aphis_fabae_analysis.R")
-
-##################
-# N rep / genotype
-##################
-p_nrep <- apisum_n_rep_per_genotype + aphis_fabae_n_rep_per_genotype
-ggsave(plot = p_nrep, filename = "02.analyses/03.comparison_apisum_vs_afabae/n_rep_per_geno.pdf")
-ggsave(plot = p_nrep, filename = "02.analyses/03.comparison_apisum_vs_afabae/n_rep_per_geno.png")
+source("02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/analysis01_n_higher_than_6_apisum_.R")
+source("02.analyses/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/analysis01_n_higher_than_6_aphis_fabae.R")
 
 #################################
 # Paired plots (absolute numbers)
 #################################
 
-# 248 genotypes
+# 223 genotypes
 res_pisum <- 
-  apisum_fecundity %>% 
+  apisum_fecundity_n6 %>% 
   group_by(genotype) %>% 
   summarise(median_apisum = median(larvae_total_number)) %>% 
   arrange(median_apisum) 
 
-# 219 genotypes
+# 193 genotypes
 res_afabae <- 
-  afabae_fecundity %>% 
+  afabae_fecundity_n6 %>% 
   group_by(genotype) %>% 
   summarise(median_afabae = median(larvae_total_number)) %>% 
   arrange(median_afabae)
 
-# 207 genotypes communs
+# 181 genotypes communs
 res_pisum_and_afabae <- inner_join(res_pisum, res_afabae, by = "genotype") %>% 
   rename("A_pisum" = "median_apisum") %>% 
   rename("A_fabae" = "median_afabae") %>% 
   inner_join(., igepp_ivip_genetic_group) %>% 
   select(genotype, A_fabae, A_pisum, cluster)
 
-genotypes_res_afabae <- most_extreme_genotype_afabae %>% filter(phenotype == "Ten most resistant") %>% pull(genotype)
-genotypes_res_pisum <- most_extreme_genotype_apisum %>% filter(phenotype == "Ten most resistant") %>% pull(genotype)
+genotypes_res_afabae <- m %>% filter(phenotype == "Ten most resistant") %>% pull(genotype)
+genotypes_res_pisum <- ten_most_resistant_genotypes_apisum %>% filter(phenotype == "Ten most resistant") %>% pull(genotype)
 all_genotypes = c(genotypes_res_afabae, genotypes_res_pisum)
 
 ### Paired plot
