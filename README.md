@@ -18,7 +18,7 @@ Criteria:
 - Only genotypes with more than 6 replicates are kept.  
 - When total number of larvae is equal to 0, the row is removed and value is discarded. 
 
-<img src="02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_most_contrasted_genotypes.png" alt="number of larvae per genotype" width="100%"> 
+<img src="02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_most_contrasted_genotypes.png" alt="number of larvae per genotype" width="80%"> 
 
 ### Analysis 02 ("qualitative zeros"): N>=6 and proportions of zeros
 
@@ -26,6 +26,6 @@ Criteria/method:
 - Only genotypes with more than 6 replicates are kept.  
 - The proportion of zeros from the total number of measurements is calculated.
 
-<img src="02.analyses/01.acyrtosiphon_pisum_on_faba_collection/02_analysis2_proportion_zeros/plot02_number_of_true_zeros.png" alt="number of true 0 per genotype" width="100%"> 
+<img src="02.analyses/01.acyrtosiphon_pisum_on_faba_collection/02_analysis2_proportion_zeros/plot02_number_of_true_zeros.png" alt="number of true 0 per genotype" width="80%"> 
 
-02.analyses/01.acyrtosiphon_pisum_on_faba_collection/02_analysis2_proportion_zeros/plot01_distribution_zeros.png 
+

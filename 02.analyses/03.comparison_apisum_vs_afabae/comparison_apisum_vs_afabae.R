@@ -34,10 +34,10 @@ res_pisum_and_afabae <- inner_join(res_pisum, res_afabae, by = "genotype") %>%
   rename("A_pisum" = "median_apisum") %>% 
   rename("A_fabae" = "median_afabae") %>% 
   inner_join(., igepp_ivip_genetic_group) %>% 
-  select(genotype, A_fabae, A_pisum, cluster)
+  select(genotype, A_fabae, A_pisum, clusterName)
 
-genotypes_res_afabae <- m %>% filter(phenotype == "Ten most resistant") %>% pull(genotype)
-genotypes_res_pisum <- ten_most_resistant_genotypes_apisum %>% filter(phenotype == "Ten most resistant") %>% pull(genotype)
+genotypes_res_afabae <- most_extreme_genotype_afabae %>% filter(phenotype == "Ten most resistant") %>% pull(genotype)
+genotypes_res_pisum <- most_extreme_genotype_apisum %>% filter(phenotype == "Ten most resistant") %>% pull(genotype)
 all_genotypes = c(genotypes_res_afabae, genotypes_res_pisum)
 
 ### Paired plot
@@ -59,16 +59,16 @@ ggsave(plot = p_paired_continuous,
 ### Scatterplot
 points_to_label <- 
   res_pisum_and_afabae %>% 
-  filter(genotype %in% all_genotypes)
+  filter(genotype %in% all_genotypes) 
 
 p_scatterplot_continuous <- 
   res_pisum_and_afabae %>% 
-  ggplot(., aes(x = A_fabae, y = A_pisum, fill = factor(cluster))) +
+  ggplot(., aes(x = A_fabae, y = A_pisum, fill = clusterName, label = genotype)) +
   geom_point() +
   labs(x = "Number of larvae from one L1 larvae of A. fabae") + 
   labs(y = "Number of larvae from one L1 larvae of A. pisum") +
-  geom_label_repel(data = points_to_label, 
-                   mapping = aes(x = A_fabae, y = A_pisum, label = genotype)) 
+  geom_label_repel(data = points_to_label) +
+  scale_fill_brewer(type = "qual", palette = 2)
 p_scatterplot_continuous
 
 ggsave(plot = p_scatterplot_continuous, 

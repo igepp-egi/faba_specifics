@@ -28,8 +28,10 @@ faba_tree <- read.tree("01.data/03.genetic_structure_jonathan_dijon/wastral_gene
 
 ggplot(faba_tree) + 
   geom_tree() + 
+  theme(text = element_text(size = 3)) +
   theme_tree2()  # The horizontal dimension in this plot shows the amount of genetic change,
 
 ggtree(faba_tree) + theme_tree2() + geom_tiplab(size = 2, color = 'blue') + 
   geom_highlight(node=10, fill="steelblue")
 
+ggsave(filename = "02.analyses/04.genetic_structure_faba_collection/genetic_structure.pdf", width = 16, height = 12)
