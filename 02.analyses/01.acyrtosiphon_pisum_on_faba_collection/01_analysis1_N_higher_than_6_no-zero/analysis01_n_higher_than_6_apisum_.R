@@ -212,4 +212,14 @@ apisum_fecundity_n6 %>%
   arrange(median_larvae) %>% 
   knitr::kable()
 
+apisum_fecundity_n6 %>% 
+  inner_join(., most_extreme_genotype_apisum) %>% 
+  select(genotype, larvae_total_number, phenotype) %>% 
+  group_by(genotype, phenotype) %>% 
+  summarise(median_larvae = median(larvae_total_number, na.rm=T)) %>% 
+  arrange(median_larvae) %>% 
+  write.csv(file = "02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/apisum_most_contrasted_genotypes.csv", 
+            quote = F, row.names = F)
+
+
 
