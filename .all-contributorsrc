@@ -8,10 +8,15 @@
   "commitConvention": "angular",
   "contributors": [
     {
+all-contributors/add-manlebihan
       "login": "manlebihan",
       "name": "Manon Le Bihan",
       "avatar_url": "https://avatars.githubusercontent.com/u/167873784?v=4",
       "profile": "https://github.com/manlebihan",
+      "login": "maiwennlefloch",
+      "name": "Maïwenn Le Floch",
+      "avatar_url": "https://avatars.githubusercontent.com/u/160121597?v=4",
+      "profile": "https://github.com/maiwennlefloch",
       "contributions": [
         "design",
         "data"

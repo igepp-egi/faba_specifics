@@ -43,7 +43,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tbody>
     <tr>
+all-contributors/add-manlebihan
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/manlebihan"><img src="https://avatars.githubusercontent.com/u/167873784?v=4?s=100" width="100px;" alt="Manon Le Bihan"/><br /><sub><b>Manon Le Bihan</b></sub></a><br /><a href="#design-manlebihan" title="Design">🎨</a> <a href="#data-manlebihan" title="Data">🔣</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/maiwennlefloch"><img src="https://avatars.githubusercontent.com/u/160121597?v=4?s=100" width="100px;" alt="Maïwenn Le Floch"/><br /><sub><b>Maïwenn Le Floch</b></sub></a><br /><a href="#design-maiwennlefloch" title="Design">🎨</a> <a href="#data-maiwennlefloch" title="Data">🔣</a></td>
     </tr>
   </tbody>
 </table>
