@@ -1,4 +1,7 @@
 # Faba bean resistance to aphids
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## Summary
 
@@ -29,3 +32,25 @@ Criteria/method:
 <img src="02.analyses/01.acyrtosiphon_pisum_on_faba_collection/02_analysis2_proportion_zeros/plot02_number_of_true_zeros.png" alt="number of true 0 per genotype" width="80%"> 
 
 
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/maiwennlefloch"><img src="https://avatars.githubusercontent.com/u/160121597?v=4?s=100" width="100px;" alt="Maïwenn Le Floch"/><br /><sub><b>Maïwenn Le Floch</b></sub></a><br /><a href="#design-maiwennlefloch" title="Design">🎨</a> <a href="#data-maiwennlefloch" title="Data">🔣</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
