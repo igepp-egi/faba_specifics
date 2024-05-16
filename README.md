@@ -1,4 +1,7 @@
 # Faba bean resistance to aphids
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 <!-- MarkdownTOC levels="1,2,3" autolink="true" -->
 
@@ -14,6 +17,7 @@
 	- [P2-XP001 Vicia faba vs A. pisum P123](#p2-xp001-vicia-faba-vs-a-pisum-p123)
 	- [P2-XP002 Vicia faba vs A. fabae AF001](#p2-xp002-vicia-faba-vs-a-fabae-af001)
 - [Useful links](#useful-links)
+- [Contributors ✨](#contributors-%E2%9C%A8)
 
 <!-- /MarkdownTOC -->
 
@@ -91,3 +95,28 @@ Issue with the growth chamber temperature (set at 18 degrees instead of 20).
 [FAQ on Generalized Linear Mixed Models](https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction)  
 
 [Tutorial on lme4 model](https://www.rensvandeschoot.com/tutorials/lme4/)
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+all-contributors/add-manlebihan
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/manlebihan"><img src="https://avatars.githubusercontent.com/u/167873784?v=4?s=100" width="100px;" alt="Manon Le Bihan"/><br /><sub><b>Manon Le Bihan</b></sub></a><br /><a href="#design-manlebihan" title="Design">🎨</a> <a href="#data-manlebihan" title="Data">🔣</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/maiwennlefloch"><img src="https://avatars.githubusercontent.com/u/160121597?v=4?s=100" width="100px;" alt="Maïwenn Le Floch"/><br /><sub><b>Maïwenn Le Floch</b></sub></a><br /><a href="#design-maiwennlefloch" title="Design">🎨</a> <a href="#data-maiwennlefloch" title="Data">🔣</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+
