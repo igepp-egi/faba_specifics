@@ -6,7 +6,9 @@ library("ggdist")
 ## Data import
 ##############
 
+###########################################################
 ### Genetic structure info (Jonathan, UMR Agroécologie/ECP)
+##########################################################
 igepp_to_ivip <- read.csv("01.data/03.genetic_structure_jonathan_dijon/faba_bean_ivip_ids.csv") %>% 
   rename("ivip" = "seedbank_id") %>% 
   rename("genotype" = "igepp_id")
@@ -17,7 +19,9 @@ genetic_structure <- read.csv("01.data/03.genetic_structure_jonathan_dijon/genet
 igepp_ivip_genetic_group <- inner_join(igepp_to_ivip, genetic_structure)
 rm(igepp_to_ivip, genetic_structure)
 
+###################
 ### Fecundity data
+##################
 # 248 unique genotypes
 # Keep only data if N>6
 apisum_fecundity <- read.csv("01.data/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", 
@@ -26,10 +30,11 @@ apisum_fecundity <- read.csv("01.data/01.acyrthosiphon_pisum_P123amp_on_faba_col
   mutate(type = gsub(pattern = "Minor", x = type, replacement = "Vicia faba var. minor")) %>% 
   mutate(type = gsub(pattern = "Major", x = type, replacement = "Vicia faba var. major")) %>% 
   mutate(type = gsub(pattern = "Paucijuga", x = type, replacement = "Vicia paucijuga")) %>% 
-  filter(larvae_total_number != 0) # Larvae probably died
+  filter(larvae_total_number != 0 & adult_alive = 1) # Larvae died but initial L1 larvae developed into an adult
+
 genotypes_nrep_higher_than_6 = 
   apisum_fecundity %>% 
-  select(genotype, larvae_total_number) %>% 
+  dplyr::select(genotype, larvae_total_number) %>% 
   group_by(genotype) %>% 
   tally() %>% 
   filter(n >= 6) %>% # keep only if N plants => 6 >> results 223 genotypes out of 248
@@ -38,9 +43,13 @@ genotypes_nrep_higher_than_6 =
 apisum_fecundity_n6 <- apisum_fecundity %>% filter(genotype %in% genotypes_nrep_higher_than_6)
 rm(apisum_fecundity)
 
-###################################################
-## Stat models: genotype effect on number of larvae
-###################################################
+write.csv(x = apisum_fecundity_n6, 
+          file = "01.data/01.acyrthosiphon_pisum_P123amp_on_faba_collection/apisum_fecundity_on_faba_n_higher_than_6_no_zeros.csv", 
+          row.names = F, quote = F)
+
+################
+## Distributions
+################
 
 # Continuous normally distributed data of the total number of larvae ?
 apisum_fecundity_n6 %>% 
@@ -51,68 +60,6 @@ apisum_fecundity_n6 %>%
 
 ggsave(filename = "02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot01_distribution_larvae_number.pdf") 
 ggsave(filename = "02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot01_distribution_larvae_number.png") 
-
-# Model 01: only genotype
-fit1 <- 
-  apisum_fecundity_n6 %>% 
-  mutate(genotype = as.factor(genotype)) %>% 
-  with(., aov(formula = larvae_total_number ~ genotype, data = .))
-summary(fit1)
-# Df Sum Sq Mean Sq F value   Pr(>F)    
-# genotype     240  34228  142.62   1.539 9.97e-07 ***
-# Residuals   2034 188431   92.64                     
-# ---
-
-# Model 02: genotype and session
-fit2 <- 
-  apisum_fecundity_n6 %>% 
-  mutate(genotype = as.factor(genotype)) %>% 
-  with(., aov(formula = larvae_total_number ~ genotype + session, data = .))
-summary(fit2)
-#              Df Sum Sq Mean Sq F value  Pr(>F)    
-# genotype     240  34228     143    1.79 3.3e-11 ***
-# session        6  26828    4471   56.11 < 2e-16 ***
-# Residuals   2028 161603      80                    
-# ---
-
-# Model 03: genotype and session and their interaction
-fit3 <- 
-  apisum_fecundity_n6 %>% 
-  mutate(genotype = as.factor(genotype)) %>% 
-  with(., aov(formula = larvae_total_number ~ genotype + session + genotype:session, data = .))
-summary(fit3)
-#                     Df Sum Sq Mean Sq F value   Pr(>F)    
-#   genotype          240  34228     143   2.432  < 2e-16 ***
-#   session             6  26828    4471  76.244  < 2e-16 ***
-#   genotype:session 1129 108881      96   1.644 4.48e-15 ***
-#   Residuals         899  52721      59                     
-# ---
-  
-# Posthoc tests
-tukey_res_fit1 <- TukeyHSD(fit1) 
-
-# make the letter magic !!
-cld = multcompLetters4(fit1, tukey_res_fit1, threshold = 0.01)
-cld_df = as.data.frame.list(cld$genotype) %>% 
-  as.data.frame() %>% 
-  rownames_to_column("genotype") %>% 
-  select(genotype, Letters)
-
-# Add letters to data
-# Save as csv
-stat_res_table_pisum <- apisum_fecundity_n6 %>% 
-  select(genotype, replicate, larvae_total_number) %>% 
-  group_by(genotype) %>% 
-  summarise(median_larvae = median(larvae_total_number, na.rm = T), 
-            sd_larvae = sd(larvae_total_number, na.rm = T)) %>% 
-  ungroup() %>% 
-  inner_join(., cld_df) %>% 
-  arrange(median_larvae) %>% 
-  mutate(genotype = factor(genotype, levels = genotype))
-
-write.csv(x = stat_res_table_pisum, 
-          file = '02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/table01_stat_faba_genotypes.csv', 
-          row.names = F)
 
 #############
 # Geom ribbon
