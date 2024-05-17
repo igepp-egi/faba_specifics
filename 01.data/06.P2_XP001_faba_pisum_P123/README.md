@@ -24,6 +24,13 @@ The 10 most sensitive and 10 most resistant genotypes of Vicia faba identified i
 
 <img src="./plot03_apisum_most_contrasted_genotypes.png" alt="plot of most resistant">
 
+## Stats to apply
+
+GLMM with negative binomial distribution
+
+Multcomp posthoc with glht
+
+
 ## Data dictionary
 
 - short_code: Maiwenn's short genotype code.   
