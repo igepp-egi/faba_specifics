@@ -117,3 +117,12 @@ afabae_fecundity_n6_prop_zeros %>%
   arrange(freq_zeros) %>% 
   select(- cluster, - species, - n_values, - lieu, - ivip, - clusterName) %>% 
   knitr::kable()
+
+#################################################
+# List of genotypes to use as controls (no zeros)
+#################################################
+
+afabae_fecundity_n6_prop_zeros %>% 
+  filter(freq_zeros == 0) %>% 
+  filter(n_values == 12) %>% 
+  knitr::kable()

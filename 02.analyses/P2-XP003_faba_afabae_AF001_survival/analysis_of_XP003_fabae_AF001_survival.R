@@ -44,15 +44,16 @@ p_adults <-
   scale_y_continuous(limits = c(0,10), breaks = c(0,5,10)) +
   geom_hline(yintercept = 10, colour = "blue", linetype = "dashed")
 p_adults
-ggsave(plot = p_fabae, filename = "02.analyses/P2-XP003_faba_afabae_AF001_survival/adult_survival_plot.png")
-ggsave(plot = p_fabae, filename = "02.analyses/P2-XP003_faba_afabae_AF001_survival/adult_survival_plot.pdf")
+ggsave(plot = p_adults, filename = "02.analyses/P2-XP003_faba_afabae_AF001_survival/adult_survival_plot.png")
+ggsave(plot = p_adults, filename = "02.analyses/P2-XP003_faba_afabae_AF001_survival/adult_survival_plot.pdf")
 
 
 #######
 # Stats
 #######
 
-# glm_model <- lme4::glmer.nb(formula = adult_alive ~ genotype + (1|genotype:replicate), data = fabae_counts)
+glm_model <- lme4::glmer.nb(formula = adult_alive ~ genotype + (1|replicate), data = fabae_counts)
+glm_model2 = glmmTMB()
 # multcomp::glht(model = glm_model, linfct = mcp(genotype = "Tukey"))
 # 
 # library("emmeans")

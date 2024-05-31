@@ -6,7 +6,6 @@ Some faba bean genotypes showed a lot of "0" for the total number of larvae obta
 
 The goal is to estimate the number of surviving adults from a small number of larvae (10) after 9 days. The offspring (larvae number) will also be counted. 
 
-
 ## Protocol
 
 ### L1 larvae aphid rearing
@@ -20,19 +19,26 @@ AF001 is a clone of _Aphis fabae_, retrieved at IGEPP in the experimental garden
 
 ## Plants 
 
-The 10 most sensitive and 10 most resistant genotypes to Aphis fabae AF001 of _Vicia faba_ identified in the 2024 screen were chosen to be confirmed within the same experiment. 
+The 5 genotypes with the highest proportions of "0" (no larvae counted, see plot) identified in the 2023 SPECIFICS screen (N=251 genotypes) were selected: 
+- JF2125 (short code 51)    
+- JF2173 (short code 115)  
+- JF2250 (short code 214)  
+- KF0195 (short code 217)  
+- JF2230 (short code 187)  
 
-<img src="./plot03_afabae_most_contrasted_genotypes.png" alt="plot of most resistant">
+10 seeds were sown per genotype and they were grown during 15 days at 20 degrees and in long days (16/8 D/N).
+
+<img src="./plot02_number_of_true_zeros.png" alt="plot of proportions of 0 among faba genotypes">
 
 ## Data dictionary
 
 - short_code: Maiwenn's short genotype code.   
-- aphid: aphid species and clone.  
-- phenotype_class_p123: resistance class as infered from previous results (see figure above) from the main 251 screen.   
-- genotype: seed batch number (from IGEPP RD team)  
+- aphid_species: aphid species and clone.   
+- genotype: seed batch number (from IGEPP RD team).    
 - replicate: plant replicate.  
-- adult_alive: number of adults alive seen on the plant.  
+- adult_alive: number of adults alive seen on the plant (from 10 larvae installed).  
 - adult_winged: number of winged adult seen on the plant. 
-- larvae_total_number: total number of larvae (all apterous stage )
+- larvae_total_number: total number of larvae (all apterous stages).    
+- number_nodes: number of plant nodes (useful to estimate plant developmental stage).   
 - comment: optional free-text comments. 
 
