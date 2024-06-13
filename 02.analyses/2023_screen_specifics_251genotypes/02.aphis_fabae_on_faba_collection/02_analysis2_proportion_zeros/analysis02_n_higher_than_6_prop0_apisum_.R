@@ -7,18 +7,18 @@ library("ggdist")
 ##############
 
 ### Genetic structure info (Jonathan, UMR Agroécologie/ECP)
-igepp_to_ivip <- read.csv("03.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_ids.csv") %>% 
+igepp_to_ivip <- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_ids.csv") %>% 
   rename("ivip" = "seedbank_id") %>% 
   rename("genotype" = "igepp_id")
 
-genetic_structure <- read.csv("03.info/02.genetic_structure_jonathan_dijon/genetic_groups_K_equal_to_6.csv") %>% 
+genetic_structure <- read.csv("00.info/02.genetic_structure_jonathan_dijon/genetic_groups_K_equal_to_6.csv") %>% 
   rename("ivip" = "genotype")
 
 igepp_ivip_genetic_group <- inner_join(igepp_to_ivip, genetic_structure)
 rm(igepp_to_ivip, genetic_structure)
 
 ### Fecundity data
-# 248 unique genotypes
+# 222 unique genotypes
 # Keep only data if N>6
 afabae_fecundity <- read.csv("01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", 
                             stringsAsFactors = F) %>% 
@@ -31,7 +31,7 @@ genotypes_nrep_higher_than_6 =
   afabae_fecundity %>% 
   drop_na() %>% 
   count(genotype) %>% 
-  filter(n >= 6) %>% # keep only if N plants => 6 >> results 207 genotypes out of 214
+  filter(n >= 6) %>% # keep only if N plants => 6 >> results = 207 genotypes out of 222
   pull(genotype)
 
 afabae_fecundity_n6 <- afabae_fecundity %>% filter(genotype %in% genotypes_nrep_higher_than_6)
@@ -61,9 +61,8 @@ p_distri_zeros <-
   afabae_fecundity_n6_prop_zeros %>% 
   drop_na() %>% 
   ggplot(., aes(x = freq_zeros)) +
-  geom_histogram(aes(y = ..density..), colour = 1, fill = "white") +
+  geom_histogram(aes(y = after_stat(density)), colour = 1, fill = "white", bins = 20) +
   geom_density() +
-  #geom_histogram(color = "black", binwidth = 5) +
   scale_x_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100)) +
   ggtitle("Distribution of the number of true zeros of A. fabae larvae across all genotypes") +
   labs(x = "Proportion of true zeros among valid values (%)", y = "Number of genotypes (total: 207 genotypes)")

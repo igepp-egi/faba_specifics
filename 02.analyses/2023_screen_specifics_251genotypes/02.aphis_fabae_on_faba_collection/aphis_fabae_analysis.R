@@ -6,15 +6,15 @@ library("ggdist")
 ## Data import
 ##############
 
-igepp_to_ivip <- read.csv("01.data/03.genetic_structure_jonathan_dijon/faba_bean_ivip_ids.csv") %>% 
+igepp_to_ivip <- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_ids.csv") %>% 
   rename("ivip" = "seedbank_id") %>% 
   rename("genotype" = "igepp_id")
-genetic_structure <- read.csv("01.data/03.genetic_structure_jonathan_dijon/genetic_groups_K_equal_to_6.csv") %>% 
+genetic_structure <- read.csv("00.info/02.genetic_structure_jonathan_dijon/genetic_groups_K_equal_to_6.csv") %>% 
   rename("ivip" = "genotype")
 igepp_ivip_genetic_group <- inner_join(igepp_to_ivip, genetic_structure)
 
 
-afabae_fecundity <- read.csv("01.data/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-03-25.csv", 
+afabae_fecundity <- read.csv("01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", 
                             stringsAsFactors = F) %>% 
   mutate(type = gsub(pattern = "Equina", x = type, replacement = "Vicia faba var. equina")) %>% 
   mutate(type = gsub(pattern = "Minor", x = type, replacement = "Vicia faba var. minor")) %>% 
@@ -43,9 +43,9 @@ aphis_fabae_n_rep_per_genotype <-
 aphis_fabae_n_rep_per_genotype
 
 ggsave(plot = aphis_fabae_n_rep_per_genotype, 
-       filename = "02.analyses/02.aphis_fabae_on_faba_collection/plot01_nb_rep_per_genotype.pdf")  
+       filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/plot01_nb_rep_per_genotype.pdf")  
 ggsave(plot = aphis_fabae_n_rep_per_genotype, 
-       filename = "02.analyses/02.aphis_fabae_on_faba_collection/plot01_nb_rep_per_genotype.png")  
+       filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/plot01_nb_rep_per_genotype.png")  
 
 
 ##############################
@@ -60,8 +60,10 @@ p_fecundity_afabae <-
   ggtitle("Distribution of the number of Aphis fabae larvae across all genotypes") +
   labs(x = "Total number of offspring from a single L1 larvae")
 
-ggsave(plot = p_fecundity_afabae, filename = "02.analyses/02.aphis_fabae_on_faba_collection/plot02_distribution_n_larvae.pdf")  
-ggsave(plot = p_fecundity_afabae, filename = "02.analyses/02.aphis_fabae_on_faba_collection/plot02_distribution_n_larvae.png")  
+ggsave(plot = p_fecundity_afabae, 
+       filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/plot02_distribution_n_larvae.pdf")  
+ggsave(plot = p_fecundity_afabae, 
+       filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/plot02_distribution_n_larvae.png")  
 
 ###################
 # Line plot with CI
@@ -83,9 +85,12 @@ ribbon_plot <-
   coord_flip() +
   theme(axis.text.y = element_text(size = 4)) +
   labs(x = "Vicia faba genotype", y = "Number of A. fabae larvae obtained from one L1 (Median -/+ CI)")
+ribbon_plot
 
-ggsave(plot = ribbon_plot, filename = "02.analyses/02.aphis_fabae_on_faba_collection/plot03_aphis_fabae_ribbonplot.pdf")
-ggsave(plot = ribbon_plot, filename = "02.analyses/02.aphis_fabae_on_faba_collection/plot03_aphis_fabae_ribbonplot.png")
+ggsave(plot = ribbon_plot, 
+       filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/plot03_aphis_fabae_ribbonplot.pdf")
+ggsave(plot = ribbon_plot, 
+       filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/plot03_aphis_fabae_ribbonplot.png")
 
 ##############################
 # Median nb of A. fabae larvae
@@ -129,7 +134,7 @@ most_extreme_genotype_afabae <- bind_rows(ten_most_resistant_genotypes_afabae,
   mutate(n_rep = paste("n=",n_rep, sep = "")) %>% 
   inner_join(igepp_ivip_genetic_group, by = "genotype") %>% 
   select(genotype, phenotype, n_rep, clusterName, cluster) %>% # add n replicates + genetic cluster info
-  mutate(cluster = paste("genetic-group",cluster,sep = ""))
+  mutate(cluster = paste("group",cluster,sep = ""))
 
 p_most_contrasted_afabae <- 
   afabae_fecundity %>% 
@@ -145,8 +150,9 @@ p_most_contrasted_afabae <-
   ggtitle("Most contrasted genotypes\n (Aphis fabae screen)") +
   coord_flip() +
   labs(x = "Vicia faba genotype", y = "Total number of Aphis fabae larvae (from one L1)") +
-  scale_y_continuous(limits = c(0,80)) +
-  geom_text(y = 70)
+  scale_y_continuous(limits = c(0,100)) +
+  geom_text(y = 85)
 p_most_contrasted_afabae
+
 ggsave(plot = p_most_contrasted_afabae, filename = "02.analyses/02.aphis_fabae_on_faba_collection/plot04_aphis_fabae_10_most_contrasted_genotypes.pdf", width = 12, height = 9)
 ggsave(plot = p_most_contrasted_afabae, filename = "02.analyses/02.aphis_fabae_on_faba_collection/plot04_aphis_fabae_10_most_contrasted_genotypes.png", width = 15, height = 9, units = "cm")
