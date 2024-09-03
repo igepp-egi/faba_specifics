@@ -1,0 +1,45 @@
+PLINK v1.90b6.12 64-bit (28 Oct 2019)
+Options in effect:
+  --compound-genotypes
+  --file /home/jferreir/GWAS_Pipe_S_Nicolas/Test_Result_julie/Results_plink/MatrixGeno_Chr7
+  --make-bed
+  --noweb
+  --out /home/jferreir/GWAS_Pipe_S_Nicolas/Test_Result_julie/Results_plink/MatrixGeno_Chr7
+
+Hostname: gwaspipe.novalocal
+Working directory: /home/jferreir/GWAS_Pipe_S_Nicolas/Test_Result_julie
+Start time: Mon Nov 30 09:10:51 2020
+
+Note: --compound-genotypes flag unnecessary (spaces between alleles in .ped
+and .lgen files are optional if all alleles are single-character).
+Note: --noweb has no effect since no web check is implemented yet.
+Random number seed: 1606727451
+1987 MB RAM detected; reserving 993 MB for main workspace.
+Scanning .ped file... done.
+Performing single-pass .bed write (466 variants, 247 people).
+--file:
+/home/jferreir/GWAS_Pipe_S_Nicolas/Test_Result_julie/Results_plink/MatrixGeno_Chr7-temporary.bed
++
+/home/jferreir/GWAS_Pipe_S_Nicolas/Test_Result_julie/Results_plink/MatrixGeno_Chr7-temporary.bim
++
+/home/jferreir/GWAS_Pipe_S_Nicolas/Test_Result_julie/Results_plink/MatrixGeno_Chr7-temporary.fam
+written.
+466 variants loaded from .bim file.
+247 people (0 males, 0 females, 247 ambiguous) loaded from .fam.
+Ambiguous sex IDs written to
+/home/jferreir/GWAS_Pipe_S_Nicolas/Test_Result_julie/Results_plink/MatrixGeno_Chr7.nosex
+.
+Using 1 thread.
+Before main variant filters, 247 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+466 variants and 247 people pass filters and QC.
+Note: No phenotypes present.
+--make-bed to
+/home/jferreir/GWAS_Pipe_S_Nicolas/Test_Result_julie/Results_plink/MatrixGeno_Chr7.bed
++
+/home/jferreir/GWAS_Pipe_S_Nicolas/Test_Result_julie/Results_plink/MatrixGeno_Chr7.bim
++
+/home/jferreir/GWAS_Pipe_S_Nicolas/Test_Result_julie/Results_plink/MatrixGeno_Chr7.fam
+... done.
+
+End time: Mon Nov 30 09:10:51 2020

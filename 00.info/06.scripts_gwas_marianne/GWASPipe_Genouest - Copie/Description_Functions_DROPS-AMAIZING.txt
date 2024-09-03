@@ -1,0 +1,444 @@
+﻿Description of Modules DROPS/AMAIZING – Moulon
+
+The modules have been tested under Linux (Debian) and Windows 7 with Rstudio and R version 3.2.4
+Most of the function works on Windows as well, except for the functions from the files: "Function_Admixture.r"
+
+
+
+######################################################
+## Descriptive analyses and quality control
+#####################################################
+#####################################################
+## Author: Sandra Negro
+####################################################
+# Date: March 2016
+
+### README !!!
+## AIM: 
+# Descriptive analyses of the genotyping dataset 
+# Applying filters for the quality control and extraction of the selected markers and taxa
+
+## INPUT:
+# (1) "geno" = Genotyping matrix (missing values (NA) are allowed), the genotyping code is lettres (ex. AG, CT, etc...), the markers should be biallelic; the markers are in columns and the observations (individuals) are in rows.
+#
+# (2) "snp" = The SNP information file with details on the markers i.e. 1st column has to have the column name "SNP.name", 2nd column has to have the column name "Chromosome" (chromosome number), 3rd column has to have the column name "Position" (physical position).
+
+# Rq: ATTENTION IF YOU HAVE UNPLACED SNPs NOTED OTHER THAN "NA" (ex. "UNK") PLEASE REPLACE IT BY "NA".
+
+# (3) "input.geno" = Path to the genotyping file to be written in the log record output file
+# (4) "input.snp" = Path to the SNP information file to be written in the log record output file
+# (5) "Type.analysis" = Type of analysis to be written in the log file (ex: "Quality Control")
+#
+# (6) Parameters:
+# "snp.dm" = threshold (proportion) of SNP missing data ex.: snp.dm = 0.20
+# "maf" = threshold for  the frequency of the minor allele (MAF) ex.: maf = 0.01
+# "snp.het" = threshold of SNP heterozygosity ex.: snp.het = 0.15
+# "ind.dm" = threshold of Ind missing data ex.: ind.dm = 0.10
+# "ind.het" = threshold of Ind heterozygosity ex.: ind.het = 0.08
+
+## OUTPUT:
+# (1) Creation of a "Results_QC" folder
+#
+# (2) If there are genotypes other than AA, AC, AT, AG, CC, etc... the "abnormal" genotypes and their indices will be written in a file named "AbnormalGenotypes.txt". ATTENTION: if there are indels, they will be saved in this file.
+#
+# (3) "Liste_SNP_Duplicated_Position.RData" = If you have duplicated SNP positions, then a list-object including the deleted SNPs that had duplicated SNP positions per chromosome will be outputted.
+
+# (4) "SNP_Info_UniquePosition_Ordered_(SNP.number).RData" = Detailed marker file where the unplaced SNP are put into a fictive chromosome (ex. in maize chr11) with arbitrary physical position, and where all SNPs have an unique physical position. SNPs are in (increasing) order by chromosome and position. 
+#
+# (5) Tables with counts and rates by marker and by individual: "Effectif_SNP_Diversite.RData", "AfterQC_SNP_Effective_Diversite.RData", "Effectif_Taxa.RData", "AfterQC_Taxa_Effective.RData"
+#
+# (6) Several graphs on the distribution of missing data, heterozygosity and MAF: "Hist_SNP_Het_MAF_DM.pdf", "Plot_Ind_Het_DM.pdf"
+#
+# (7) "Matrix_QCed.RData" = genotyping matrix after quality control
+#
+# (8) "Log.txt" = A log record file
+
+
+
+
+#####################################################
+## BEAGLE v3; inferring missing data
+#####################################################
+#####################################################
+## Author: Sandra Negro
+#####################################################
+# Date: 30 September 2015
+
+## AIM: 
+# Inference of missing data with BEAGLE version 3 !
+
+## BEAGLE is written in Java and runs on most computing platforms (e.g. Windows, Unix, Linux, Solaris, and Mac). If Java is not installed or if it is not version 1.6 or later, the current Java interpreter can be downloaded from the java.sun.com web site. The Java interpreter is called the Java Standard Edition (SE) Runtime Environment (JRE).
+## BEAGLE can be downloaded from BEAGLE web site (https://faculty.washington.edu/browning/beagle/b3.html#download)
+
+# Rq: "beagle.jar" HAS TO BE IN THE WORKING DIRECTORY FOR BEAGLE TO WORK or specify the path !!!
+
+
+## INPUT: 
+# (1) "geno" = genotyping file; individuals in rows and markers in columns, genotyping code can be any sequence of characters, it is not restricted to A/C/G/T or to 1/2/3/4 (but each marker have to be biallelic). Missing data (NA) are allowed
+#
+# (2) "Mb" = number of Megabytes of memory available (ex. Mb=7000)
+
+
+## OUTPUT: 
+# (1) Creation of the "Results_Beagle" folder
+# (2) "Matrix_BEAGLE.bgl" = a Beagle genotyping file. First column describes the data on each line: "I" denotes sample identifier data and an "M" denotes marker data. The second column contains the SNP names. From the third column and onwards there are the genotypes: one column per allele
+#
+# (3) "Matrix_DMimputedBeagle.RData" = a conversion from Beagle output to a genotyping matrix (both alleles of the SNP in one column) with individuals in rows and markers in columns
+#
+# (4) "Output.log" = a log record file
+#
+# (5) Four other outputs: "Output.Matrix_BEAGLE.bgl.dose.gz", "Output.Matrix_BEAGLE.bgl.gprobs.gz", "Output.Matrix_BEAGLE.bgl.phased.gz", "Output.Matrix_BEAGLE.bgl.r2". See BEAGLE 3.3.2 manual for a complete description of those files.
+
+## REFERENCES
+# S R Browning and B L Browning (2007) Rapid and accurate haplotype phasing and missing data inference for whole genome association studies using localized haplotype clustering. Am J Hum Genet 81:1084-1097.doi:10.1086/521987
+
+
+
+
+
+#############################################################
+## Function: conversion to plink binary files
+#############################################################
+## Author: Sandra Negro
+#############################################################
+# Date: 30 Septembre 2015
+
+### AIM: 
+# Creation of plink binary files for the whole genome and per chromosome i.e. .bed/.bim/.fam
+#
+### ATTENTION: the plink software should be install and for Windows the executable file (plink.exe) should be in the working directory !!!
+
+
+### INPUT:
+# (1) "geno" = Genotyping matrix (missing values (NA) are allowed), genotyping code is lettres (ex. AG, CT) or any numbers (ex. 11, 12, 22), markers should be biallelic; the markers are in columns and the observations (individuals) are in rows.
+#
+# (2) "snp" = The SNP information file with details on the markers i.e. 1st column has the column name "SNP.name", 2nd column has the column name "Chromosome" (chromosome number), 3rd column has the column name "Position" (physical position).
+#
+# ATTENTION: The unplaced SNP should be in a fictive chromosome (i.e. unplaced SNPs in a chr11 for maize).
+#
+# (3) "chr" = number of chromosome present in the SNP information file (e.i. for maize chr=10 or chr=11 if there are unplaced SNPs)
+#
+
+### OUTPUT:
+# (1) Creation of a "Results_plink" folder
+#
+# (2) "SNP_Info_UniquePosition_Ordered_(SNP.number).csv" = Detailed marker file where all SNPs have an unique physical position. SNPs are in (increasing) order by chromosome and position.  
+#
+# (3) "Matrix_(Ind.number)_(SNP.number).RData" = A new genotyping matrix with deletion of SNPs that have duplicated SNP positions. Markers are in increasing order of the genome.
+#
+# (4) "Liste_SNP_elimines_(Date).RData" = A list-object including the deleted SNPs that had duplicated SNP positions.
+#
+# (5) Three type of output binary files (.bed/.bim/.fam) for the whole set of SNPs and for each chromosome. The .ped and .map formats are also outputted.
+
+
+
+
+
+#############################################################
+## Function: Population Structure
+#############################################################
+## Author: Sandra Negro
+#############################################################
+# Date: 30 September 2015
+
+## AIM: Identification of sub-groups by Admixture (usually using PANZEA markers)
+# Estimating the ancestral factions and the allelic frequencies of the population using Admixture
+
+## ATTENTION: the operating system must be Linux. The program do not run on Windows
+# !!! Admxiture software must be install!!! 
+
+## INPUT files:
+# (1) "geno" = genotyping matrix as outputted in the folder "Results_plink" (ex. Matrix_247_4491.RData")
+#
+# (2) "path" = path to the Admixture software. If you do not know, open a terminal and type the command line "which admixture". You will have the path
+#
+# (3) "Q" = Serie of sub-groups to test (ex.: Q = "1 2 3 4 5 6")
+#
+# (4) "Qmax" = is the last number of the serie "Q" (ex.: Qmax = 6)
+#
+# (5) "nbQ" = number of sub-groups we think there is for the stacked bar plot (ex.: nbQ=4)
+#
+# (6) "Q.threshold" = Ancestral fraction threshold for the stacked bar plot (ex.: Q.threshold=0.3)
+
+
+## OUTPUT files:
+# (1) Creation of the "Results_Admixture" folder
+
+# (2) matrices with the ancestral fractions (probabities of affiliation to a group); each line = an individual (inbred line) and each column = a specific group, the somme of the column equal to one (the somme of the ancestral fractions for all group egal to one)
+
+# (3) matrices with the allelic frequencies; one row = a marker and one column = one sub-group.
+# (4) Stacked bar showing the ancestral fractions (Y-axis) of each individual (X-axis)
+
+## REFERENCE
+# D.H. Alexander, J. Novembre, and K. Lange.  Fast model-based estimation of ancestry in unrelated individuals. Genome Research, 19:1655-1664, 2009
+
+
+
+
+########################################################################
+#########################################################################
+## Estimating IBS and IBD matrices using GenABEL ##
+#########################################################################
+# Author: Sandra Negro
+########################################################################
+## DATE: 08 October 2015
+
+## AIM:
+# Estimation of kinships (IBS or IBD) using GenABEL with plink file format
+# and Rincent et al. (2014) approach
+
+## ATTENTION: Package "GenABEL" needed
+
+## INPUT: 
+# (1) ped = a genotyping .ped (plink format). You can obtain the plink files using the function "Conversion()" from the file "Function_Transfo_plink.r". The first six columns are: Family ID, Individual ID, first parent ID (use 0, which is considered as missing), Maternal ID (use 0), Sex (use 0), Phenotype. From the seventh and on there are the genotypes. You can have missing genotypes(coded 0 0). 
+# Rq: PANZEA markers are used for the estimation of the kinship.
+
+# (2) pedfile = name of the .ped file with the path to the file
+
+# (3) mapfile = name of the .map file with the path to the file
+
+## OUTPUT: 
+# (1) A IBD and IBS general kinship matrices
+# (2) a log file with details on the analyses and the properties of the kinships
+# (2) graph distribution kinship
+
+
+
+
+###########################################################
+###########################################################
+# Estimation of the global kinship (using all chromosome) and the kinships without the chromosome tested #
+###########################################################
+# Author: Renaud Rincent modified as a function and optimized in term of speed calculation by Sandra Negro
+###########################################################
+## Aim: 
+# Estimation of IBD matrices
+# Choice between the algorythms from Astle and Balding 2009 or Van Raden et al. 2008
+
+## INPUT:
+# (1) "geno" = genotyping file with code 0, 1, 2 (0 and 2 are homozygotes for allele 1 and allele 2 respectively, 1 is the heterozygote). No missing data are allowed. Individuals in lines and markers in columns.
+# Rq: for the 50K Illumina chip, PANZEA markers are used for the estimation of the kinship!
+#
+# (2) "algo" = algorithm to choose: "Astle" or "VR" (Astle and Balding 2009 or Van Raden et al. 2008)
+#
+# (3) "snp" = marker information file including the column's names: "SNP.name", "Chromosome", "Position". Unplaced markers should be in a fictive chromosome (i.e. chr11 for maize)
+#
+# (4) "chr" = nb of chromosomes present in the SNP info file (in maize chr=10 or chr=11 if there are unplaced SNP put in a fictive chromosome 11) 
+
+## OUTPUT:
+# (1) A general kinship matrix estimated from all chromosomes ("IBD_General_Renaud_Astle_(nb.Individuals).csv")
+#
+# (2) A list containing one matrix by chromosome tested ("IBD_Renaud_Astle_(nb.Individuals).RData"), if you have unplaced SNP in a fictive chromosome (ex.: chr11 for maize) then you will have 11 kinship matrices. The first matrix of the list was estimated from all chromo except the chr1
+#
+# (3) A log record file containing information on the analyses i.e. date, mean and range of the general kinship
+#
+# (4) An histogram of the relatedness coefficient of the general kinship
+
+
+## REFERENCES:
+# Rincent et al. (2014). Recovering Power in Association Mapping Panels with Variable Levels of Linkage Disequilibrium. Genetics, vol. 197 no. 1 375-387.
+#
+# Astle and Balding (2009). Population Structure and Cryptic Relatedness in Genetic Association Studies. Statistical Sciences, Vol. 24, No. 4, 451–471.
+#
+# VanRaden (2008). Efficient Methods to Compute Genomic Predictions. Journal of Dairy Science Vol. 91 No. 11 4414–4423.
+
+
+
+
+############################################################
+####### Principal Coordinates Analysis #########
+############################################################
+# Author: Sandra Negro
+############################################################
+# Date: 7 October 2015
+## AIM: Multidimensional scaling of the kinship matrix (analysis of the similarity between inbred lines) and visualization of the major genetic groups on the Graph.
+
+##  "stats" package should be installed and charged in your R working space
+
+## INPUT:
+# (1) "kin" = the kinship matrix (symetrical)
+# (2) "adm.name" = the Admixture output name with the path and without the extension (ex.: adm.name = "./Results_Admixture/Matrix_247_4779_2015-06-26")
+# (3) "nbQ" = Nb of genetic groups you think you have
+# (4) "user.class" = a matrix containing two columns with a header: the first column contains the individuals names and the second column contains the user-classification, which can be characters or numbers.
+# (5) "user.classification" = TRUE or FALSE (to specify if the user has a "user.class" file
+
+## OUTPUT:
+# (1) Creation of a "Results_PCoA" folder
+# (2) PCoA graphs
+# (3) "PCoA-Points.csv" = matrix with the individuals in rows and the axes (10 dimension here) in columns
+# (4) "ProportionVariance.txt" = proportions of the variance explained by the axes
+
+## REFERENCE: 
+# Gower (1967) Multivariate Analysis and Multidimensional Geometry. Journal of the Royal Statistical Society. Series D (The Statistician), Vol. 17, No. 1 (1967), pp. 13-28 
+
+
+
+
+##########################################################
+### LD_Analyses
+##########################################################
+## Ask Pierre Riviere or Sandra Negro for this R package in preparation
+##########################################################
+Description;
+Estmation of classical and corrected LD
+
+Input;
+(1) The genotyping matrix (dose or freq code). Individuals in lines and markers in columns.
+(2) The inverse of the admixture matrix that contains the ancestral fractions (probabities of affiliation to a group); each line = an individual (inbred line) and each column = a specific group, the somme of the column egal to one (the somme of the ancestral fractions for all group egal to one)
+(3) The inverse of the kinship matrix
+
+Output;
+-Creation of a matrix containing the R2 (without correction)
+-Creation of a matrix containing the R2 corrected for the genetic structure
+-Creation of a matrix containing the R2 corrected for kinship
+-Creation of a matrix containing the R2 corrected for both structure and kinship
+
+Working environnement; 
+R and use of the package RCondor (you need a Condor system on your server)
+
+
+
+
+
+
+##########################################################
+#########################################################
+## Genome-wise association studies with FASTLMM using Rincent et al. 2014 approach
+# (kinship estimated by excluding the chromosome of the tested marker) 
+#########################################################
+##########################################################
+## Author: Sandra Negro
+###############################################
+## DATE: 2 March 2016
+
+## AIM:
+# Linear mixed model in FASTLMM for GWAS using Rincent et al. 2014 approach
+
+## ATTENTION: The program "fastlmmc" should be install. It might require authorization of execution for Linux!!! If your operating system is Windows, the executable file (FastLmmC.exe) should be in the working directory. 
+
+## INPUT:
+# (1) "pheno" = File containing the phenotypes. First column, must have column name "variety" and contains the individual ID and the following columns include the phenotype with header names such as "Site.Year.Treatment.Trait" (ex.: "biogai.2012.drought.plantHT") so that the column names are self informative. Use exactly this format for the column names. If you do not have year or treatments write for ex. "biogai.NoYear.NoTreatment.plantHT".
+
+# (2) "kin" = RRM (e.g. IBD kinship) or empirical covariance matrix. Kinship should be symetrical (this function will check for you if the kinship is positive-definite). The class of this file is "list" and each element of the list is "matrix".
+
+# (3) geno.file = Binary files without the chr Nb and the extension (i.e. .bed/.bim/.fam generated by plink) containing the genotypes. The three files in the folder "Results_plink" must have the same file name except the extension 
+#(ex: "Matrix_Chr1.bed", "Matrix_Chr1.bim", "Matrix_Chr1.fam")
+
+# (4) chr = Nb of chromosome present in the SNP info file (in maize: chr=10 or chr=11 if there are unplaced SNPs put in a fictive chr11).
+
+# (5) type.analysis = Type of analysis to be written in the log file. Ex: "Linear mixed model in FASTLMM for GWAS using a test data set and Rincent et al. 2014 approach"
+
+
+## Rq1: Markers in the genotyping file are in an increasing order in term of the physical position on the genome and SNPs have unique position
+
+## Rq2: Missing data (NA) are allowed in the phenotypic file and in the genotypic file but fastlmm does a very poor imputation job as the missing SNP values will be mean imputed. I recommand to infer missing data with Beagle or another software.
+
+## Rq3: ATTENTION; THE PHENO, GENO AND KINSHIP MUST HAVE THE SAME INDIVIDUAL NAME AND IN THE SAME ORDER
+
+## OUTPUT:
+# (1) Phenotypic files specifically formatted for fastlmmc
+# (2) kinship matrices specifically formatted for fastlmmc
+# (3) Creation of a "Results" folder with all the GWAS results from fastlmm for each situtaion (one env., one year, one treatment) and each trait. For the description of the columns, see FaST-LMM Manual
+# (4) Creation of a "Log" folder which will includes user details on each run of this script
+
+## REFERENCE:
+# Lippert et al. (2011). FaST Linear Mixed Models for Genome-Wide Association Studies.     Nature Methods, 8, 833–835
+#
+# Rincent et al. (2014). Recovering Power in Association Mapping Panels with Variable Levels of Linkage Disequilibrium. Genetics, vol. 197 no. 1 375-387.
+
+
+
+
+######################################################################################
+######################################################################################
+## GWAS with no corrections in the statistical model
+######################################################################################
+## Author: Sandra Negro
+######################################################################################
+## DATE: 13 October 2015
+
+
+## AIM: GWAS with no correction (no kinship, no genetic structure in the model) 
+#
+## INPUT:
+# (1) pheno = File containing the phenotypes to be considered. Choose the variables to analyse (the columns contains different sites by trait). First column, with header named "variety", contains the individual ID and the following columns include the phenotype with header names such as "Site.Year.Treatment.Trait" (ex.: biogai.2012.drought.plantHT) so that the column names are self informative. Use exactly this format for the column names.
+#
+# (2) geno = Genotyping matrix without NA. Observations (i.e. individuals) in lines and variables (i.e. SNPs) in columns. Genotypes as dose code; 0, 1, 2 where 0 and 2 are homozygotes for the allele 1 and the allele 2, respectively. Rq: In the function, the code will be divided in 2 to have frequency code; 0, 0.5, 1.
+#
+# (3) FASTLMM folder should be in the working directory.
+
+## OUTPUT:
+# A list "List_Pvalue1.RData" with the pvalue per markers for each situation and each trait analysed.
+
+
+
+
+
+######################################################
+## Function: built GNPasso outputs from FASTLMM results ##
+######################################################
+## Author: Sandra Negro
+#####################################################
+## DATE: February 2016
+
+## AIM: building a GNPasso-like summary table that includes the main GWAS results
+#
+## INPUT: 
+# (1) The folder FASTLMM should be in the working directory. It contains the FASTLMM output results.
+# The Results_plink folder containing the binary files ".bim" should also be in the working directory (.bim contains the information on allele 1 (minor) and allele 2 (major)).
+#
+# (2) bim.all = the .bim file from the "Results_plink" folder that contains the SNPs from all chromosomes (ex.: "./Results_plink/Matrix_247_4778.bim"). 
+#
+# (3) pheno = the phenotype file: 1st column is the individual ID (the column name is "variety"), the following columns include the phenotype with column names such as "Site.Year.Treatment.Trait" (ex.: biogai.2012.drought.plantHT).
+#
+# (4) geno = the genotying file that include all the markers tested. The genotyping code can be letters (ex.: AG, CT, etc..) or numbers, but be biallelic (ex: 11, 12, 22). rows = individual ID and columns = marker names
+#
+# (5) User parameters:
+# Experimenter = experimenter name
+# Exper_Name = experiment name or project 
+# Panel_Name = name of the panel
+# Marker_Type = type of the marker (e.g. SNP, SSR, etc...)
+# Software = software name (e.g. fastlmm, emmax, asreml)
+# Statistical_Model = statistical model used for the GWAS (e.g. K (mixed model with a kinship), K+Q (kinship and genetic structure), etc...)
+# RefGenMap = genome reference (e.g. Ref_v2)
+# Nchr = number of chromosome (nb of chr present in the SNP info file; in maize, Nchr=10 or Nchr=11 if you have unplaced SNP put in a fictive chromosome)
+
+## OUTPUT: 
+# (1) the GNPasso-like GWAS template which contains the main GWAS results
+# (2) Log record file containing information on the Experimenter name, date of the analyses, ref genome, nb of individuals used in the analyses, software and statistical model used.
+
+
+
+
+
+
+###################################################################
+###################################################################
+### QQplots and Manhattan plots using the GWAS results from FASTLMM
+###################################################################
+## Authors: Stephane Nicolas and Sandra Negro
+###################################################################
+## DATE: December 2015
+
+## AIM:
+# Creation of QQplots and manhattan plots 
+
+## INPUT
+# (1) pheno = File containing the phenotypes. First column, with header named "variety", contains the individual ID and the following columns include the phenotype with header names such as "Site.Year.Treatment.Trait" (ex.: biogai.2012.drought.plantHT) so that the column names are self informative. Use exactly this format for the column names.
+#
+# (2) list.pval1 = a list object including the pvalues obtained from a statistical model with no corrections (no kinship and no genetic structure). In rownames there are the SNP names and in colnames there are the GWAS experiment. Each element of this list contains the pvalues for one site, one year, one treatment and one trait. This list object can be obtained with the function in the file "Function_GWAS_No_Corrections.r"
+#
+# (3) exp = list of the names of the experiments (=the column names of the pheno file e.g. "biogai.2012.drought.dta") grouped by trait and the site for ex. (e.g. the first element of the list object "exp" contains all experiments done in, for ex. "biogai" site for "DTA" trait: "biogai.2012.drought.dta", "biogai.2013.drought.dta", "biogai.2012.watered.dta", "biogai.2013.watered.dta"). !!! The length of the list "exp" (=the number of the elements of the list) must be equal to the column number of list.pval1 and in the same order of site and trait !!!
+#
+# (4) The folders "FASTLMM/Results_FASTLMM" with all the GWAS results outputted by FASTLMM should be in the working directory
+#
+# (5) snp = The SNP information file with details on the markers i.e. 1st column has the column name "SNP.name", 2nd column has the column name "Chromosome" (chromosome number), 3rd column has the column name "Position" (physical position). The class of this file is "data.frame"
+# Rq: the markers should be in order in term of physical position on the genome
+#
+# (6) alpha =  the alpha error (type I)
+
+## OUTPUT
+# (1) Quantiles of the pvalues of each experiments (including the experiments of the statistical model without corrections
+# (2) Quantiles-Quantiles plots (QQplots)
+# (3) Manhattan plots pour toutes les situations par trait
+

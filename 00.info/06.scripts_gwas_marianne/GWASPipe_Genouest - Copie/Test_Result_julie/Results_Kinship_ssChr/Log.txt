@@ -1,0 +1,10 @@
+1 2020-11-30
+2 Analyses: Estimating IBD relatedness matrices
+3 
+4 Range of the diagonal of the general IBD: 
+5 0.753214859858775
+6 1.63857162130457
+7 Range of the relatedness coefficient (IBD): 
+8 -0.33283883394419
+9 1.02143242404837
+10 Mean IBD: -0.00401349488727586

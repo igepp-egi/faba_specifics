@@ -1,0 +1,22 @@
+ 2020-11-30
+ Estimating IBS and IBD relatedness matrices
+ 
+ INPUT FILE:
+pedfile ./Results_plink/MatrixGeno.ped
+mapfile ./Results_plink/MatrixGeno.map
+ 
+ Range of the diagonal of the IBD: 
+ 0.927291113800804
+ 0.999686599628452
+ Range of the diagonal of the IBS: 
+ 0.948398576512456
+ 0.999777580071174
+ 
+ Range of the relatedness coefficient (IBD): 
+ -0.332982665932886
+ 1.02158980897649
+ Range of the relatedness coefficient (IBS): 
+ 0.464857651245552
+ 0.952624555160142
+ Mean IBD: -0.00401349348936938
+ Mean IBS: 0.644171842335436
