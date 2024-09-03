@@ -1,6 +1,7 @@
 # README P2-XP002 fecundity counts Aphis fabae AF001 on most sensitive and resistant
 
-__Important:__ the L1 larvae were placed in a climate chamber (53 LP 332) in the basement of building 320 at IGEPP that was set at 18°C -/+ 0.5. We realised this after a week so we switched back the temperature to 20 -/+0.5 degrees. 
+__Important:__ the L1 larvae were placed in a climate chamber (53 LP 332) in the basement of building 320 at IGEPP that was set at 18°C -/+ 0.5 consistently with the temperature of climate chamber in building 345.
+Problem is that the temperatures of the growth chambers in building 345 are closer to 20°C and not 18°C. We realised this after a week so we switched back the temperature to 20 -/+0.5 degrees. 
 
 ## Objective 
 
