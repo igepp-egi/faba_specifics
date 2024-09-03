@@ -1,6 +1,6 @@
 suppressPackageStartupMessages(library("tidyverse"))
-library(multcompView)    
-library("ggdist")
+#library(multcompView)    
+#library("ggdist")
 
 ##############
 ## Data import

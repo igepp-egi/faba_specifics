@@ -37,15 +37,15 @@ The list of faba genotypes can be found in "01.data/03.genetic_structure_jonatha
 
 ### Analysis 1 ("quantitative robust"): N>=6 and no zeros
 
-Criteria:
+Criteria:    
 - Only genotypes with more than 6 replicates are kept.  
 - When total number of larvae is equal to 0, the row is removed and value is discarded. 
 
-<img src="02.analyses/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_most_contrasted_genotypes.png" alt="number of larvae per genotype" width="80%"> 
+<img src="02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_most_contrasted_genotypes.png" alt="number of A. pisum larvae per genotype" width="80%"> 
 
 ### Analysis 02 ("qualitative zeros"): N>=6 and proportions of zeros
 
-Criteria/method:
+Criteria/method:  
 - Only genotypes with more than 6 replicates are kept.  
 - The proportion of zeros from the total number of measurements is calculated.
 
@@ -59,7 +59,7 @@ Criteria:
 - Only genotypes with more than 6 replicates are kept.    
 - When total number of larvae is equal to 0, the row is removed and value is discarded.   
 
-<img src="./02.analyses/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/plot03_afabae_most_contrasted_genotypes.png" alt="number of larvae per genotype" width="80%"> 
+<img src="02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/plot03_afabae_most_contrasted_genotypes.png" alt="number of A. fabae larvae per genotype" width="80%"> 
 
 ### Analysis 02 ("qualitative zeros"): N>=6 and proportions of zeros
 
@@ -67,7 +67,7 @@ Criteria/method:
 - Only genotypes with more than 6 replicates are kept.  
 - The proportion of zeros from the total number of measurements is calculated.
 
-<img src="./02.analyses/02.aphis_fabae_on_faba_collection/02_analysis2_proportion_zeros/plot02_number_of_true_zeros.png" alt="number of larvae per genotype" width="70%">
+<img src="02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/02_analysis2_proportion_zeros/plot02_number_of_true_zeros.png" alt="number of 0 per genotype" width="70%">
 
 It is clear from this plot that some genotypes have a lot of non-surviving larvae (median number is around 10-20% of dying larvae), especially these 5 genotypes:    
 - JF2230  
@@ -76,19 +76,11 @@ It is clear from this plot that some genotypes have a lot of non-surviving larva
 - JF2250  
 - KF0195
 
+To be confirmed with P2-XP005.
+
 # Confirmation of the most 20 contrasted genotypes
 
 Genotypes that were the most resistant and sensitive were isolated to be tested within the same experiment (to get rid of the batch effect) with the same aphid clone. 
-
-### P2-XP001 Vicia faba vs A. pisum P123
-
-Issue with the growth chamber temperature (set at 18 degrees instead of 20). 
-
-<img src="./02.analyses/06.P2-XP001_pisumP123/P2-XP001_fecundity_plot.png" width="70%">
-
-### P2-XP002 Vicia faba vs A. fabae AF001
-
-<img src="./02.analyses/07.P2-XP002_faba_afabae_AF001/P2-XP002_fabae_fecundity_plot.png" width=70%>
 
 # Useful links
 

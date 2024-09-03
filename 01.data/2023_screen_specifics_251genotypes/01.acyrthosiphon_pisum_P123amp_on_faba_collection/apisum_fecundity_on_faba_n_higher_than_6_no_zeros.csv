@@ -172,7 +172,6 @@ A.pisum,KP2224,Vicia faba var. equina,c,5,10,23/02/2023,09/03/2023,1,0,37
 A.pisum,KP2224,Vicia faba var. equina,c,6,10,23/02/2023,09/03/2023,1,0,38
 A.pisum,KP2224,Vicia faba var. equina,d,7,10,23/03/2023,06/04/2023,1,0,35
 A.pisum,KP2224,Vicia faba var. equina,d,8,10,23/03/2023,06/04/2023,1,0,37
-A.pisum,KP2224,Vicia faba var. equina,e,9,13,20/04/2023,04/05/2023,0,0,19
 A.pisum,KP2224,Vicia faba var. equina,e,10,13,20/04/2023,04/05/2023,1,0,47
 A.pisum,KP2224,Vicia faba var. equina,f,11,10,02/06/2023,16/06/2023,1,0,27
 A.pisum,KP2224,Vicia faba var. equina,f,12,10,02/06/2023,16/06/2023,1,0,28
@@ -239,7 +238,6 @@ A.pisum,JF2103,Vicia faba var. minor,f,11,13,05/06/2023,19/06/2023,1,0,20
 A.pisum,JF2103,Vicia faba var. minor,g,12,10,15/06/2023,29/06/2023,1,0,25
 A.pisum,JF2103,Vicia faba var. minor,g,13,10,15/06/2023,29/06/2023,1,0,16
 A.pisum,KF0164,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,1,0,23
-A.pisum,KF0164,Vicia faba var. major,a,2,10,17/11/2022,01/12/2022,0,0,26
 A.pisum,KF0164,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,1,0,27
 A.pisum,KF0164,Vicia faba var. major,b,4,10,26/01/2023,09/02/2023,1,0,31
 A.pisum,KF0164,Vicia faba var. major,c,5,10,23/02/2023,09/03/2023,1,0,23
@@ -344,7 +342,6 @@ A.pisum,JF2111,Vicia faba var. equina,a,1,10,17/11/2022,01/12/2022,1,0,17
 A.pisum,JF2111,Vicia faba var. equina,a,2,10,17/11/2022,01/12/2022,1,0,28
 A.pisum,JF2111,Vicia faba var. equina,b,3,14,30/01/2023,13/02/2023,1,0,38
 A.pisum,JF2111,Vicia faba var. equina,c,4,10,23/02/2023,09/03/2023,1,0,38
-A.pisum,JF2111,Vicia faba var. equina,c,5,10,23/02/2023,09/03/2023,0,0,33
 A.pisum,JF2111,Vicia faba var. equina,d,7,10,23/03/2023,06/04/2023,1,0,25
 A.pisum,JF2111,Vicia faba var. equina,e,8,13,20/04/2023,04/05/2023,1,0,18
 A.pisum,JF2111,Vicia faba var. equina,e,9,13,20/04/2023,04/05/2023,1,0,16
@@ -398,7 +395,6 @@ A.pisum,JF2118,Vicia faba var. minor,a,1,10,17/11/2022,01/12/2022,1,0,32
 A.pisum,JF2118,Vicia faba var. minor,b,2,10,26/01/2023,09/02/2023,1,0,44
 A.pisum,JF2118,Vicia faba var. minor,b,3,10,26/01/2023,09/02/2023,1,0,36
 A.pisum,JF2118,Vicia faba var. minor,d,4,10,23/03/2023,06/04/2023,1,0,26
-A.pisum,JF2118,Vicia faba var. minor,e,5,13,20/04/2023,04/05/2023,0,0,6
 A.pisum,JF2118,Vicia faba var. minor,g,6,10,15/06/2023,29/06/2023,1,0,16
 A.pisum,JF2118,Vicia faba var. minor,g,9,14,19/06/2023,03/07/2023,1,0,27
 A.pisum,JF2119,Vicia faba var. equina,a,1,10,17/11/2022,01/12/2022,1,0,21
@@ -414,7 +410,6 @@ A.pisum,JF2119,Vicia faba var. equina,e,10,13,20/04/2023,04/05/2023,1,0,14
 A.pisum,JF2119,Vicia faba var. equina,f,11,10,02/06/2023,16/06/2023,1,0,30
 A.pisum,JF2119,Vicia faba var. equina,g,12,10,15/06/2023,29/06/2023,1,0,25
 A.pisum,JF2120,Vicia faba var. minor,a,2,10,17/11/2022,01/12/2022,1,0,33
-A.pisum,JF2120,Vicia faba var. minor,c,4,10,23/02/2023,09/03/2023,0,0,15
 A.pisum,JF2120,Vicia faba var. minor,d,6,11,24/03/2023,07/04/2023,1,0,32
 A.pisum,JF2120,Vicia faba var. minor,e,7,13,20/04/2023,04/05/2023,1,0,26
 A.pisum,JF2120,Vicia faba var. minor,f,8,10,02/06/2023,16/06/2023,1,0,33
@@ -442,7 +437,6 @@ A.pisum,JF2121,Vicia faba var. minor,e,9,13,20/04/2023,04/05/2023,1,0,32
 A.pisum,JF2121,Vicia faba var. minor,e,10,13,20/04/2023,04/05/2023,1,0,28
 A.pisum,JF2121,Vicia faba var. minor,f,11,10,02/06/2023,16/06/2023,1,0,12
 A.pisum,JF2121,Vicia faba var. minor,f,12,10,02/06/2023,16/06/2023,1,0,24
-A.pisum,JF2122,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,0,0,4
 A.pisum,JF2122,Vicia faba var. major,c,4,10,23/02/2023,09/03/2023,1,0,26
 A.pisum,JF2122,Vicia faba var. major,c,5,10,23/02/2023,09/03/2023,1,0,32
 A.pisum,JF2122,Vicia faba var. major,d,6,10,23/03/2023,06/04/2023,1,0,19
@@ -496,7 +490,6 @@ A.pisum,KF0167,Vicia faba var. major,f,11,10,02/06/2023,16/06/2023,1,0,22
 A.pisum,KF0167,Vicia faba var. major,f,12,10,02/06/2023,16/06/2023,1,0,28
 A.pisum,KF0168,Vicia faba var. minor,a,1,10,17/11/2022,01/12/2022,1,0,11
 A.pisum,KF0168,Vicia faba var. minor,a,2,10,17/11/2022,01/12/2022,1,0,22
-A.pisum,KF0168,Vicia faba var. minor,b,3,10,26/01/2023,09/02/2023,0,0,5
 A.pisum,KF0168,Vicia faba var. minor,b,4,10,26/01/2023,09/02/2023,1,0,28
 A.pisum,KF0168,Vicia faba var. minor,c,5,10,23/02/2023,09/03/2023,1,0,27
 A.pisum,KF0168,Vicia faba var. minor,c,6,10,23/02/2023,09/03/2023,1,0,23
@@ -519,7 +512,6 @@ A.pisum,JF2126,Vicia faba var. major,f,11,10,02/06/2023,16/06/2023,1,0,27
 A.pisum,JF2126,Vicia faba var. major,f,12,10,02/06/2023,16/06/2023,1,0,24
 A.pisum,KF0169,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,1,0,7
 A.pisum,KF0169,Vicia faba var. major,a,2,10,17/11/2022,01/12/2022,1,0,18
-A.pisum,KF0169,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,0,0,15
 A.pisum,KF0169,Vicia faba var. major,b,4,14,30/01/2023,13/02/2023,1,0,9
 A.pisum,KF0169,Vicia faba var. major,c,5,10,23/02/2023,09/03/2023,1,0,27
 A.pisum,KF0169,Vicia faba var. major,c,6,14,27/02/2023,14/03/2023,1,0,43
@@ -709,7 +701,6 @@ A.pisum,JF2141,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,1,0,34
 A.pisum,JF2141,Vicia faba var. major,a,2,10,17/11/2022,01/12/2022,1,0,28
 A.pisum,JF2141,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,1,0,36
 A.pisum,JF2141,Vicia faba var. major,c,4,10,23/02/2023,09/03/2023,1,0,20
-A.pisum,JF2141,Vicia faba var. major,c,5,10,23/02/2023,09/03/2023,0,0,16
 A.pisum,JF2141,Vicia faba var. major,d,6,10,23/03/2023,06/04/2023,1,0,30
 A.pisum,JF2141,Vicia faba var. major,d,7,14,27/03/2023,11/04/2023,1,0,31
 A.pisum,JF2141,Vicia faba var. major,e,8,13,20/04/2023,04/05/2023,1,0,32
@@ -770,7 +761,6 @@ A.pisum,JF2147,Vicia faba var. major,d,5,10,23/03/2023,06/04/2023,1,0,34
 A.pisum,JF2147,Vicia faba var. major,e,7,13,20/04/2023,04/05/2023,1,0,21
 A.pisum,JF2147,Vicia faba var. major,f,8,10,02/06/2023,16/06/2023,1,0,23
 A.pisum,JF2147,Vicia faba var. major,g,9,10,15/06/2023,29/06/2023,1,0,22
-A.pisum,JF2147,Vicia faba var. major,g,10,10,15/06/2023,29/06/2023,0,0,27
 A.pisum,KF0172,Vicia faba var. major,a,2,10,17/11/2022,01/12/2022,1,0,34
 A.pisum,KF0172,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,1,0,44
 A.pisum,KF0172,Vicia faba var. major,b,4,10,26/01/2023,09/02/2023,1,0,29
@@ -1009,7 +999,6 @@ A.pisum,JF2168,Vicia faba var. minor,d,5,10,23/03/2023,06/04/2023,1,0,29
 A.pisum,JF2168,Vicia faba var. minor,f,7,10,02/06/2023,16/06/2023,1,0,27
 A.pisum,JF2168,Vicia faba var. minor,g,8,10,15/06/2023,29/06/2023,1,0,13
 A.pisum,JF2169,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,1,0,30
-A.pisum,JF2169,Vicia faba var. major,b,2,10,26/01/2023,09/02/2023,0,0,1
 A.pisum,JF2169,Vicia faba var. major,c,5,14,27/02/2023,14/03/2023,1,0,26
 A.pisum,JF2169,Vicia faba var. major,d,6,10,23/03/2023,06/04/2023,1,0,38
 A.pisum,JF2169,Vicia faba var. major,d,7,10,23/03/2023,06/04/2023,1,0,46
@@ -1028,7 +1017,6 @@ A.pisum,JF2171,Vicia faba var. major,e,9,13,20/04/2023,04/05/2023,1,0,43
 A.pisum,JF2171,Vicia faba var. major,e,10,13,20/04/2023,04/05/2023,1,0,38
 A.pisum,JF2171,Vicia faba var. major,f,11,10,02/06/2023,16/06/2023,1,0,30
 A.pisum,JF2172,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,1,0,24
-A.pisum,JF2172,Vicia faba var. major,a,2,10,17/11/2022,01/12/2022,0,0,1
 A.pisum,JF2172,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,1,0,30
 A.pisum,JF2172,Vicia faba var. major,b,4,10,26/01/2023,09/02/2023,1,0,42
 A.pisum,JF2172,Vicia faba var. major,c,5,10,23/02/2023,09/03/2023,1,0,37
@@ -1081,7 +1069,6 @@ A.pisum,JF2176,Vicia faba var. major,f,11,10,02/06/2023,16/06/2023,1,0,28
 A.pisum,JF2176,Vicia faba var. major,g,12,10,15/06/2023,29/06/2023,1,0,29
 A.pisum,JF2177,Vicia faba var. equina,a,1,10,17/11/2022,01/12/2022,1,0,32
 A.pisum,JF2177,Vicia faba var. equina,a,2,10,17/11/2022,01/12/2022,1,0,30
-A.pisum,JF2177,Vicia faba var. equina,b,3,10,26/01/2023,09/02/2023,0,0,23
 A.pisum,JF2177,Vicia faba var. equina,b,4,10,26/01/2023,09/02/2023,1,0,22
 A.pisum,JF2177,Vicia faba var. equina,c,5,10,23/02/2023,09/03/2023,1,0,27
 A.pisum,JF2177,Vicia faba var. equina,c,6,10,23/02/2023,09/03/2023,1,0,30
@@ -1205,8 +1192,6 @@ A.pisum,KF0179,Vicia faba var. major,e,10,13,20/04/2023,04/05/2023,1,0,18
 A.pisum,KF0179,Vicia faba var. major,f,11,10,02/06/2023,16/06/2023,1,0,20
 A.pisum,KF0179,Vicia faba var. major,f,12,10,02/06/2023,16/06/2023,1,0,25
 A.pisum,JF2189,Vicia faba var. equina,a,1,10,17/11/2022,01/12/2022,1,0,22
-A.pisum,JF2189,Vicia faba var. equina,a,2,10,17/11/2022,01/12/2022,0,0,3
-A.pisum,JF2189,Vicia faba var. equina,b,4,10,26/01/2023,09/02/2023,0,0,39
 A.pisum,JF2189,Vicia faba var. equina,c,6,14,27/02/2023,14/03/2023,1,0,34
 A.pisum,JF2189,Vicia faba var. equina,d,7,10,23/03/2023,06/04/2023,1,0,29
 A.pisum,JF2189,Vicia faba var. equina,d,8,10,23/03/2023,06/04/2023,1,0,38
@@ -1217,7 +1202,6 @@ A.pisum,JF2189,Vicia faba var. equina,f,12,10,02/06/2023,16/06/2023,1,0,25
 A.pisum,JF2190,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,1,0,32
 A.pisum,JF2190,Vicia faba var. major,b,2,10,26/01/2023,09/02/2023,1,0,19
 A.pisum,JF2190,Vicia faba var. major,b,3,14,30/01/2023,13/02/2023,1,0,46
-A.pisum,JF2190,Vicia faba var. major,c,4,10,23/02/2023,09/03/2023,0,0,2
 A.pisum,JF2190,Vicia faba var. major,d,5,10,23/03/2023,06/04/2023,1,0,27
 A.pisum,JF2190,Vicia faba var. major,d,6,10,23/03/2023,06/04/2023,1,0,27
 A.pisum,JF2190,Vicia faba var. major,e,7,13,20/04/2023,04/05/2023,1,0,32
@@ -1225,9 +1209,7 @@ A.pisum,JF2190,Vicia faba var. major,g,9,10,15/06/2023,29/06/2023,1,0,18
 A.pisum,JF2190,Vicia faba var. major,g,10,10,15/06/2023,29/06/2023,1,0,17
 A.pisum,JF2190,Vicia faba var. major,g,11,10,15/06/2023,29/06/2023,1,0,31
 A.pisum,JF2190,Vicia faba var. major,g,12,14,19/06/2023,03/07/2023,1,0,21
-A.pisum,JF2191,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,0,0,41
 A.pisum,JF2191,Vicia faba var. major,a,2,10,17/11/2022,01/12/2022,1,0,33
-A.pisum,JF2191,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,0,0,25
 A.pisum,JF2191,Vicia faba var. major,b,4,10,26/01/2023,09/02/2023,1,0,43
 A.pisum,JF2191,Vicia faba var. major,c,5,10,23/02/2023,09/03/2023,1,0,19
 A.pisum,JF2191,Vicia faba var. major,d,7,10,23/03/2023,06/04/2023,1,0,32
@@ -1349,7 +1331,6 @@ A.pisum,JF2199,Vicia faba var. minor,f,10,10,02/06/2023,16/06/2023,1,0,36
 A.pisum,JF2199,Vicia faba var. minor,f,11,13,05/06/2023,19/06/2023,1,0,28
 A.pisum,JF2199,Vicia faba var. minor,g,12,10,15/06/2023,29/06/2023,1,0,26
 A.pisum,JF2199,Vicia faba var. minor,g,13,10,15/06/2023,29/06/2023,1,0,35
-A.pisum,JF2200,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,0,0,36
 A.pisum,JF2200,Vicia faba var. major,a,2,10,17/11/2022,01/12/2022,1,0,36
 A.pisum,JF2200,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,1,0,29
 A.pisum,JF2200,Vicia faba var. major,b,4,10,26/01/2023,09/02/2023,1,0,34
@@ -1361,7 +1342,6 @@ A.pisum,JF2200,Vicia faba var. major,e,9,13,20/04/2023,04/05/2023,1,0,30
 A.pisum,JF2200,Vicia faba var. major,e,10,13,20/04/2023,04/05/2023,1,0,35
 A.pisum,JF2200,Vicia faba var. major,f,12,13,05/06/2023,19/06/2023,1,0,35
 A.pisum,JF2200,Vicia faba var. major,g,13,10,15/06/2023,29/06/2023,1,0,29
-A.pisum,KF2215,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,0,0,39
 A.pisum,KF2215,Vicia faba var. major,a,2,10,17/11/2022,01/12/2022,1,0,35
 A.pisum,KF2215,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,1,0,20
 A.pisum,KF2215,Vicia faba var. major,b,4,10,26/01/2023,09/02/2023,1,0,34
@@ -1408,7 +1388,6 @@ A.pisum,JF2202,Vicia faba var. equina,a,1,10,17/11/2022,01/12/2022,1,0,28
 A.pisum,JF2202,Vicia faba var. equina,a,2,10,17/11/2022,01/12/2022,1,0,34
 A.pisum,JF2202,Vicia faba var. equina,b,3,10,26/01/2023,09/02/2023,1,0,25
 A.pisum,JF2202,Vicia faba var. equina,c,4,10,23/02/2023,09/03/2023,1,0,30
-A.pisum,JF2202,Vicia faba var. equina,c,5,10,23/02/2023,09/03/2023,0,0,30
 A.pisum,JF2202,Vicia faba var. equina,d,6,10,23/03/2023,06/04/2023,1,0,21
 A.pisum,JF2202,Vicia faba var. equina,d,7,10,23/03/2023,06/04/2023,1,0,35
 A.pisum,JF2202,Vicia faba var. equina,e,8,13,20/04/2023,04/05/2023,1,0,27
@@ -1428,7 +1407,6 @@ A.pisum,KF0185,Vicia faba var. major,e,10,13,20/04/2023,04/05/2023,1,0,22
 A.pisum,KF0185,Vicia faba var. major,f,11,10,02/06/2023,16/06/2023,1,0,25
 A.pisum,KF0185,Vicia faba var. major,f,12,10,02/06/2023,16/06/2023,1,0,11
 A.pisum,KF0186,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,1,0,9
-A.pisum,KF0186,Vicia faba var. major,a,2,10,17/11/2022,01/12/2022,0,0,1
 A.pisum,KF0186,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,1,0,47
 A.pisum,KF0186,Vicia faba var. major,b,4,10,26/01/2023,09/02/2023,1,0,51
 A.pisum,KF0186,Vicia faba var. major,c,5,10,23/02/2023,09/03/2023,1,0,31
@@ -1473,7 +1451,6 @@ A.pisum,JF2208,Vicia faba var. equina,e,9,13,20/04/2023,04/05/2023,1,0,40
 A.pisum,JF2208,Vicia faba var. equina,f,10,10,02/06/2023,16/06/2023,1,0,34
 A.pisum,JF2208,Vicia faba var. equina,f,11,10,02/06/2023,16/06/2023,1,0,20
 A.pisum,KF0187a,Vicia faba var. equina,a,1,10,17/11/2022,01/12/2022,1,0,41
-A.pisum,KF0187a,Vicia faba var. equina,b,3,10,26/01/2023,09/02/2023,0,0,55
 A.pisum,KF0187a,Vicia faba var. equina,c,5,10,23/02/2023,09/03/2023,1,0,36
 A.pisum,KF0187a,Vicia faba var. equina,c,6,10,23/02/2023,09/03/2023,1,0,38
 A.pisum,KF0187a,Vicia faba var. equina,d,7,10,23/03/2023,06/04/2023,1,0,27
@@ -1489,7 +1466,6 @@ A.pisum,JF2209,Vicia faba var. major,b,4,10,26/01/2023,09/02/2023,1,0,56
 A.pisum,JF2209,Vicia faba var. major,c,5,10,23/02/2023,09/03/2023,1,0,32
 A.pisum,JF2209,Vicia faba var. major,c,6,10,23/02/2023,09/03/2023,1,0,20
 A.pisum,JF2209,Vicia faba var. major,d,7,10,23/03/2023,06/04/2023,1,0,15
-A.pisum,JF2209,Vicia faba var. major,d,8,10,23/03/2023,06/04/2023,0,0,3
 A.pisum,JF2209,Vicia faba var. major,e,9,13,20/04/2023,04/05/2023,1,0,28
 A.pisum,JF2209,Vicia faba var. major,e,10,13,20/04/2023,04/05/2023,1,0,20
 A.pisum,JF2209,Vicia faba var. major,f,11,10,02/06/2023,16/06/2023,1,0,31
@@ -1557,7 +1533,6 @@ A.pisum,JF2216,Vicia faba var. major,e,10,13,20/04/2023,04/05/2023,1,0,26
 A.pisum,JF2216,Vicia faba var. major,f,11,10,02/06/2023,16/06/2023,1,0,17
 A.pisum,JF2216,Vicia faba var. major,f,12,10,02/06/2023,16/06/2023,1,0,14
 A.pisum,JF2217,Vicia faba var. equina,a,1,10,17/11/2022,01/12/2022,1,0,25
-A.pisum,JF2217,Vicia faba var. equina,a,2,10,17/11/2022,01/12/2022,0,0,17
 A.pisum,JF2217,Vicia faba var. equina,b,4,10,26/01/2023,09/02/2023,1,0,53
 A.pisum,JF2217,Vicia faba var. equina,c,5,10,23/02/2023,09/03/2023,1,0,24
 A.pisum,JF2217,Vicia faba var. equina,c,6,10,23/02/2023,09/03/2023,1,0,26
@@ -1639,12 +1614,9 @@ A.pisum,JF2225,Vicia faba var. major,f,11,10,02/06/2023,16/06/2023,1,0,43
 A.pisum,JF2225,Vicia faba var. major,f,12,10,02/06/2023,16/06/2023,1,0,36
 A.pisum,JF2226,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,1,0,35
 A.pisum,JF2226,Vicia faba var. major,a,2,10,17/11/2022,01/12/2022,1,0,31
-A.pisum,JF2226,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,0,0,32
-A.pisum,JF2226,Vicia faba var. major,b,4,10,26/01/2023,09/02/2023,0,0,25
 A.pisum,JF2226,Vicia faba var. major,c,5,10,23/02/2023,09/03/2023,1,0,21
 A.pisum,JF2226,Vicia faba var. major,d,6,10,23/03/2023,06/04/2023,1,0,25
 A.pisum,JF2226,Vicia faba var. major,d,7,10,23/03/2023,06/04/2023,1,0,33
-A.pisum,JF2226,Vicia faba var. major,e,8,13,20/04/2023,04/05/2023,0,0,12
 A.pisum,JF2226,Vicia faba var. major,e,9,13,20/04/2023,04/05/2023,1,0,32
 A.pisum,JF2226,Vicia faba var. major,f,10,13,05/06/2023,19/06/2023,1,0,33
 A.pisum,JF2226,Vicia faba var. major,g,11,10,15/06/2023,29/06/2023,1,0,19
@@ -1905,7 +1877,6 @@ A.pisum,KF0194,Vicia faba var. minor,f,11,10,02/06/2023,16/06/2023,1,0,24
 A.pisum,KF0194,Vicia faba var. minor,f,12,10,02/06/2023,16/06/2023,1,0,23
 A.pisum,JF2244,Vicia faba var. equina,a,1,10,17/11/2022,01/12/2022,1,0,20
 A.pisum,JF2244,Vicia faba var. equina,a,2,10,17/11/2022,01/12/2022,1,0,24
-A.pisum,JF2244,Vicia faba var. equina,b,3,10,26/01/2023,09/02/2023,0,0,6
 A.pisum,JF2244,Vicia faba var. equina,b,4,10,26/01/2023,09/02/2023,1,0,28
 A.pisum,JF2244,Vicia faba var. equina,c,5,10,23/02/2023,09/03/2023,1,0,30
 A.pisum,JF2244,Vicia faba var. equina,c,6,10,23/02/2023,09/03/2023,1,0,22
@@ -2034,15 +2005,12 @@ A.pisum,JF2256,Vicia faba var. minor,d,5,14,27/03/2023,11/04/2023,1,0,41
 A.pisum,JF2256,Vicia faba var. minor,e,6,13,20/04/2023,04/05/2023,1,0,27
 A.pisum,JF2256,Vicia faba var. minor,f,7,10,02/06/2023,16/06/2023,1,0,25
 A.pisum,JF2256,Vicia faba var. minor,g,8,10,15/06/2023,29/06/2023,1,0,23
-A.pisum,JF2256,Vicia faba var. minor,g,9,10,15/06/2023,29/06/2023,0,0,15
-A.pisum,JF2256,Vicia faba var. minor,g,11,10,15/06/2023,29/06/2023,0,0,12
 A.pisum,JF2257,Vicia faba var. major,a,1,10,17/11/2022,01/12/2022,1,0,19
 A.pisum,JF2257,Vicia faba var. major,b,2,10,26/01/2023,09/02/2023,1,0,48
 A.pisum,JF2257,Vicia faba var. major,b,3,10,26/01/2023,09/02/2023,1,0,52
 A.pisum,JF2257,Vicia faba var. major,c,4,10,23/02/2023,09/03/2023,1,0,30
 A.pisum,JF2257,Vicia faba var. major,c,5,10,23/02/2023,09/03/2023,1,0,35
 A.pisum,JF2257,Vicia faba var. major,d,6,10,23/03/2023,06/04/2023,1,0,27
-A.pisum,JF2257,Vicia faba var. major,e,7,13,20/04/2023,04/05/2023,0,0,14
 A.pisum,JF2257,Vicia faba var. major,e,8,13,20/04/2023,04/05/2023,1,0,35
 A.pisum,JF2257,Vicia faba var. major,f,9,10,02/06/2023,16/06/2023,1,0,35
 A.pisum,JF2257,Vicia faba var. major,f,10,10,02/06/2023,16/06/2023,1,0,31
@@ -2095,7 +2063,6 @@ A.pisum,JF2260,Vicia faba var. minor,b,3,10,26/01/2023,09/02/2023,1,0,32
 A.pisum,JF2260,Vicia faba var. minor,b,4,10,26/01/2023,09/02/2023,1,0,11
 A.pisum,JF2260,Vicia faba var. minor,c,5,10,23/02/2023,09/03/2023,1,0,27
 A.pisum,JF2260,Vicia faba var. minor,c,6,10,23/02/2023,09/03/2023,1,0,35
-A.pisum,JF2260,Vicia faba var. minor,d,8,10,23/03/2023,06/04/2023,0,0,6
 A.pisum,JF2260,Vicia faba var. minor,e,9,13,20/04/2023,04/05/2023,1,0,25
 A.pisum,JF2260,Vicia faba var. minor,e,10,13,20/04/2023,04/05/2023,1,0,28
 A.pisum,JF2260,Vicia faba var. minor,f,11,10,02/06/2023,16/06/2023,1,0,24
