@@ -1,0 +1,14 @@
+Beagle version 3.3.2 (31 Oct 2011)
+Enter "java -jar beagle.jar" for summary of command line arguments.
+Start time: 03:06 PM CEST on 04 Sep 2024
+
+Command line: java -Xmx6222m -jar beagle.jar
+  unphased=./Results_Beagle/Matrix_BEAGLE.bgl
+  missing=?
+  out=./Results_Beagle/Output
+
+number of markers    =    4497
+number of haplotypes =     494 (Matrix_BEAGLE.bgl)
+
+Running time for phasing: 26 seconds
+Beagle version 3.3.2 (31 Oct 2011) finished
