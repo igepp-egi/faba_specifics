@@ -81,9 +81,9 @@ p1_afabae <- median_larvae_counts_afabae %>%
 
 
 ggsave(plot = p1_afabae, width = 12, height = 8, 
-       filename="02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/plot01_afabae_barplot.pdf")
+       filename="02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/plot01_afabae_barplot.pdf")
 ggsave(plot = p1_afabae, width = 12, height = 8, units = "cm",
-       filename="02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/plot01_afabae_barplot.png")
+       filename="02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/plot01_afabae_barplot.png")
 
 #################
 # 10 most extreme
