@@ -2,9 +2,9 @@
 
 ## Objective 
 
-Some faba bean genotypes showed a lot of "0" for the total number of larvae obtained from one single L1-G2 larvae of Aphis fabae AF001.
+Some faba bean genotypes showed a lot of "0" for the total number of larvae obtained from one single L1-G2 larvae of Aphis fabae AF001.  
 
-The goal is to estimate the number of surviving adults from a small number of larvae (10) after 9 days. The offspring (larvae number) will not be counted. 
+The goal is to estimate the number of surviving adults from a small number of larvae (10) after 9 days. The offspring (larvae number) will not be counted. Additional controls will be added compared to the previous experiment. 
 
 ## Protocol
 
@@ -25,6 +25,11 @@ The 5 genotypes with the highest proportions of "0" (no larvae counted, see plot
 - JF2250 (short code 214)  
 - KF0195 (short code 217)  
 - JF2230 (short code 187)  
+
+Cnotrols (no installation problems)
+- JF2128 (short code 60)  
+- Castell (féverole)   
+- KF0180 (short code 144)   
 
 10 seeds were sown per genotype and they were grown during 15 days at 20 degrees and in long days (16/8 D/N).
 
