@@ -37,6 +37,10 @@ genotypes_nrep_higher_than_6 =
 afabae_fecundity_n6 <- afabae_fecundity %>% filter(genotype %in% genotypes_nrep_higher_than_6)
 rm(afabae_fecundity, genotypes_nrep_higher_than_6)
 
+write.csv(x = afabae_fecundity_n6, 
+          file = "01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_n_higher_6.csv", 
+          row.names = FALSE)
+
 ###################################################
 # Proportion of 0 from total number of measurements
 ###################################################

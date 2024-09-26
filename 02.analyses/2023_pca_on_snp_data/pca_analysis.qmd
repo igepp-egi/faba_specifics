@@ -1,0 +1,31 @@
+---
+title: "PCA analysis"
+format: html
+editor: visual
+---
+
+# Setup 
+
+## Library
+
+```{r}
+#| label: library
+#| warning: false
+#| echo: false
+
+library("adegenet")
+```
+
+## Data import
+
+`PCA_new.Rdata` est la PCA réalisé par le package "adegenet". Celà permet ensuite de calculer la DAPC qui a été utilisé pour déterminer les groupes. On l'utilise aussi comme covariable GWAS.
+
+```{r}
+#| label: library
+#| warning: false
+#| echo: true
+
+load(file = "00.info/02.genetic_structure_jonathan_dijon/PCA_new.Rdata")
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).

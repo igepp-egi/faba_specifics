@@ -1,0 +1,121 @@
+---
+title: "Broad sense heritability"
+format: html
+editor: visual
+---
+
+# Library
+
+```{r}
+#| echo: false
+#| warnings: false
+
+library(agridat)
+library(emmeans)
+library(lme4)
+library(tidyverse)
+```
+
+# Our phenotypic data
+
+## Acyrthosiphon pisum
+
+```{r}
+apisum <- read.csv("../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/apisum_fecundity_on_faba_n_higher_than_6_no_zeros.csv") %>% 
+  select(genotype, replicate, session, larvae_total_number)
+head(apisum)
+```
+
+```{r}
+# Overlay density and histogram of larvae
+ggplot(apisum, aes(x = larvae_total_number)) +
+  geom_histogram(aes(y = ..density..), binwidth = 1, fill = "lightblue", color = "black") +
+  geom_density(alpha = 0.5) +
+  labs(title = "Distribution of the number of A. pisum larvae",
+       x = "Number of larvae",
+       y = "Density")
+```
+
+
+## Aphis fabae
+
+```{r}
+afabae <- read.csv("../../../01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv") %>% 
+  filter(larvae_total_number > 0) %>% 
+  select(genotype, replicate, session, larvae_total_number)
+head(afabae)
+```
+
+```{r}
+# Overlay density and histogram of larvae
+ggplot(afabae, aes(x = larvae_total_number)) +
+  geom_histogram(aes(y = ..density..), binwidth = 1, fill = "lightgrey", color = "black") +
+  geom_density(alpha = 0.5) +
+  labs(title = "Distribution of the number of A. fabae larvae (0 removed)",
+       x = "Number of larvae",
+       y = "Density")
+
+```
+
+
+## Example data
+
+Taken from [Schmidt 2019 companion GitHub repository](https://github.com/PaulSchmidtGit/Heritability/blob/master/Alternative%20Heritability%20Measures/lme4/H2%20Reg%20%26%20H2%20SumDiv.R) 
+
+```{r}
+# get example data --------------------------------------------------------
+dat <- agridat::john.alpha %>% 
+  mutate(Mu = 1) # Create dummy column for pseudo intercept in order to obtain estimate for Mu
+
+
+# fit model ---------------------------------------------------------------
+# random genotype effect
+g_ran <- lmer(data    = dat,
+              formula = yield ~ 0 + Mu + rep + (1|gen) + (1|rep:block)) # Default intercept set to 0, pseudo intercept Mu instead
+
+# fixed genotype effect
+g_fix <- lmer(data    = dat,
+              formula = yield ~ rep + gen + (1|rep:block))
+
+```
+
+
+```{r}
+# Compare models ----------------------------------------------------------
+anova(g_ran, g_fix)
+```
+
+```{r}
+# handle model estimates --------------------------------------------------
+# genotypic BLUPs
+g_BLUPs <- g_ran %>% 
+  ranef %>% as_tibble %>% 
+  rename(BLUP=condval) %>%
+  filter(grpvar=="gen") %>%
+  mutate(gen = grp %>% as.character %>% as.factor) %>% 
+  select(gen, BLUP)
+
+# estimated marginal means (a.k.a. adjusted means) based on genotypic BLUEs
+g_EMMs <- g_fix %>% 
+  emmeans("gen") %>% 
+  as_tibble %>% 
+  select(gen, emmean)
+
+# Overall mean in g_ran
+Mu_ran <- g_ran %>% emmeans("Mu") %>% as_tibble %>% pull(emmean)
+
+# Combine BLUPs and emmeans, compute scaled emmeans
+Gpreds <- left_join(g_EMMs, g_BLUPs, by="gen") %>% 
+  mutate(scaled_emmean = emmean - Mu_ran)
+
+
+# H2 BLUP~BLUE ------------------------------------------------------------
+H2reg <- lm(data    = Gpreds,
+            formula = BLUP ~ 0 + scaled_emmean) %>% pluck("coefficients")
+H2reg #0.8178116
+
+# H2 sumdiv ---------------------------------------------------------------
+H2sumdiv <- sum(abs(Gpreds$BLUP)) / sum(abs(Gpreds$scaled_emmean))
+H2sumdiv #0.8205183
+```
+
