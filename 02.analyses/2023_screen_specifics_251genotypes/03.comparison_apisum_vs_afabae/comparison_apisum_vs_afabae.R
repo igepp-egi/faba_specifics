@@ -55,7 +55,9 @@ ggsave(plot = p_paired_continuous,
        filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot01_paired_plot_apisum_vs_afabae.pdf", 
        width = 10, height = 8)
 
+###############
 ### Scatterplot
+###############
 points_to_label <- 
   res_pisum_and_afabae %>% 
   filter(genotype %in% all_genotypes) 
@@ -68,7 +70,32 @@ p_scatterplot_continuous <-
   labs(y = "Number of larvae from one L1 larvae of A. pisum") +
   geom_label_repel(data = points_to_label, max.overlaps = 10) +
   scale_fill_brewer(type = "qual", palette = 2) +
-  theme_bw();p_scatterplot_continuous
+  theme_bw();p_scatterplot_continuous +
+  # add regression coefficient equation on the graph
+  geom_smooth(method = "lm", se = FALSE, color = "black", formula = y ~ x) +
+  # add equation and R sqaured
+  stat_cor(method = "pearson", label.x = 20, label.y = 40, 
+           aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~")), 
+           label.x.npc = "right", label.y.npc = "top", size = 4);p_scatterplot_continuous
+
+# Color the label box of a few selected accessions
+selected_accessions <- c("JF2094", "JF2274", "JF2256", "KF2219")
+p_scatterplot_continuous <- 
+  res_pisum_and_afabae %>% 
+  ggplot(., aes(x = A_fabae, y = A_pisum, label = genotype)) +
+  geom_point() +
+  labs(x = "Number of larvae from one L1 larvae of A. fabae") + 
+  labs(y = "Number of larvae from one L1 larvae of A. pisum") +
+  geom_label_repel(data = points_to_label, max.overlaps = 10) +
+  scale_fill_brewer(type = "qual", palette = 2) +
+  theme_bw();p_scatterplot_continuous +
+  # add regression coefficient equation on the graph
+  geom_smooth(method = "lm", se = FALSE, color = "black", formula = y ~ x) +
+  # add equation and R sqaured
+  stat_cor(method = "pearson", label.x = 20, label.y = 40, 
+           aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~")), 
+           label.x.npc = "right", label.y.npc = "top", size = 4) +
+  geom_label_repel(data = points_to_label %>% filter(genotype %in% selected_accessions), max.overlaps = 10)
 
 ggsave(plot = p_scatterplot_continuous, 
        filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot02_scatterplot_apisum_vs_afabae.pdf", 
@@ -102,14 +129,6 @@ p_paired_ranks <- ggpaired(ranks_both_aphids,
                                 cond2 = "rank_afabae",
                                 line.color = "azure3", 
                                 line.size = 0.4);p_paired_ranks
-
- #                          label = "genotype", 
-#                           label.select = c(
-#                             "JF2118","JF2240","JF2188", # most R to A. fabae
-#                             "KF0188", "JF2274", "JF2216"))  +
-#  + labs(x = "Aphid species", 
-#      y = "Rank based on L1 fecundity (low rank, low fecundity)")
-
   
 p_scatterplot_ranks <- 
   ranks_both_aphids %>% 
@@ -121,7 +140,6 @@ p_scatterplot_ranks <-
 p_scatterplot_ranks
 
 # with labels
-p_scatterplot_ranks + ggrepel::geom_label_repel(max.overlaps = Inf)
 ggsave(filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot03_scatterplot_ranks_all_labeled.pdf")
 
 ###########################################
@@ -144,8 +162,7 @@ p_interesting_genotypes =
   facet_wrap(~ genotype, scales = "fixed") + 
   scale_fill_brewer(palette = 1, type = "qual") + 
   labs(x = "Aphid species", y = "Number of larvae obtained from one single L1 larvae") +
-  theme_bw()
-p_interesting_genotypes 
+  theme_bw();p_interesting_genotypes 
 
 
 ggsave(plot = p_interesting_genotypes, 
