@@ -1,17 +1,17 @@
 suppressPackageStartupMessages(library("tidyverse"))
 library(multcompView)    
-library("ggdist")
+
 
 ################################
 ## Genetic structure data import
 ################################
 
 ### Genetic structure info (Jonathan, UMR Agroécologie/ECP)
-igepp_to_ivip <- read.csv("03.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_ids.csv") %>% 
+igepp_to_ivip <- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_ids.csv") %>% 
   rename("ivip" = "seedbank_id") %>% 
   rename("genotype" = "igepp_id")
 
-genetic_structure <- read.csv("03.info/02.genetic_structure_jonathan_dijon/genetic_groups_K_equal_to_6.csv") %>% 
+genetic_structure <- read.csv("00.info/02.genetic_structure_jonathan_dijon/genetic_groups_K_equal_to_6.csv") %>% 
   rename("ivip" = "genotype")
 
 igepp_ivip_genetic_group <- inner_join(igepp_to_ivip, genetic_structure)
@@ -54,10 +54,6 @@ ggsave(plot = p_adults, filename = "02.analyses/P2-XP003_faba_afabae_AF001_survi
 
 glm_model <- lme4::glmer.nb(formula = adult_alive ~ genotype + (1|replicate), data = fabae_counts)
 glm_model2 = glmmTMB()
-# multcomp::glht(model = glm_model, linfct = mcp(genotype = "Tukey"))
-# 
-# library("emmeans")
-# pairs(emmeans(glm_model, "genotype"))
 
 adult_counts =
   fabae_counts %>% 

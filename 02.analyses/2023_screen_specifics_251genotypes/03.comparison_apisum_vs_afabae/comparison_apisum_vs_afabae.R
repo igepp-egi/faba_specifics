@@ -170,26 +170,3 @@ ggsave(plot = p_interesting_genotypes,
 ggsave(plot = p_interesting_genotypes, 
        filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot04_interesting_genotypes.png")
 
-
-ranks_both_aphids %>% 
-  filter(genotype %in% all_of(interesting_genotypes)) %>% 
-  pivot_longer(- genotype, names_to = "species") %>% 
-  mutate(species = gsub(replacement = "", x = species, perl = T, pattern="rank_")) %>% 
-  ggplot(aes(x = species, y = value, fill = species)) + 
-  geom_boxplot() +
-  geom_point() +
-  facet_wrap(~ genotype, scales = "fixed") + 
-  scale_fill_brewer(palette = 1, type = "qual")
-
-
-
-# JF2094
-# Resistant to both aphids
-res_pisum_and_afabae %>% filter(genotype == "JF2094")
-
-# JF2274
-# Resistant to A. pisum and sensitive to A. fabae
-
-# JF2109 
-
-# JF2256 and KF2219
