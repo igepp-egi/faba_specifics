@@ -13,7 +13,7 @@ The goal is to estimate the number of surviving adults from a small number of la
 AF001 is a clone of _Aphis fabae_, retrieved at IGEPP in the experimental garden (maintained by Loic).  
 
 - Step 1: G0 adults were transferred on Castell faba bean plants for 24h to obtain several single one-day old L1 larvae (G1-L1).   
-- Step 2: these G1-L1 larvae developped into adults (G1-adults) during approx. 15 days at 18-/+ 1.5 degrees.   
+- Step 2: these G1-L1 larvae developped into adults (G1-adults) during approx. 15 days at 18-/+ 1.5 degrees.  
 - Step 3: these G1-adults were transfered for 24h on new faba Castell plants to obtain G2-L1 larvae.
 - Step 4: 10 L1 larvae was placed on each plant for 9 days.   
 
@@ -37,13 +37,14 @@ Cnotrols (no installation problems)
 
 ## Data dictionary
 
-- short_code: Maiwenn's short genotype code.   
-- aphid_species: aphid species and clone.   
-- genotype: seed batch number (from IGEPP RD team).    
-- replicate: plant replicate.  
-- adult_alive: number of adults alive seen on the plant (from 10 larvae installed).  
-- adult_winged: number of winged adult seen on the plant. 
-- larvae_total_number: total number of larvae (all apterous stages).    
-- number_nodes: number of plant nodes (useful to estimate plant developmental stage).   
-- comment: optional free-text comments. 
+- short_code: Maiwenn's short genotype code.     
+- genotype: IGEPP RD team seed batch code.  
+- ivip_code: INRAE Dijon CRB seed bank code.   
+- aphid_species_and_clone: aphid species and clone.
+- nb_zero_afabae: number of "0" measured out of the total number of replicates in the 2023-2024 SPECIFICS screen of the faba diversity panel with A. fabae (cf plot). Controls (#60 and #144) were choosen for their absence of 0 and Castell was added as it is the faba genotype on which sampled biotypes are installed.        
+- start_date: sowing date.  
+- measurement_date: date of measure.  
+- biol_replicate: plant replicate.  
+- nb_N1_larvae_installed: number of N1 apterous larvae from A. fabae installed on the plant.  
+- nb_adults_observed: number of adults observed alive (survived from N1 larvae).    
 
