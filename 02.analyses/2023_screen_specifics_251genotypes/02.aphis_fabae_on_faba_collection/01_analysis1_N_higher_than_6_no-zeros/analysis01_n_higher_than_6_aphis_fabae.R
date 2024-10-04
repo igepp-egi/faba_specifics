@@ -56,9 +56,9 @@ ggsave(filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae
 ggsave(filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/plot01_distribution_larvae_number.png") 
 
 
-#############
-# Geom ribbon
-#############
+#############################
+# Barplot of fecundity levels
+#############################
 
 median_larvae_counts_afabae = 
   afabae_fecundity_n6 %>% 

@@ -59,9 +59,9 @@ apisum_fecundity_n6 %>%
 ggsave(filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot01_distribution_larvae_number.pdf") 
 ggsave(filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot01_distribution_larvae_number.png") 
 
-#############
-# Geom ribbon
-#############
+###################################
+# Barplot A. pisum fecundity levels 
+###################################
 
 median_larvae_counts_apisum = 
   apisum_fecundity_n6 %>% 
@@ -86,10 +86,10 @@ p1 <- median_larvae_counts_apisum %>%
   ggtitle("A. pisum fecundity on Vicia faba collection");p1
 
 ggsave(plot = p1, width = 12, height = 8, 
-       filename="02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/plot01_barplot_apisum.pdf")
+       filename="02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot01_barplot_apisum.pdf")
 
 ggsave(plot = p1, width = 12, height = 8, units = "cm",
-       filename="02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/plot01_barplot_apisum.png")
+       filename="02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot01_barplot_apisum.png")
 
 
 #################
