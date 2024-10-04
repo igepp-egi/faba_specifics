@@ -86,10 +86,10 @@ p1 <- median_larvae_counts_apisum %>%
   ggtitle("A. pisum fecundity on Vicia faba collection");p1
 
 ggsave(plot = p1, width = 12, height = 8, 
-       filename="02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot01_barplot_apisum.pdf")
+       filename="02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot02_barplot_apisum.pdf")
 
 ggsave(plot = p1, width = 12, height = 8, units = "cm",
-       filename="02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot01_barplot_apisum.png")
+       filename="02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot02_barplot_apisum.png")
 
 
 #################
@@ -131,7 +131,10 @@ most_contrasted_pisum <-
   apisum_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_apisum) %>%
   mutate(genotype = factor(genotype, levels = order_apisum)) %>% 
-  ggplot(., aes(x = genotype, y = larvae_total_number, fill = phenotype, label = paste(n_rep, cluster,sep = ", "))) +
+  ggplot(., aes(x = genotype, 
+                y = larvae_total_number, 
+                fill = phenotype, 
+                label = paste(n_rep))) +
   geom_boxplot() +
   geom_point(alpha=0.3) +
   scale_fill_brewer(type = 'qual', palette = 2) +
@@ -142,10 +145,10 @@ most_contrasted_pisum <-
   geom_text(y = 75);most_contrasted_pisum
 
 ggsave(plot = most_contrasted_pisum, 
-       filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/plot02_apisum_most_contrasted_genotypes.pdf", 
+       filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_most_contrasted_genotypes.pdf", 
        width = 10, height = 8)
 ggsave(plot = most_contrasted_pisum, width = 10, height = 8, units = "cm",
-       filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/plot02_apisum_most_contrasted_genotypes.png")
+       filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_most_contrasted_genotypes.png")
 
 #####################
 ## List of genotypes
@@ -165,7 +168,7 @@ apisum_fecundity_n6 %>%
   group_by(genotype, phenotype) %>% 
   summarise(median_larvae = median(larvae_total_number, na.rm=T)) %>% 
   arrange(median_larvae) %>% 
-  write.csv(file = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/apisum_most_contrasted_genotypes.csv", 
+  write.csv(file = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/apisum_most_contrasted_genotypes.csv", 
             quote = F, row.names = F)
 
 
