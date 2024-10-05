@@ -1,4 +1,7 @@
 suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("lme4"))
+suppressPackageStartupMessages(library("MASS"))
+suppressPackageStartupMessages(library("emmeans"))
 
 ##############
 ## Data import
@@ -114,19 +117,19 @@ ten_most_sensitive_genotypes_apisum <-
 # Number of biological replicate per genotype (to add to the graph)
 n_per_genotype <- 
   apisum_fecundity_n6 %>% 
-  select(genotype, replicate) %>%
+  dplyr::select(genotype, replicate) %>%
   group_by(genotype) %>% 
   tally() %>% 
   dplyr::rename("n_rep" = "n")
 
-most_extreme_genotype_apisum <- bind_rows(ten_most_resistant_genotypes_apisum, ten_most_sensitive_genotypes_apisum) %>% 
+most_extreme_genotype_apisum <- 
+  bind_rows(ten_most_resistant_genotypes_apisum, ten_most_sensitive_genotypes_apisum) %>% 
   inner_join(n_per_genotype, by = "genotype") %>%
   mutate(n_rep = paste("n=",n_rep, sep = "")) %>% 
   inner_join(igepp_ivip_genetic_group, by = "genotype") %>% 
-  select(genotype, phenotype, n_rep, clusterName, cluster) %>% # add n replicates + genetic cluster info
+  dplyr::select(genotype, phenotype, n_rep, clusterName, cluster) %>% # add n replicates + genetic cluster info
   mutate(cluster = paste("genetic-group",cluster,sep = ""))
   
-
 most_contrasted_pisum <- 
   apisum_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_apisum) %>%
@@ -156,7 +159,7 @@ ggsave(plot = most_contrasted_pisum, width = 10, height = 8, units = "cm",
 
 apisum_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_apisum) %>% 
-  select(genotype, larvae_total_number, phenotype) %>% 
+  dplyr::select(genotype, larvae_total_number, phenotype) %>% 
   group_by(genotype, phenotype) %>% 
   summarise(median_larvae = median(larvae_total_number, na.rm=T)) %>% 
   arrange(median_larvae) %>% 
@@ -164,7 +167,7 @@ apisum_fecundity_n6 %>%
 
 apisum_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_apisum) %>% 
-  select(genotype, larvae_total_number, phenotype) %>% 
+  dplyr::select(genotype, larvae_total_number, phenotype) %>% 
   group_by(genotype, phenotype) %>% 
   summarise(median_larvae = median(larvae_total_number, na.rm=T)) %>% 
   arrange(median_larvae) %>% 
@@ -172,4 +175,67 @@ apisum_fecundity_n6 %>%
             quote = F, row.names = F)
 
 
+########
+## Stats
+########
+# reverse a vector of genotype names
+reverse_order_apisum <- rev(order_apisum) %>% intersect(most_extreme_genotype_apisum$genotype)
 
+# Data of fecundity of the 20 most contrasted genotypes
+df <- 
+  apisum_fecundity_n6 %>% 
+  inner_join(., most_extreme_genotype_apisum) %>% 
+  dplyr::select(genotype, larvae_total_number, replicate) 
+df$genotype = factor(x = df$genotype, levels = reverse_order_apisum)
+
+# Fit a null and genotype GLM negative binomial model
+fit0 = glm.nb(formula = larvae_total_number ~ 1, data = df)
+fit1 = glm.nb(formula = larvae_total_number ~ 1 + genotype, data = df)
+anova(fit0, fit1)
+# Likelihood ratio tests of Negative Binomial Models
+# 
+# Response: larvae_total_number
+# Model    theta Resid. df    2 x log-lik.   Test    df LR stat.      Pr(Chi)
+# 1            1 5.235807       207       -1640.783                                   
+# 2 1 + genotype 9.523030       188       -1550.237 1 vs 2    19 90.54536 2.655054e-11
+
+
+# Fit a null (only replicate) and a genotype GLMM negative binomial model 
+fit2 = lme4::glmer.nb(larvae_total_number ~ 1 + (1|genotype), data = df)
+fit3 = lme4::glmer.nb(larvae_total_number ~ 1 + genotype + (1|replicate), data = df)
+# anova(fit2, fit3)
+# Models:
+#   fit2: larvae_total_number ~ 1 + (1 | genotype)
+# fit3: larvae_total_number ~ 1 + genotype + (1 | replicate)
+# npar    AIC    BIC  logLik deviance  Chisq Df Pr(>Chisq)    
+# fit2    3 1611.1 1621.1 -802.55   1605.1                         
+# fit3   22 1591.9 1665.3 -773.94   1547.9 57.217 19  1.057e-05 ***
+
+
+pairs(emmeans(fit3, "genotype")) %>% 
+  broom::tidy() %>% 
+  # filter rows that contains string 'Castell'
+  dplyr::filter(., grepl("JF2262",contrast))
+
+# 
+# term     contrast        null.value   estimate std.error    df statistic adj.p.value
+# <chr>    <chr>                <dbl>      <dbl>     <dbl> <dbl>     <dbl>       <dbl>
+# 1 genotype JF2262 - JF2256          0  0.0811        0.179   Inf  0.454       1.00    
+# 2 genotype JF2262 - JF2201          0 -0.0972        0.163   Inf -0.598       1.00    
+# 3 genotype JF2262 - JF2171          0  0.0000871     0.159   Inf  0.000549    1       
+# 4 genotype JF2262 - JF2255          0  0.176         0.160   Inf  1.10        1.00    
+# 5 genotype JF2262 - JF2142          0  0.0309        0.171   Inf  0.180       1       
+# 6 genotype JF2262 - KF2224          0  0.162         0.161   Inf  1.01        1.00    
+# 7 genotype JF2262 - KF2219          0  0.101         0.160   Inf  0.628       1.00    
+# 8 genotype JF2262 - KF0172          0  0.119         0.160   Inf  0.740       1.00    
+# 9 genotype JF2262 - JF2192          0  0.0623        0.154   Inf  0.404       1.00    
+# 10 genotype JF2262 - JF2182          0  0.439         0.166   Inf  2.64        0.470   
+# 11 genotype JF2262 - JF2129          0  0.552         0.164   Inf  3.36        0.0898  
+# 12 genotype JF2262 - KF0179          0  0.560         0.161   Inf  3.48        0.0620  
+# 13 genotype JF2262 - KF0170          0  0.497         0.168   Inf  2.96        0.254   
+# 14 genotype JF2262 - JF2113          0  0.513         0.167   Inf  3.07        0.197   
+# 15 genotype JF2262 - JF2094          0  0.639         0.162   Inf  3.93        0.0127  
+# 16 genotype JF2262 - KF0160          0  0.590         0.162   Inf  3.64        0.0361  
+# 17 genotype JF2262 - JF2216          0  0.588         0.162   Inf  3.63        0.0370  
+# 18 genotype JF2262 - JF2274          0  0.787         0.191   Inf  4.13        0.00570 
+# 19 genotype JF2262 - KF0188          0  0.868         0.175   Inf  4.96        0.000127
