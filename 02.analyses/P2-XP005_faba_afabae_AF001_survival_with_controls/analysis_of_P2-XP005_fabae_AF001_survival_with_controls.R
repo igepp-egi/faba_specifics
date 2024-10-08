@@ -71,6 +71,7 @@ glm_null_model <- glm.nb(formula = nb_adults_observed ~ 1,
 glm_geno_model <- glm.nb(formula = nb_adults_observed ~ genotype, 
                          data = fabae_counts)
 
+
 # GLMM models: with biological replicate (plant) as random effect
 glmer_null_model <- lme4::glmer.nb(formula = nb_adults_observed ~ 1 + (1|biol_replicate), 
                                    data = fabae_counts,  
