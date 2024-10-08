@@ -1,6 +1,5 @@
+rm(list = ls()) # clean workspace
 suppressPackageStartupMessages(library("tidyverse"))
-#library(multcompView)    
-#library("ggdist")
 
 ##############
 ## Data import
@@ -48,7 +47,7 @@ write.csv(x = afabae_fecundity_n6,
 # calculate proportions of 0 per genotype
 afabae_fecundity_n6_prop_zeros <- 
   afabae_fecundity_n6 %>% 
-  select(genotype, larvae_total_number) %>%
+  dplyr::select(genotype, larvae_total_number) %>%
   drop_na() %>% 
   group_by(genotype) %>% 
   summarise(n_zeros = sum(larvae_total_number == 0, na.rm = TRUE), 
@@ -65,21 +64,20 @@ p_distri_zeros <-
   afabae_fecundity_n6_prop_zeros %>% 
   drop_na() %>% 
   ggplot(., aes(x = freq_zeros)) +
-  geom_histogram(aes(y = after_stat(density)), colour = 1, fill = "white", bins = 20) +
+  geom_histogram(aes(y = after_stat(density)), colour = 1, fill = "darkgrey", bins = 10) +
   geom_density() +
   scale_x_continuous(breaks = c(0,10,20,30,40,50,60,70,80,90,100)) +
   ggtitle("Distribution of the number of true zeros of A. fabae larvae across all genotypes") +
-  labs(x = "Proportion of true zeros among valid values (%)", y = "Number of genotypes (total: 207 genotypes)")
-p_distri_zeros
+  labs(x = "Proportion of true zeros among valid values (%)", y = "Number of genotypes (total: 207 genotypes)"); p_distri_zeros
 
 ggsave(plot = p_distri_zeros, 
        filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/02_analysis2_proportion_zeros/plot01_distribution_zeros.pdf") 
 ggsave(plot = p_distri_zeros, 
        filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/02_analysis2_proportion_zeros/plot01_distribution_zeros.png") 
 
-###################################
+#######################################
 # Plot genotypes of the 90th percentile 
-###################################
+#######################################
 
 # 90th percentile
 selected_treshold = quantile(afabae_fecundity_n6_prop_zeros$freq_zeros, probs = c(0.9)) %>% as.numeric()
@@ -103,8 +101,7 @@ p_zeros =
   labs(x = "Vicia faba genotype", y = "Proportion of true zeros (%)") +
   ggtitle("Proportions of true zeros (A. fabae AF001)") +
   scale_fill_brewer(type = "qual", palette = 2) +
-  theme(axis.text = element_text(size = 10, color = "black")) 
-p_zeros
+  theme(axis.text = element_text(size = 10, color = "black")) ; p_zeros
 
 ggsave(plot = p_zeros, 
        filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/02_analysis2_proportion_zeros/plot02_number_of_true_zeros.pdf") 
@@ -118,7 +115,7 @@ afabae_fecundity_n6_prop_zeros %>%
   inner_join(., igepp_ivip_genetic_group) %>% 
   filter(freq_zeros > selected_treshold) %>% 
   arrange(freq_zeros) %>% 
-  select(- cluster, - species, - n_values, - lieu, - ivip, - clusterName) %>% 
+  dplyr::select(- cluster, - species, - n_values, - lieu, - ivip, - clusterName) %>% 
   knitr::kable()
 
 #################################################

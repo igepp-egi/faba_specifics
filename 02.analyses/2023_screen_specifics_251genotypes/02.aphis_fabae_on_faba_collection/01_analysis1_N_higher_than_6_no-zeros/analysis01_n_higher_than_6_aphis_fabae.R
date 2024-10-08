@@ -1,4 +1,8 @@
+rm(list = ls()) # Clear the environment
 suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("MASS"))
+suppressPackageStartupMessages(library("lme4"))
+suppressPackageStartupMessages(library("emmeans"))
 
 ##############
 ## Data import
@@ -79,7 +83,6 @@ p1_afabae <- median_larvae_counts_afabae %>%
   labs(x = "Vicia faba genotype", y = "Total number of larvae\n(from one single N1 larvae)") + 
   ggtitle("A. fabae fecundity on Vicia faba collection");p1_afabae
 
-
 ggsave(plot = p1_afabae, width = 12, height = 8, 
        filename="02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/plot02_afabae_barplot.pdf")
 ggsave(plot = p1_afabae, width = 12, height = 8, units = "cm",
@@ -119,8 +122,7 @@ most_extreme_genotype_afabae <- bind_rows(ten_most_resistant_genotypes_afabae, t
   dplyr::select(genotype, phenotype, n_rep, clusterName, cluster) %>% # add n replicates + genetic cluster info
   mutate(cluster = paste("group",cluster,sep = ""))
   
-
-most_contrasted_fabae <- 
+p_most_contrasted_fabae <- 
   afabae_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_afabae) %>%
   mutate(genotype = factor(genotype, levels = order_afabae)) %>% 
@@ -133,12 +135,12 @@ most_contrasted_fabae <-
   labs(x = "Vicia faba genotype", y = "Total number of Aphis fabae larvae (from one L1)") +
   scale_y_continuous(limits = c(0,90)) +
   geom_text(y = 75, hjust=0) + 
-  theme(axis.text = element_text(size = 10));most_contrasted_fabae
+  theme(axis.text = element_text(size = 10));p_most_contrasted_fabae
 
-ggsave(plot = most_contrasted_fabae, 
+ggsave(plot = p_most_contrasted_fabae, 
        filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/plot03_afabae_most_contrasted_genotypes.pdf", 
        width = 10, height = 8)
-ggsave(plot = most_contrasted_fabae, width = 10, height = 8, units = "cm",
+ggsave(plot = p_most_contrasted_fabae, width = 10, height = 8, units = "cm",
        filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/plot03_afabae_most_contrasted_genotypes.png")
 
 #####################
@@ -162,3 +164,60 @@ afabae_fecundity_n6 %>%
   write.csv(file = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/most_extreme_genotypes_aphis_fabae.csv", 
             quote = F, row.names = F)
 
+########
+## Stats
+########
+
+# reverse a vector of genotype names
+reverse_order_afabae <- rev(order_afabae) %>% intersect(most_extreme_genotype_afabae$genotype)
+
+# Data of fecundity of the 20 most contrasted genotypes
+df_fabae <- 
+  afabae_fecundity_n6 %>% 
+  inner_join(., most_extreme_genotype_afabae) %>% 
+  dplyr::select(genotype, larvae_total_number, replicate) 
+df_fabae$genotype = factor(x = df_fabae$genotype, levels = reverse_order_afabae)
+
+# Fit a null and genotype GLM negative binomial model
+fit0 = glm.nb(formula = larvae_total_number ~ 1, data = df_fabae)
+fit1 = glm.nb(formula = larvae_total_number ~ 1 + genotype, data = df_fabae)
+anova(fit0, fit1)
+# Likelihood ratio tests of Negative Binomial Models
+# Response: larvae_total_number
+# Model    theta Resid. df    2 x log-lik.   Test    df LR stat.     Pr(Chi)
+# 1            1 4.916191       167       -1403.944                                  
+# 2 1 + genotype 8.164595       148       -1336.359 1 vs 2    19 67.58411 2.30791e-07
+
+# Fit a null (only replicate) and a genotype GLMM negative binomial model 
+fit2 = lme4::glmer.nb(larvae_total_number ~ 1 + (1|genotype), data = df_fabae)
+fit3 = lme4::glmer.nb(larvae_total_number ~ 1 + genotype + (1|replicate), data = df_fabae)
+anova(fit2, fit3)
+# Data: df_fabae
+# Models:
+#   fit2: larvae_total_number ~ 1 + (1 | genotype)
+# fit3: larvae_total_number ~ 1 + genotype + (1 | replicate)
+#         npar    AIC    BIC  logLik deviance  Chisq Df Pr(>Chisq)    
+# fit2    3       1390.2 1399.6 -692.12   1384.2                         
+# fit3    22      1379.6 1448.4 -667.82   1335.6 48.603 19  0.0002098 ***
+
+
+AIC(fit0, fit1, fit2, fit3)
+#       df      AIC
+# fit0  2       1407.944
+# fit1  21      1378.359
+# fit2  3       1390.239
+# fit3  22      1379.636
+
+pairs(emmeans(fit3, "genotype")) %>% 
+  broom::tidy() %>% 
+  # filter rows that contains string 'Castell'
+  dplyr::filter(., grepl("JF2120",contrast)) %>%
+  dplyr::filter(adj.p.value < 0.05) %>% 
+  knitr::kable()
+
+# |term     |contrast        | null.value|  estimate| std.error|  df| statistic| adj.p.value|
+# |:--------|:---------------|----------:|---------:|---------:|---:|---------:|-----------:|
+# |genotype |JF2120 - JF2244 |          0| 0.7383705| 0.2065503| Inf|  3.574774|   0.0451584|
+# |genotype |JF2120 - KF2221 |          0| 0.7349489| 0.1992506| Inf|  3.688566|   0.0306791|
+# |genotype |JF2120 - KF0190 |          0| 0.7565193| 0.1945160| Inf|  3.889239|   0.0148198|
+# |genotype |JF2120 - JF2236 |          0| 0.6869415| 0.1885369| Inf|  3.643539|   0.0358329|
