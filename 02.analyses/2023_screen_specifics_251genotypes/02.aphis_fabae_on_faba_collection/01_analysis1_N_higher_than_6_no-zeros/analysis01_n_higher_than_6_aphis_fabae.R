@@ -45,6 +45,10 @@ genotypes_nrep_higher_than_6 =
 afabae_fecundity_n6 <- afabae_fecundity %>% filter(genotype %in% genotypes_nrep_higher_than_6)
 rm(afabae_fecundity)
 
+write.csv(afabae_fecundity_n6, 
+          file = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/aphis_fabae_fecundity_on_faba_collection_N_higher_than_6_no_zeros.csv", 
+          row.names = F)
+
 ###################################################
 ## Stat models: genotype effect on number of larvae
 ###################################################

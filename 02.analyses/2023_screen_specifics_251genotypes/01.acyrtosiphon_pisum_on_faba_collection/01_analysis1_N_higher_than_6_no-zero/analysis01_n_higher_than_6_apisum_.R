@@ -46,7 +46,7 @@ apisum_fecundity_n6 <- apisum_fecundity %>% filter(genotype %in% genotypes_nrep_
 rm(apisum_fecundity)
 
 write.csv(x = apisum_fecundity_n6, 
-          file = "01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/apisum_fecundity_on_faba_n_higher_than_6_no_zeros.csv", 
+          file = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/apisum_fecundity_on_faba_n_higher_than_6_no_zeros.csv", 
           row.names = F, quote = F)
 
 ################
