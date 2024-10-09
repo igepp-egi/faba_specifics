@@ -1,2 +1,11 @@
 00.info/02.genetic_structure_jonathan_dijon
 00.info/06.scripts_gwas_marianne/
+.DS_Store
+*.DS_Store
+.Rhistory
+.Rproj.user/
+00.info/.DS_Store
+00.info/.Rhistory
+00.info/.Rproj.user/
+00.info/00.seed_stocks_and_multiplication/.DS_Store
+faba_specifics.Rproj

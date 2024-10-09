@@ -22,13 +22,14 @@ rm(igepp_to_ivip, genetic_structure)
 #######################
 ### Load fecundity data
 #######################
-apisum <- read.csv("01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/apisum_fecundity_on_faba_n_higher_than_6_no_zeros.csv", 
-                   header = TRUE, sep = ",") %>%
+apisum <- read.csv(
+  file = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/apisum_fecundity_on_faba_n_higher_than_6_no_zeros.csv", 
+  header = TRUE, sep = ",") %>%
   inner_join(., igepp_ivip_genetic_group, by = "genotype") %>% 
   dplyr::select(genotype, cluster, larvae_total_number) %>% 
   mutate(cluster = as.factor(cluster))
 
-afabae <- read.csv("01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_n_higher_6.csv", 
+afabae <- read.csv("02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/aphis_fabae_fecundity_on_faba_collection_N_higher_than_6_no_zeros.csv", 
                    header = TRUE, sep = ",") %>%
   filter(larvae_total_number > 0) %>%
   inner_join(., igepp_ivip_genetic_group, by = "genotype") %>%
@@ -61,7 +62,7 @@ p2 =
   geom_jitter(width = jitter_width, size = 1, alpha = alpha_point) +
   labs(title = "A. fabae fecundity = f(genetic group)", x = "Genetic group", y = "Number of A. fabae offspring") +
   theme_minimal() + 
-  scale_fill_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Set1") +
   # add median as a point to violinplot
   stat_summary(fun = median, geom = "point", shape = 23, size = 3, fill = "white") +
   theme(axis.text = element_text(size = 12), axis.title = element_text(size = 14)) + 

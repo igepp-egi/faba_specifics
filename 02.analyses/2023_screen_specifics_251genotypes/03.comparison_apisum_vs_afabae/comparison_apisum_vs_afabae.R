@@ -62,15 +62,19 @@ points_to_label <-
   res_pisum_and_afabae %>% 
   filter(genotype %in% all_genotypes) 
 
+additional_labels <- res_pisum_and_afabae %>% filter(A_pisum > 35) %>% filter(A_fabae > 40)
+
+points_to_label2 <- bind_rows(points_to_label, additional_labels)
+
 p_scatterplot_continuous <- 
   res_pisum_and_afabae %>% 
   ggplot(., aes(x = A_fabae, y = A_pisum, label = genotype)) +
   geom_point() +
   labs(x = "Number of larvae from one L1 larvae of A. fabae") + 
   labs(y = "Number of larvae from one L1 larvae of A. pisum") +
-  geom_label_repel(data = points_to_label, max.overlaps = 10) +
+  geom_label_repel(data = points_to_label2, max.overlaps = 10) +
   scale_fill_brewer(type = "qual", palette = 2) +
-  theme_bw();p_scatterplot_continuous +
+  theme_bw() +
   # add regression coefficient equation on the graph
   geom_smooth(method = "lm", se = FALSE, color = "black", formula = y ~ x) +
   # add equation and R sqaured
@@ -78,85 +82,44 @@ p_scatterplot_continuous <-
            aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~")), 
            label.x.npc = "right", label.y.npc = "top", size = 4);p_scatterplot_continuous
 
-# Color the label box of a few selected accessions
-selected_accessions <- c("JF2094", "JF2274", "JF2256", "KF2219")
-p_scatterplot_continuous <- 
-  res_pisum_and_afabae %>% 
-  ggplot(., aes(x = A_fabae, y = A_pisum, label = genotype)) +
-  geom_point() +
-  labs(x = "Number of larvae from one L1 larvae of A. fabae") + 
-  labs(y = "Number of larvae from one L1 larvae of A. pisum") +
-  geom_label_repel(data = points_to_label, max.overlaps = 10) +
-  scale_fill_brewer(type = "qual", palette = 2) +
-  theme_bw()
-
-p_scatterplot_continuous_with_cor <- 
-  p_scatterplot_continuous +
-  # add regression coefficient equation on the graph
-  geom_smooth(method = "lm", se = FALSE, color = "black", formula = y ~ x) +
-  # add equation and R sqaured
-  stat_cor(method = "pearson", label.x = 20, label.y = 40, 
-           aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~")), 
-           label.x.npc = "right", label.y.npc = "top", size = 4) +
-  geom_label_repel(data = points_to_label %>% filter(genotype %in% selected_accessions), max.overlaps = 10);p_scatterplot_continuous_with_cor
-
-ggsave(plot = p_scatterplot_continuous_with_cor, 
+ggsave(plot = p_scatterplot_continuous, 
        filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot01_scatterplot_apisum_vs_afabae.pdf", 
        width = 7, height = 7)
-ggsave(plot = p_scatterplot_continuous_with_cor, width = 10, height = 10, units = "cm",
+ggsave(plot = p_scatterplot_continuous, width = 10, height = 10, units = "cm",
        filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot01_scatterplot_apisum_vs_afabae.png")
-
-
-#######
-# Ranks
-#######
-
-ranks_afabae <-  
-  res_afabae %>% 
-  mutate(rank_afabae = dense_rank(median_afabae))
-
-ranks_apisum <- 
-  res_pisum %>% 
-  mutate(rank_apisum = dense_rank(median_apisum))
-
-ranks_both_aphids <- 
-  inner_join(ranks_afabae, 
-             ranks_apisum, 
-             by = "genotype") %>% 
-  dplyr::select(genotype, rank_afabae, rank_apisum)
-
-p_paired_ranks <- ggpaired(ranks_both_aphids, 
-                                cond1 = "rank_apisum", 
-                                cond2 = "rank_afabae",
-                                line.color = "azure3", 
-                                line.size = 0.4);p_paired_ranks
-  
-p_scatterplot_ranks <- 
-  ranks_both_aphids %>% 
-  ggplot(., aes(x = rank_afabae, y = rank_apisum, label = genotype)) +
-  geom_point() +
-  labs(x = "Rank based on A. fabae median fecundity\n(low rank, low fecundity, ties allowed)") +
-  labs(y = "Rank based on A. pisum median fecundity\n(low rank, low fecundity, ties allowed)") +
-  theme_bw()
-p_scatterplot_ranks
-
-# with labels
-ggsave(filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot03_scatterplot_ranks_all_labeled.pdf")
 
 ###########################################
 # Closer look at some interesting genotypes
 ###########################################
 
-interesting_genotypes = c("JF2094", "JF2274", "JF2256", "KF2219")
+
+#interesting_genotypes = c("JF2094", "JF2274", "JF2256", "KF2219")
+interesting_genotypes = points_to_label2$genotype
 
 afabae_fecundity_n6_subset = afabae_fecundity_n6 %>% dplyr::select(genotype, aphid_species, larvae_total_number) %>% rename("aphid" = "aphid_species")
 apisum_fecundity_n6_subset = apisum_fecundity_n6 %>% dplyr::select(genotype, aphid, larvae_total_number) 
-afabae_apisum_fecundity = bind_rows(afabae_fecundity_n6_subset, apisum_fecundity_n6_subset)
 
+afabae_apisum_fecundity_contrasted_genotypes = bind_rows(afabae_fecundity_n6_subset, apisum_fecundity_n6_subset) %>% 
+  filter(genotype %in% all_of(interesting_genotypes))
+
+geno_ranked_per_increasing_fabae = afabae_apisum_fecundity_contrasted_genotypes %>% 
+  dplyr::filter(aphid == "A.fabae") %>%
+  group_by(genotype) %>%
+  summarise(larvae_total_number = median(larvae_total_number)) %>%
+  arrange(larvae_total_number) %>%
+  pull(genotype) %>%
+  unique()
+
+afabae_apisum_fecundity_contrasted_genotypes <- 
+  afabae_apisum_fecundity_contrasted_genotypes %>% 
+  mutate(aphid = factor(x = aphid, levels = c("A.pisum", "A.fabae")))
+
+afabae_apisum_fecundity_contrasted_genotypes <- 
+  afabae_apisum_fecundity_contrasted_genotypes %>% 
+  mutate(genotype = factor(x = genotype, levels = geno_ranked_per_increasing_fabae))
 
 p_interesting_genotypes = 
-  afabae_apisum_fecundity %>% 
-  filter(genotype %in% all_of(interesting_genotypes)) %>% 
+  afabae_apisum_fecundity_contrasted_genotypes %>%
   ggplot(aes(x = aphid, y = larvae_total_number, fill = aphid)) + 
   geom_boxplot() +
   geom_point() +
@@ -167,7 +130,7 @@ p_interesting_genotypes =
 
 
 ggsave(plot = p_interesting_genotypes, 
-       filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot04_interesting_genotypes.pdf")
+       filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot02_interesting_genotypes.pdf")
 ggsave(plot = p_interesting_genotypes, 
-       filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot04_interesting_genotypes.png")
+       filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot02_interesting_genotypes.png")
 
