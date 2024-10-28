@@ -1,22 +1,7 @@
 suppressPackageStartupMessages(library("tidyverse"))
 suppressPackageStartupMessages(library("multcomp"))    
 suppressPackageStartupMessages(library("MASS"))    
-
-
-################################
-## Genetic structure data import
-################################
-
-### Genetic structure info (Jonathan, UMR Agroécologie/ECP)
-igepp_to_ivip <- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_ids.csv") %>% 
-  rename("ivip" = "seedbank_id") %>% 
-  rename("genotype" = "igepp_id")
-
-genetic_structure <- read.csv("00.info/02.genetic_structure_jonathan_dijon/genetic_groups_K_equal_to_6.csv") %>% 
-  rename("ivip" = "genotype")
-
-igepp_ivip_genetic_group <- inner_join(igepp_to_ivip, genetic_structure)
-rm(igepp_to_ivip, genetic_structure)
+suppressPackageStartupMessages(library("emmeans"))
 
 ################################
 ## Import of survival data
@@ -24,12 +9,10 @@ rm(igepp_to_ivip, genetic_structure)
 
 fabae_counts <- read.csv("01.data/P2-XP005_fabae_afabae_survival_with_controls/P2-XP005_survival_assay.csv", 
                          stringsAsFactors = F) %>% 
-  left_join(., igepp_ivip_genetic_group) %>% 
-  mutate(cluster = paste("group",cluster,sep = "")) %>% 
   mutate(short_code = as.character(short_code)) %>% 
   mutate(genotype = paste(ivip_code, short_code, sep = "_")) %>%
   # add a column labeled with test and controls if the column nb_zero_afabae contains 0/ string
-  mutate(test_control = ifelse(nb_zero_afabae == "0/12", "control", "test")) %>%
+  mutate(test_control = ifelse(percentage_zero_afabae == 0, yes = "control", no = "test")) %>%
   arrange(desc(test_control))
 
 good_genotype_order <- fabae_counts %>% pull(genotype) %>% unique()
@@ -89,17 +72,15 @@ anova(glmer_null_model, glmer_geno_model)
 # Stats: post-hoc comparisons
 #############################
 
-library("emmeans")
 pairs(emmeans(glm_geno_model, "genotype")) %>% 
   broom::tidy() %>%
   # filter rows that contains string 'Castell'
-  dplyr::filter(., grepl("Castell",contrast))
+  dplyr::filter(., grepl("Castel",contrast))
 
-library("emmeans")
 pairs(emmeans(glmer_geno_model, "genotype")) %>% 
   broom::tidy() %>%
   # filter rows that contains string 'Castell'
-  dplyr::filter(., grepl("Castell",contrast))
+  dplyr::filter(., grepl("Castel",contrast))
 
 # Conclusions: no difference between genotypes
 
