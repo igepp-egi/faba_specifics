@@ -28,7 +28,7 @@ The 5 genotypes with the highest proportions of "0" (no larvae counted, see plot
 
 Cnotrols (no installation problems)
 - JF2128 (short code 60)  
-- Castell (féverole)   
+- Castel (féverole)   
 - KF0180 (short code 144)   
 
 10 seeds were sown per genotype and they were grown during 15 days at 20 degrees and in long days (16/8 D/N).

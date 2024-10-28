@@ -1,7 +1,6 @@
 # README P2-XP006 faba vs A. pisum P123 fecundity test
 
-__Important:__ very few larvae since the L1 larvae were placed in a climate chamber (53 LP 332) in the basement of building 320 at IGEPP that was set at 18°C -/+ 0.5. 
-The larvae development is then much slower and the resulting counts very small. 
+Growth chamber used: L057 132 (after installation up to counting).
 
 ## Objective 
 
