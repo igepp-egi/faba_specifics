@@ -9,3 +9,6 @@ https://www.geves.fr/catalogue/variete/119749-castel/ ; elle est présente dans 
 Pour info, pour obtenir le codage IVIP, il suffit d’ajouter les caractères IVIP10 devant les numéros à 4 chiffres historiques.
 
 JBernard
+
+
+IVIP101748 = Castel
