@@ -9,3 +9,6 @@
 00.info/.Rproj.user/
 00.info/00.seed_stocks_and_multiplication/.DS_Store
 faba_specifics.Rproj
+.RData
+.DS_Store
+01.data/.DS_Store
