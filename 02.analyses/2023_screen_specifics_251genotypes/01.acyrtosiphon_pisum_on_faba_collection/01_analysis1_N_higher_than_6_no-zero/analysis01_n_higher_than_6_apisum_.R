@@ -1,8 +1,8 @@
-rm(list = ls()) # clean the environment
 suppressPackageStartupMessages(library("tidyverse"))
 suppressPackageStartupMessages(library("lme4"))
 suppressPackageStartupMessages(library("MASS"))
 suppressPackageStartupMessages(library("emmeans"))
+suppressPackageStartupMessages(library("patchwork"))
 
 ##############
 ## Data import
@@ -32,17 +32,18 @@ apisum_fecundity <- read.csv("01.data/2023_screen_specifics_251genotypes/01.acyr
   mutate(type = gsub(pattern = "Minor", x = type, replacement = "Vicia faba var. minor")) %>% 
   mutate(type = gsub(pattern = "Major", x = type, replacement = "Vicia faba var. major")) %>% 
   mutate(type = gsub(pattern = "Paucijuga", x = type, replacement = "Vicia paucijuga")) %>% 
-  filter(larvae_total_number != 0 & adult_alive == 1) # Larvae died but initial L1 larvae developed into an adult
+  filter(larvae_total_number != 0 & adult_alive == 1) %>% # Larvae died but initial L1 larvae developed into an adult
+  inner_join(., igepp_ivip_genetic_group, by = "genotype") 
 
 genotypes_nrep_higher_than_6 = 
   apisum_fecundity %>% 
-  dplyr::select(genotype, larvae_total_number) %>% 
-  group_by(genotype) %>% 
+  dplyr::select(ivip, larvae_total_number) %>% 
+  group_by(ivip) %>% 
   tally() %>% 
   filter(n >= 6) %>% # keep only if N plants => 6 >> results 223 genotypes out of 248
-  pull(genotype)
+  pull(ivip)
 
-apisum_fecundity_n6 <- apisum_fecundity %>% filter(genotype %in% genotypes_nrep_higher_than_6)
+apisum_fecundity_n6 <- apisum_fecundity %>% filter(ivip %in% genotypes_nrep_higher_than_6)
 rm(apisum_fecundity)
 
 write.csv(x = apisum_fecundity_n6, 
@@ -69,18 +70,18 @@ ggsave(filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosipho
 
 median_larvae_counts_apisum = 
   apisum_fecundity_n6 %>% 
-  group_by(genotype) %>% 
+  group_by(ivip) %>% 
   summarise(median_larvae = median(larvae_total_number)) %>% 
   arrange(median_larvae) 
 
 order_apisum <- median_larvae_counts_apisum %>% 
-  pull(genotype) %>% 
+  pull(ivip) %>% 
   unique()  
 
 # 223 genotypes with N>6 values
 p1 <- median_larvae_counts_apisum %>% 
-  mutate(genotype = factor(genotype, levels = order_apisum)) %>% 
-  ggplot(aes(x = genotype, y = median_larvae)) + 
+  mutate(ivip = factor(ivip, levels = order_apisum)) %>% 
+  ggplot(aes(x = ivip, y = median_larvae)) + 
   geom_bar(stat = "identity", fill="mediumblue", alpha = 0.3) +
   theme_bw() +
   theme(axis.text.x = element_blank(), 
@@ -101,7 +102,7 @@ ggsave(plot = p1, width = 12, height = 8, units = "cm",
 #################
 ten_most_resistant_genotypes_apisum <- 
   apisum_fecundity_n6 %>% 
-  group_by(genotype) %>% 
+  group_by(ivip) %>% 
   summarise(median_apisum = median(larvae_total_number)) %>% 
   arrange(median_apisum) %>% 
   head(n = 10) %>% 
@@ -109,7 +110,7 @@ ten_most_resistant_genotypes_apisum <-
 
 ten_most_sensitive_genotypes_apisum <- 
   apisum_fecundity_n6 %>% 
-  group_by(genotype) %>% 
+  group_by(ivip) %>% 
   summarise(median_apisum = median(larvae_total_number)) %>% 
   arrange(median_apisum) %>% 
   tail(n = 10) %>%
@@ -118,24 +119,21 @@ ten_most_sensitive_genotypes_apisum <-
 # Number of biological replicate per genotype (to add to the graph)
 n_per_genotype <- 
   apisum_fecundity_n6 %>% 
-  dplyr::select(genotype, replicate) %>%
-  group_by(genotype) %>% 
+  dplyr::select(ivip, replicate) %>%
+  group_by(ivip) %>% 
   tally() %>% 
   dplyr::rename("n_rep" = "n")
 
 most_extreme_genotype_apisum <- 
   bind_rows(ten_most_resistant_genotypes_apisum, ten_most_sensitive_genotypes_apisum) %>% 
-  inner_join(n_per_genotype, by = "genotype") %>%
-  mutate(n_rep = paste("n=",n_rep, sep = "")) %>% 
-  inner_join(igepp_ivip_genetic_group, by = "genotype") %>% 
-  dplyr::select(genotype, phenotype, n_rep, clusterName, cluster) %>% # add n replicates + genetic cluster info
-  mutate(cluster = paste("genetic-group",cluster,sep = ""))
+  inner_join(n_per_genotype, by = "ivip") %>%
+  mutate(n_rep = paste("n=",n_rep, sep = ""))
   
-most_contrasted_pisum <- 
+p_most_contrasted_pisum <- 
   apisum_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_apisum) %>%
-  mutate(genotype = factor(genotype, levels = order_apisum)) %>% 
-  ggplot(., aes(x = genotype, 
+  mutate(ivip = factor(ivip, levels = order_apisum)) %>% 
+  ggplot(., aes(x = ivip, 
                 y = larvae_total_number, 
                 fill = phenotype, 
                 label = paste(n_rep))) +
@@ -146,22 +144,60 @@ most_contrasted_pisum <-
   coord_flip() +
   labs(x = "Vicia faba genotype", y = "Total number of A. pisum larvae (from one L1)") +
   scale_y_continuous(limits = c(0,80)) +
-  geom_text(y = 75);most_contrasted_pisum
+  geom_text(y = 75);p_most_contrasted_pisum
 
-ggsave(plot = most_contrasted_pisum, 
+ggsave(plot = p_most_contrasted_pisum, 
        filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_most_contrasted_genotypes.pdf", 
        width = 10, height = 8)
-ggsave(plot = most_contrasted_pisum, width = 10, height = 8, units = "cm",
+ggsave(plot = p_most_contrasted_pisum, width = 16, height = 10, units = "cm",
        filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot03_apisum_most_contrasted_genotypes.png")
 
+# Second plot with short code
+median_larvae_counts_apisum_by_shortcode = 
+  apisum_fecundity_n6 %>% 
+  group_by(short_code) %>% 
+  summarise(median_larvae = median(larvae_total_number)) %>% 
+  arrange(median_larvae) 
+
+order_apisum_short_code <- median_larvae_counts_apisum_by_shortcode %>% 
+  pull(short_code) %>% 
+  unique()  
+
+p_most_contrasted_pisum_shortcode <- 
+  apisum_fecundity_n6 %>% 
+  inner_join(., most_extreme_genotype_apisum) %>%
+  mutate(short_code = factor(short_code, levels = order_apisum_short_code)) %>% 
+  ggplot(., aes(x = short_code, 
+                y = larvae_total_number, 
+                fill = phenotype, 
+                label = paste(n_rep))) +
+  geom_boxplot() +
+  geom_point(alpha=0.3) +
+  scale_fill_brewer(type = 'qual', palette = 2) +
+  ggtitle("Most contrasted genotypes to A. pisum\nShort code edition! \n(N>=6 and zeros removed)") +
+  coord_flip() +
+  labs(x = "Vicia faba genotype", y = "Total number of A. pisum larvae (from one L1)") +
+  scale_y_continuous(limits = c(0,80)) +
+  geom_text(y = 75);p_most_contrasted_pisum_shortcode
+
+ggsave(plot = p_most_contrasted_pisum_shortcode, 
+       filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot04_apisum_most_contrasted_genotypes_shortcode.pdf", 
+       width = 10, height = 8)
+
+p_combined = p_most_contrasted_pisum + p_most_contrasted_pisum_shortcode
+p_combined 
+
+ggsave(plot = p_combined, 
+       filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot05_apisum_most_contrasted_genotypes_ivip_and_shortcode.pdf", 
+       width = 16, height = 10)
 #####################
 ## List of genotypes
 #####################
 
 apisum_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_apisum) %>% 
-  dplyr::select(genotype, larvae_total_number, phenotype) %>% 
-  group_by(genotype, phenotype) %>% 
+  dplyr::select(ivip, larvae_total_number, phenotype) %>% 
+  group_by(ivip, phenotype) %>% 
   summarise(median_larvae = median(larvae_total_number, na.rm=T)) %>% 
   arrange(median_larvae) %>% 
   knitr::kable()
@@ -180,18 +216,18 @@ apisum_fecundity_n6 %>%
 ## Stats
 ########
 # reverse a vector of genotype names
-reverse_order_apisum <- rev(order_apisum) %>% intersect(most_extreme_genotype_apisum$genotype)
+reverse_order_apisum <- rev(order_apisum) %>% intersect(most_extreme_genotype_apisum$ivip)
 
 # Data of fecundity of the 20 most contrasted genotypes
 df <- 
   apisum_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_apisum) %>% 
-  dplyr::select(genotype, larvae_total_number, replicate) 
-df$genotype = factor(x = df$genotype, levels = reverse_order_apisum)
+  dplyr::select(ivip, larvae_total_number, replicate) 
+df$ivip = factor(x = df$ivip, levels = reverse_order_apisum)
 
 # Fit a null and genotype GLM negative binomial model
 fit0 = glm.nb(formula = larvae_total_number ~ 1, data = df)
-fit1 = glm.nb(formula = larvae_total_number ~ 1 + genotype, data = df)
+fit1 = glm.nb(formula = larvae_total_number ~ 1 + ivip, data = df)
 anova(fit0, fit1)
 # Likelihood ratio tests of Negative Binomial Models
 # Response: larvae_total_number
@@ -200,24 +236,26 @@ anova(fit0, fit1)
 # 2 1 + genotype 9.523030       188       -1550.237 1 vs 2    19 90.54536 2.655054e-11
 
 # Fit a null (only replicate) and a genotype GLMM negative binomial model 
-fit2 = lme4::glmer.nb(larvae_total_number ~ 1 + (1|genotype), data = df)
-fit3 = lme4::glmer.nb(larvae_total_number ~ 1 + genotype + (1|replicate), data = df)
+fit2 = lme4::glmer.nb(larvae_total_number ~ 1 + (1|ivip), data = df)
+fit3 = lme4::glmer.nb(larvae_total_number ~ 1 + ivip + (1|replicate), data = df)
 anova(fit2, fit3)
 # Models:
-#   fit2: larvae_total_number ~ 1 + (1 | genotype)
-#   fit3: larvae_total_number ~ 1 + genotype + (1 | replicate)
-#        npar    AIC    BIC     logLik   deviance  Chisq  Df  Pr(>Chisq)    
-# fit2    3     1611.1  1621.1 -802.55   1605.1                         
-# fit3   22     1591.9  1665.3 -773.94   1547.9    57.217 19  1.057e-05 ***
+# Data: df
+# Models:
+#   fit2: larvae_total_number ~ 1 + (1 | ivip)
+# fit3: larvae_total_number ~ 1 + ivip + (1 | replicate)
+# npar    AIC    BIC  logLik deviance  Chisq Df Pr(>Chisq)    
+# fit2    3 1632.7 1642.8 -813.36   1626.7                         
+# fit3   22 1616.5 1690.1 -786.26   1572.5 54.192 19  3.088e-05 ***
 
 # Model comparison
 AIC(fit0, fit1, fit2, fit3)
 
 # Post-hoc test
-pairs(emmeans(fit3, "genotype")) %>% 
+pairs(emmeans(fit3, "ivip")) %>% 
   broom::tidy() %>% 
-  # filter rows that contains string 'Castell'
-  dplyr::filter(., grepl("JF2262",contrast))  %>% 
+  # filter rows that contains string 'IVIP103069' > most sensitive genotype
+  dplyr::filter(., grepl("IVIP103069",contrast))  %>% 
   dplyr::filter(adj.p.value < 0.05) %>% 
   knitr::kable()
  

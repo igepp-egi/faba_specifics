@@ -1,5 +1,7 @@
 # README
 
+Warning: results not reliable due to a growth chamber temperature that is too low (20°C).
+
 <img src="./adult_survival_plot.png">  
 
 **No difference between Castell and the other genotypes (GLM or GLMM).** 
