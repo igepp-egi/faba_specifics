@@ -124,6 +124,10 @@ p_comparison_years <-
   facet_wrap(~ivip, scales = "fixed") +
   scale_y_continuous(limits=c(0,80)); p_comparison_years
 
+ggplot()
+
+
+
 ggsave(plot = p_comparison_years, 
        filename = "02.analyses/P2-XP006_Vfaba_ApisumP123_fecundity_test/plot02_comparison_2023-2024.pdf")
 
