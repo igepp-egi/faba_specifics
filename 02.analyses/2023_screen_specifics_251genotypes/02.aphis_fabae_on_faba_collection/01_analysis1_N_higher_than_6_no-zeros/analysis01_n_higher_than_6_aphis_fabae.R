@@ -32,7 +32,8 @@ afabae_fecundity <- read.csv("01.data/2023_screen_specifics_251genotypes/02.aphi
   mutate(type = gsub(pattern = "Minor", x = type, replacement = "Vicia faba var. minor")) %>% 
   mutate(type = gsub(pattern = "Major", x = type, replacement = "Vicia faba var. major")) %>% 
   mutate(type = gsub(pattern = "Paucijuga", x = type, replacement = "Vicia paucijuga")) %>% 
-  filter(larvae_total_number != 0) # Larvae probably died
+  filter(larvae_total_number != 0) %>% # Larvae probably died
+  inner_join(igepp_ivip_genetic_group) 
 
 genotypes_nrep_higher_than_6 = 
   afabae_fecundity %>% 
@@ -70,15 +71,15 @@ ggsave(filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae
 
 median_larvae_counts_afabae = 
   afabae_fecundity_n6 %>% 
-  group_by(genotype) %>% 
+  group_by(ivip) %>% 
   summarise(median_larvae = median(larvae_total_number)) %>% 
   arrange(median_larvae) 
 
-order_afabae <- median_larvae_counts_afabae %>% pull(genotype) %>% unique()
+order_afabae <- median_larvae_counts_afabae %>% pull(ivip) %>% unique()
 
 p1_afabae <- median_larvae_counts_afabae %>% 
-  mutate(genotype = factor(genotype, levels = order_afabae)) %>% 
-  ggplot(aes(x = genotype, y = median_larvae)) + 
+  mutate(ivip = factor(ivip, levels = order_afabae)) %>% 
+  ggplot(aes(x = ivip, y = median_larvae)) + 
   geom_bar(stat = "identity", fill="grey", alpha = 0.8, color = "black") +
   theme_bw() +
   theme(axis.text.x = element_blank(), 
@@ -97,7 +98,7 @@ ggsave(plot = p1_afabae, width = 12, height = 8, units = "cm",
 #################
 ten_most_resistant_genotypes_afabae <- 
   afabae_fecundity_n6 %>% 
-  group_by(genotype) %>% 
+  group_by(ivip) %>% 
   summarise(median_afabae = median(larvae_total_number)) %>% 
   arrange(median_afabae) %>% 
   head(n = 10) %>% 
@@ -105,7 +106,7 @@ ten_most_resistant_genotypes_afabae <-
 
 ten_most_sensitive_genotypes_afabae <- 
   afabae_fecundity_n6 %>% 
-  group_by(genotype) %>% 
+  group_by(ivip) %>% 
   summarise(median_afabae = median(larvae_total_number)) %>% 
   arrange(median_afabae) %>% 
   tail(n = 10) %>%
@@ -114,23 +115,22 @@ ten_most_sensitive_genotypes_afabae <-
 # Number of biological replicate per genotype (to add to the graph)
 n_per_genotype <- 
   afabae_fecundity_n6 %>% 
-  dplyr::select(genotype, replicate) %>%
-  group_by(genotype) %>% 
+  dplyr::select(ivip, replicate) %>%
+  group_by(ivip) %>% 
   tally() %>% 
   dplyr::rename("n_rep" = "n")
 
 most_extreme_genotype_afabae <- bind_rows(ten_most_resistant_genotypes_afabae, ten_most_sensitive_genotypes_afabae) %>% 
-  inner_join(n_per_genotype, by = "genotype") %>%
+  inner_join(n_per_genotype, by = "ivip") %>%
   mutate(n_rep = paste("n=",n_rep, sep = "")) %>% 
-  inner_join(igepp_ivip_genetic_group, by = "genotype") %>% 
-  dplyr::select(genotype, phenotype, n_rep, clusterName, cluster) %>% # add n replicates + genetic cluster info
-  mutate(cluster = paste("group",cluster,sep = ""))
+  inner_join(igepp_ivip_genetic_group, by = "ivip") %>% 
+  dplyr::select(ivip, phenotype, n_rep)
   
 p_most_contrasted_fabae <- 
   afabae_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_afabae) %>%
-  mutate(genotype = factor(genotype, levels = order_afabae)) %>% 
-  ggplot(., aes(x = genotype, y = larvae_total_number, fill = phenotype, label = paste(n_rep, sep = " "))) +
+  mutate(ivip = factor(ivip, levels = order_afabae)) %>% 
+  ggplot(., aes(x = ivip, y = larvae_total_number, fill = phenotype, label = paste(n_rep, sep = " "))) +
   geom_boxplot() +
   geom_point(alpha=0.3) +
   scale_fill_brewer(type = 'qual', palette = 1) +
@@ -153,16 +153,16 @@ ggsave(plot = p_most_contrasted_fabae, width = 10, height = 8, units = "cm",
 
 afabae_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_afabae) %>% 
-  dplyr::select(genotype, larvae_total_number, phenotype) %>% 
-  group_by(genotype, phenotype) %>% 
+  dplyr::select(ivip, larvae_total_number, phenotype) %>% 
+  group_by(ivip, phenotype) %>% 
   summarise(median_larvae = median(larvae_total_number, na.rm=T)) %>% 
-  arrange(median_larvae) %>% 
+  arrange(median_larvae, ) %>% 
   knitr::kable()
 
 afabae_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_afabae) %>% 
-  dplyr::select(genotype, larvae_total_number, phenotype) %>% 
-  group_by(genotype, phenotype) %>% 
+  dplyr::select(ivip, larvae_total_number, phenotype) %>% 
+  group_by(ivip, phenotype) %>% 
   summarise(median_larvae = median(larvae_total_number, na.rm=T)) %>% 
   arrange(median_larvae) %>% 
   write.csv(file = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/most_extreme_genotypes_aphis_fabae.csv", 
@@ -173,33 +173,34 @@ afabae_fecundity_n6 %>%
 ########
 
 # reverse a vector of genotype names
-reverse_order_afabae <- rev(order_afabae) %>% intersect(most_extreme_genotype_afabae$genotype)
+reverse_order_afabae <- rev(order_afabae) %>% intersect(most_extreme_genotype_afabae$ivip)
 
 # Data of fecundity of the 20 most contrasted genotypes
 df_fabae <- 
   afabae_fecundity_n6 %>% 
   inner_join(., most_extreme_genotype_afabae) %>% 
-  dplyr::select(genotype, larvae_total_number, replicate) 
-df_fabae$genotype = factor(x = df_fabae$genotype, levels = reverse_order_afabae)
+  dplyr::select(ivip, larvae_total_number, replicate) 
+df_fabae$ivip = factor(x = df_fabae$ivip, levels = reverse_order_afabae)
 
 # Fit a null and genotype GLM negative binomial model
 fit0 = glm.nb(formula = larvae_total_number ~ 1, data = df_fabae)
-fit1 = glm.nb(formula = larvae_total_number ~ 1 + genotype, data = df_fabae)
+fit1 = glm.nb(formula = larvae_total_number ~ 1 + ivip, data = df_fabae)
 anova(fit0, fit1)
 # Likelihood ratio tests of Negative Binomial Models
+# 
 # Response: larvae_total_number
-# Model    theta Resid. df    2 x log-lik.   Test    df LR stat.     Pr(Chi)
-# 1            1 4.916191       167       -1403.944                                  
-# 2 1 + genotype 8.164595       148       -1336.359 1 vs 2    19 67.58411 2.30791e-07
+# Model    theta Resid. df    2 x log-lik.   Test    df LR stat.      Pr(Chi)
+# 1        1 4.794820       164       -1379.271                                   
+# 2 1 + ivip 7.793472       145       -1315.745 1 vs 2    19 63.52587 1.057775e-06
 
 # Fit a null (only replicate) and a genotype GLMM negative binomial model 
-fit2 = lme4::glmer.nb(larvae_total_number ~ 1 + (1|genotype), data = df_fabae)
-fit3 = lme4::glmer.nb(larvae_total_number ~ 1 + genotype + (1|replicate), data = df_fabae)
+fit2 = lme4::glmer.nb(larvae_total_number ~ 1 + (1|ivip), data = df_fabae)
+fit3 = lme4::glmer.nb(larvae_total_number ~ 1 + ivip + (1|replicate), data = df_fabae)
 anova(fit2, fit3)
 # Data: df_fabae
 # Models:
-#   fit2: larvae_total_number ~ 1 + (1 | genotype)
-# fit3: larvae_total_number ~ 1 + genotype + (1 | replicate)
+#   fit2: larvae_total_number ~ 1 + (1 | ivip)
+# fit3: larvae_total_number ~ 1 + ivip + (1 | replicate)
 #         npar    AIC    BIC  logLik deviance  Chisq Df Pr(>Chisq)    
 # fit2    3       1390.2 1399.6 -692.12   1384.2                         
 # fit3    22      1379.6 1448.4 -667.82   1335.6 48.603 19  0.0002098 ***
@@ -212,16 +213,16 @@ AIC(fit0, fit1, fit2, fit3)
 # fit2  3       1390.239
 # fit3  22      1379.636
 
-pairs(emmeans(fit3, "genotype")) %>% 
+pairs(emmeans(fit3, "ivip")) %>% 
   broom::tidy() %>% 
   # filter rows that contains string 'Castell'
-  dplyr::filter(., grepl("JF2120",contrast)) %>%
+  dplyr::filter(., grepl("IVIP100336",contrast)) %>%
   dplyr::filter(adj.p.value < 0.05) %>% 
   knitr::kable()
 
 # |term     |contrast        | null.value|  estimate| std.error|  df| statistic| adj.p.value|
 # |:--------|:---------------|----------:|---------:|---------:|---:|---------:|-----------:|
-# |genotype |JF2120 - JF2244 |          0| 0.7383705| 0.2065503| Inf|  3.574774|   0.0451584|
-# |genotype |JF2120 - KF2221 |          0| 0.7349489| 0.1992506| Inf|  3.688566|   0.0306791|
-# |genotype |JF2120 - KF0190 |          0| 0.7565193| 0.1945160| Inf|  3.889239|   0.0148198|
-# |genotype |JF2120 - JF2236 |          0| 0.6869415| 0.1885369| Inf|  3.643539|   0.0358329|
+# |ivip |JF2120 - JF2244 |          0| 0.7383705| 0.2065503| Inf|  3.574774|   0.0451584|
+# |ivip |JF2120 - KF2221 |          0| 0.7349489| 0.1992506| Inf|  3.688566|   0.0306791|
+# |ivip |JF2120 - KF0190 |          0| 0.7565193| 0.1945160| Inf|  3.889239|   0.0148198|
+# |ivip |JF2120 - JF2236 |          0| 0.6869415| 0.1885369| Inf|  3.643539|   0.0358329|
