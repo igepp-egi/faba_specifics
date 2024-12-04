@@ -91,3 +91,8 @@ tukey_res_afabae
 
 tukey_res_afabae %>% filter(signif == "yes")
 
+
+#################################
+### Number of genotypes per group
+#################################
+
