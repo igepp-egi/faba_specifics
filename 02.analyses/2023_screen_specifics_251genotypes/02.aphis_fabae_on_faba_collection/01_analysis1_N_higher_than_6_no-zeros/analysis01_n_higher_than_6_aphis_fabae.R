@@ -8,22 +8,6 @@ suppressPackageStartupMessages(library("emmeans"))
 ## Data import
 ##############
 
-###########################################################
-### Genetic structure info (Jonathan, UMR Agroécologie/ECP)
-###########################################################@
-igepp_to_ivip <- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_ids.csv") %>% 
-  rename("ivip" = "seedbank_id") %>% 
-  rename("genotype" = "igepp_id")
-
-genetic_structure <- read.csv("00.info/02.genetic_structure_jonathan_dijon/genetic_groups_K_equal_to_6.csv") %>% 
-  rename("ivip" = "genotype")
-
-igepp_ivip_genetic_group <- inner_join(igepp_to_ivip, genetic_structure)
-rm(igepp_to_ivip, genetic_structure)
-
-###################
-### Fecundity data
-##################
 # 248 unique genotypes
 # Keep only data if N>6
 afabae_fecundity <- read.csv("01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", 
@@ -32,23 +16,35 @@ afabae_fecundity <- read.csv("01.data/2023_screen_specifics_251genotypes/02.aphi
   mutate(type = gsub(pattern = "Minor", x = type, replacement = "Vicia faba var. minor")) %>% 
   mutate(type = gsub(pattern = "Major", x = type, replacement = "Vicia faba var. major")) %>% 
   mutate(type = gsub(pattern = "Paucijuga", x = type, replacement = "Vicia paucijuga")) %>% 
-  filter(larvae_total_number != 0) %>% # Larvae probably died
-  inner_join(igepp_ivip_genetic_group) 
+  #filter(adult_alive == 1) %>% # adult has to be alive for larvae number results to be kept
+  filter(larvae_total_number != 0) 
 
 genotypes_nrep_higher_than_6 = 
   afabae_fecundity %>% 
   dplyr::select(genotype, larvae_total_number) %>% 
   group_by(genotype) %>% 
   tally() %>% 
-  filter(n >= 6) %>% # keep only if N plants => 6 >> results 223 genotypes out of 248
+  filter(n >= 6) %>% # keep only if N plants => 6 
   pull(genotype)
-
 afabae_fecundity_n6 <- afabae_fecundity %>% filter(genotype %in% genotypes_nrep_higher_than_6)
-rm(afabae_fecundity)
+afabae_fecundity_n6 %>% pull(genotype) %>% unique() %>% length() # 193 genotypes kept out of 248
+
+# Count number of biological replicate per genotype and plot
+afabae_fecundity_n6 %>% 
+  dplyr::select(genotype, larvae_total_number) %>% 
+  group_by(genotype) %>% 
+  tally() %>%
+  ggplot(., aes(x = n)) +
+  geom_histogram(fill = "lightgrey", color = "black", bins = 6) +
+  ggtitle("Number of biological replicates per genotype (filtered, N>=6)") +
+  labs(x = "Number of biological replicates", y = "Number of genotypes") + 
+  scale_x_continuous(breaks = seq(6, 12, by = 1))
+ggsave(filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/plot00_n_reps_per_genotype.pdf", width = 8, height = 6) 
 
 write.csv(afabae_fecundity_n6, 
           file = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/aphis_fabae_fecundity_on_faba_collection_N_higher_than_6_no_zeros.csv", 
           row.names = F)
+rm(afabae_fecundity)
 
 ###################################################
 ## Stat models: genotype effect on number of larvae
@@ -59,7 +55,7 @@ afabae_fecundity_n6 %>%
   ggplot(., aes(x = larvae_total_number)) +
   geom_histogram(aes(y = ..density..), fill = "lightgrey", color = "black", bins = 30) +
   geom_density() +
-  ggtitle("Distribution of the number of A. fabae larvae across all genotypes")
+  ggtitle("Distribution of the number of A. fabae larvae (all genotypes)")
 
 ggsave(filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/plot01_distribution_larvae_number.pdf") 
 ggsave(filename = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/plot01_distribution_larvae_number.png") 
@@ -123,7 +119,6 @@ n_per_genotype <-
 most_extreme_genotype_afabae <- bind_rows(ten_most_resistant_genotypes_afabae, ten_most_sensitive_genotypes_afabae) %>% 
   inner_join(n_per_genotype, by = "ivip") %>%
   mutate(n_rep = paste("n=",n_rep, sep = "")) %>% 
-  inner_join(igepp_ivip_genetic_group, by = "ivip") %>% 
   dplyr::select(ivip, phenotype, n_rep)
   
 p_most_contrasted_fabae <- 
