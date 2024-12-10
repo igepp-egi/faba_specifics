@@ -3,7 +3,6 @@
 GLMM since we use count data (discrete values + 0-infinite) and therefore not continuous values + not in the range ]-Inf;+Inf[
 
 g(number of larvae) = genotype + 1|genotype:batch
-To estimate the 
 
 # Statistical info 
 
