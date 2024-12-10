@@ -8,7 +8,7 @@ g(number of larvae) = genotype + 1|genotype:batch
 
 Model to use for count data = Generalized Linear Model with Poisson as the link function.
 
-## Dealing with batch effects (dates)
+## Dealing with batch effects (sessions: dates)
 
 Since we have batch effects due to series of data acquired during different months, we code the month as a series of batch = batch_01, batch_02, etc.
 
