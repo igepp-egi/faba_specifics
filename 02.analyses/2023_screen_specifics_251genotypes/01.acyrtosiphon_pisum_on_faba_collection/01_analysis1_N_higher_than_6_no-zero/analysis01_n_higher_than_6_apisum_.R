@@ -5,7 +5,7 @@ suppressPackageStartupMessages(library("emmeans"))
 suppressPackageStartupMessages(library("patchwork"))
 
 ##############
-## Data import
+## Data import 
 ##############
 
 ###########################################################
