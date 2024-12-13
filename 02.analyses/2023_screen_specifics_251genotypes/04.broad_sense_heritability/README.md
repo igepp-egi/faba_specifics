@@ -1,4 +1,4 @@
-# Broad sense heritability
+# Broad sense heritability calculation
 
 Taken from Kistner and Lozano-Isla:  
 
@@ -12,7 +12,6 @@ There are usually additional interpretations associated with 𝐻2:
 There are two main reasons why heritability on an entry-mean basis is of interest in plant breeding (Schmidt et al., 2019a):
 1. It is plugged into the breeder’s Equation to predict the response to selection.  
 2. It is a descriptive measure used to assess the usefulness and precision of results from cultivar evaluation trials.
-
 
 # References
 
