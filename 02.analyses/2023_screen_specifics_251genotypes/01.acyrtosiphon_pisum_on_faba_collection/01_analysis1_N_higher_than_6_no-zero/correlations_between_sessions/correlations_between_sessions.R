@@ -1,38 +1,38 @@
-
-#data preparation ----
-data250pisum<-read.csv("acyrthospipon_pisum_fecundity_on_faba_collection.csv", sep =",")
-data250pisum$genotype<-as.factor(data250pisum$genotype)
-data250pisum <- data250pisum %>% filter(!is.na(larvae_total_number))
-data_filtered_250_pisum <- data250pisum %>% filter(adult_alive != "0") #remove if no adult
+# Package----
+suppressPackageStartupMessages(library(corrplot))
+suppressPackageStartupMessages(library(Hmisc))
+suppressPackageStartupMessages(library(tidyverse))
 
 
-data_filtered_250_pisum <- data_filtered_250_pisum %>%
+# Data preparation ----
+data250pisum_00 <- read.csv("01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv") %>% 
+  mutate(genotype = as.factor(genotype)) %>%
+  filter(!is.na(larvae_total_number)) %>%
+  filter(adult_alive != "0") #remove if no adult
+
+# Step 0: Filter the data if n replicates < 6 ----
+data250pisum_01 <- data250pisum_00 %>%
   group_by(short_code) %>%           # Group by genotype
   filter(n() >= 6) %>%             # Keep only groups with 6 or more repetitions
   ungroup()  
-#Package----
-library(corrplot)
-library(Hmisc)
+
 # Step 1: Summarize duplicates by calculating the mean----
-datacorpisum250<-data_filtered_250_pisum[,c(2,5,12)]
-datacorpisum250_summarized <- datacorpisum250 %>%
-  group_by(genotype, session) %>% # Group by the relevant columns
+data250pisum_02 <- data250pisum_01 %>% 
+  group_by(short_code, session) %>% # Group by the relevant columns
   summarise(
     larvae_total_number = mean(larvae_total_number, na.rm = TRUE), # Calculate the mean
     .groups = "drop" # Remove grouping after summarizing
   )
 
-
 # Step 2: Pivot the summarized dataset----
-wide_datapisum250 <- datacorpisum250_summarized %>%
+data250pisum_03 <- data250pisum_02 %>%
   pivot_wider(
-    names_from = session,        # Use 'replicate' to create new columns
-    values_from = larvae_total_number # Fill new columns with the mean values
-  )
+    names_from = session,              # Use 'session' to create new columns
+    values_from = larvae_total_number  # Fill new columns with the mean values
+  ) %>%
+  dplyr::select(- short_code)  # Remove the 'short_code' column
 
-#step 3:calcul of the correlation between session ----
-
-corpisum250<-wide_datapisum250[,-c(1)]
+# Step 3: computation of the correlation between sessions ----
 
 # ++++++++++++++++++++++++++++
 # flattenCorrMatrix
@@ -49,7 +49,7 @@ flattenCorrMatrix <- function(cormat, pmat) {
   )
 }
 
-rest <- rcorr(as.matrix(corpisum250[,1:7]),type="pearson") # « pearson » : données quantitatives, « spearman » : données ordinales
+rest <- rcorr(as.matrix(data250pisum_03),type="pearson") # « pearson » : données quantitatives, « spearman » : données ordinales
 flattenCorrMatrix(rest$r, rest$P)
 M2 <- rest$r
 diag(M2) = NA
