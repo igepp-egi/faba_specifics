@@ -6,17 +6,17 @@ Protocol to get total RNA from aerial parts of seedlings infested or not with ap
 
 - Liquid nitrogen  
 - Ladle ("louche")  
+-steel funnel  
 - Scissors  
-- Brush  
-- [Labor aluminium foil of thickness 0.030mm x width 50cm x 100m (KORFF, Nr 60140)](https://www.korff.ch/produkte/laborfolien/grossrollen-in-spenderbox/)  
-- Falcon 50ml RNase-free  **(?)**
-- Square polystyrene storage bins **[FIXME]** dimensions ?:
-    - A flat one to freeze the plant material rapidly
-    - A deep one to store the plant material during plant sample collection.   
-- Wooden toothpick to pierce the aluminium foil to allow airflow during lyophylisation.     
+- Brush 
+- Mortar and pestle (10 cm diameter)  
+- Falcon 50ml RNase-free  **(?)**  
+- Square polystyrene storage bins **[FIXME]** dimensions ?:  
+    - A flat one to hold the mortar  
+    - A deep one to store the plant material during plant sample collection.    
  - Permanent labgrade markers    
 - Stainless steel beads (3 mm diameter)  
-- Mortar and pestle (10 cm diameter)
+
 
 ## Equipment   
 
@@ -31,25 +31,23 @@ _Vicia faba_ plants of two weeks [2 to 3-leaf stage (LP.02 to LP.03)](https://ww
 
 ### Sample collection
 
-1. After 2 weeks of growth, above-ground parts of the plant seedlings are harvested and rapidly frozen in liquid nitrogen.    
-2. Put the aluminium foil in the flat polystyrene manipulation box  
-3. Pour some liquid nitrogen on the aluminium foil 
-4. Place the plant into the polyester box into the aluminium foil.  
-5. Brush the plant to remove aphids.  
-6. Foil the aluminium foil with the plant inside.    
-7. Punch holes into the aluminium with the toothpick.    
-8. Place the aluminium foil + plant in the deep 'storing' polystyrene.    
-9. Once every 5 sample more nitrogen is poured in the storage box and the box closed.  
-10. The storage box stays in the freezer overnight.  
+1. After 2 weeks of growth, above-ground parts of the plant seedlings are harvested.    
+2. the plant is quickly immersed in liquid nitrogen  
+3. Aphids are brushed away above the nitrogen  
+4. Liquid nitrogen is pourred on the mortar  
+5. The frozen plant is broken into small fragment (0,5 * 0,5 cm) in the mortar  
+6. Place three stainless steel beads in each 50ml falcon tube.  
+7. Weight each falcon tube + beads (do not forget the cap) = tare weight.  
+8. Transfer plant fragments into the falcon tubes (1 plant per falcon)   
+9. Place the falcon in the deep 'storing' polystyrene.  
+10. Once every 5 sample more nitrogen is poured in the storage box and the box closed.  
+11. The storage box stays in the freezer overnight.  
 
 ### Sample lyophilization and grinding
 
-11. Place three stainless steel beads in each 50ml falcon tube.
-12. Weight each falcon tube + beads (do not forget the cap) = tare weight.   
-13. All samples are freeze-dried for 24 h  [FIXME: max capacity of lyophylisation]   
-14. Transfer the dried plant sample from the aluminium foil to the pre-weighted 50ml falcon tubes.   
-15. Grind the dried plant material into a fine homogenized powder by vigorously shaking for 4 min using a paint shaker [FIXME: ref].  
-16. Weight each falcon tube + beads + dry sample powder = sample dry weight.
+12. All samples are freeze-dried for 24 h  [FIXME: max capacity of lyophylisation]   
+13. Grind the dried plant material into a fine homogenized powder by vigorously shaking for 4 min using a paint shaker [FIXME: ref].  
+14. Weight each falcon tube + beads + dry sample powder = sample dry weight.  
 
 ### Total RNA isolation 
 
@@ -57,4 +55,4 @@ _Vicia faba_ plants of two weeks [2 to 3-leaf stage (LP.02 to LP.03)](https://ww
 
 ### Untargeted and targeted metabolomics 
 
-[FIXME] Add metabolomics protocol
+[FIXME] Add metabolomics protocol  
