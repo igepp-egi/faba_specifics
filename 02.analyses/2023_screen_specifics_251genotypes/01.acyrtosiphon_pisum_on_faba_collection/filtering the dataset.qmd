@@ -1,0 +1,102 @@
+---
+title: "filtering the dataset"
+format: html
+editor: visual
+---
+
+First I create a function giving the broad sense heritability and the number of genotypes of a given dataset
+
+```{r}
+# Define the function
+analyse_outpout <- function(data) {
+  
+  # Fit the model with a fixed formula
+  mod_h2 <- lmer(larvae_total_number ~ (1 | short_code) + (1 | session), data = data)
+  
+  # Get the variance components
+  estimates <- as.data.frame(VarCorr(mod_h2))
+  
+  # Extract the relevant variance components
+  genetic_variance <- estimates$vcov[1]
+  residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
+  
+  # Get the number of levels for the 'session' random effect
+  nbE <- nlevels(data$session)
+  
+  # Calculate heritability (h2)
+  h2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
+  
+
+  nlvl<-nlevels(data$genotype)
+  
+  # Return a list with heritability and variance components
+  result <- list(
+    heritability = h2,
+    number_of_genotypes = nlvl)
+  
+  return(result)
+}
+```
+
+## Raw dataset
+
+```{r}
+data250pisum_00 <- read.csv("acyrthospipon_pisum_fecundity_on_faba_collection.csv") %>% 
+  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) %>% mutate(short_code = as.factor(short_code))
+analyse_outpout(data = data250pisum_00)
+```
+
+Before filtering the dataset we have 251 genotypes
+
+## Missing data
+
+```{r}
+data250pisum_01 <- data250pisum_00 %>% filter(!is.na(larvae_total_number))
+data250pisum_01$genotype <- droplevels(data250pisum_01$genotype)
+analyse_outpout(data = data250pisum_01)
+```
+
+Few genotypes did not germinates, therefore we only have 249 genotypes. Heritability is quite low, only 0.17
+
+```{r}
+data250pisum_02<- data250pisum_01 %>% filter(adult_alive != "0") #remove if no adult
+data250pisum_02$genotype <- droplevels(data250pisum_02$genotype)
+analyse_outpout(data = data250pisum_02)
+
+
+```
+
+## Remove row with no adult alive
+
+We chose to remove all data from plants on which no adult aphid was found. This desision was made to get rid of biais and only asses the reproduction ability of the aphid. When the adult aphid dies the number of larvae will drop but only because the adult stayed less longer on the plant and not because the plant was not suitable for the reproduction.
+
+```{r}
+
+data250pisum_02<- data250pisum_01 %>% filter(adult_alive != "0") #remove if no adult
+data250pisum_02$genotype <- droplevels(data250pisum_02$genotype)
+analyse_outpout(data = data250pisum_02)
+
+```
+
+this filtering led to the loss of 1 genotype but increased broad sense heritability up to 0.36
+
+## filtering of genotypes with less than 6 repetitions
+
+Now the question is :should we filter genotypes for which we have less than\
+6 repetition. When we selected the genotypes to keep for the metabolomic and transcriptomic analysis, it made sense to select only genotypes that we\
+observed at least 6 times to unsure that we select a genotype stable across\
+observations. with he folowing code:
+
+```{r}
+
+data250pisum_03 <- data250pisum_02 %>%
+  group_by(short_code) %>%           # Group by genotype
+  filter(n() >= 6) %>%             # Keep only groups with 6 or more repetitions
+  ungroup()  
+data250pisum_03$genotype <- droplevels(data250pisum_03$genotype)
+analyse_outpout(data = data250pisum_03)
+```
+
+However, we lose some genotypes and data, which can reduce statistical power. This does not necessarily lead to an increase in heritability; in fact, the opposite occur. Having fewer repetitions for certain genotypes is not a significant issue, as it is the SNPs that we aim to replicate. If we have sufficient replication for different haplotypes, repetition from the exact same plant is not essential.
+
+It's important to note that GWAS were originally developed for animals, not plants. In animal studies, such as those with humans or livestock, it is not uncommon to have fewer repetitions of the same individual. This doesn't present a problem in terms of statistical analysis, as the focus is on genetic variation rather than individual replication.
