@@ -3,7 +3,9 @@ title: "filtering the dataset"
 format: html
 editor: visual
 ---
-
+## Fix me : ajouter le nombre de notation (tout aussi interressant que le nombre de genotype pour avoir une idée de la quantité de data perdu entre chaque filtre)
+## fix me: reformuler les parties texte
+## fix me ajouter le graph de correlation dans la fonction et changer le nom de la fonction
 First I create a function giving the broad sense heritability and the number of genotypes of a given dataset
 
 ```{r}
