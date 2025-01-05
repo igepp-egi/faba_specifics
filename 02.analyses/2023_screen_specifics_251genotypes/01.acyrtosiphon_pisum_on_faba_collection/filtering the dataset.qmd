@@ -3,9 +3,12 @@ title: "filtering the dataset"
 format: html
 editor: visual
 ---
-## Fix me : ajouter le nombre de notation (tout aussi interressant que le nombre de genotype pour avoir une idée de la quantité de data perdu entre chaque filtre)
+
+
 ## fix me: reformuler les parties texte
-## fix me ajouter le graph de correlation dans la fonction et changer le nom de la fonction
+
+## fix me correlation moyenne
+
 First I create a function giving the broad sense heritability and the number of genotypes of a given dataset
 
 ```{r}
@@ -31,12 +34,69 @@ analyse_outpout <- function(data) {
 
   nlvl<-nlevels(data$genotype)
   
+  nnotation<-nrow(data)
   # Return a list with heritability and variance components
   result <- list(
     heritability = h2,
-    number_of_genotypes = nlvl)
+    number_of_genotypes = nlvl,
+    number_of_notation = nnotation)
   
   return(result)
+  
+  
+
+}
+# Define the function to process data and generate correlation plots
+analyse_data_correlation <- function(data, group_cols, value_col, save_plot = FALSE, plot_filename = "correlation_plot.png") {
+  
+  # Step 1: Summarize duplicates by calculating the mean of the specified value column
+  data_summarized <- data %>%
+    group_by(across(all_of(group_cols))) %>%  # Group by the relevant columns (e.g., short_code, session)
+    summarise(
+      mean_value = mean(!!sym(value_col), na.rm = TRUE), # Calculate the mean for the specified value column
+      .groups = "drop" # Remove grouping after summarizing
+    )
+  
+  # Step 2: Pivot the summarized dataset to widen the data (one column per unique value in 'session' or other categorical column)
+  data_wide <- data_summarized %>%
+    pivot_wider(
+      names_from = group_cols[2],              # Use the second column in 'group_cols' to create new columns (e.g., session)
+      values_from = mean_value                  # Fill new columns with the calculated mean values
+    ) %>%
+    select(-group_cols[1])  # Remove the first grouping column (e.g., short_code)
+  
+  # Step 3: Compute the correlation matrix between the session columns
+  
+  # Compute correlation coefficients and p-values using rcorr
+  rest <- rcorr(as.matrix(data_wide), type = "pearson")
+  
+  # Create the correlation matrix for plotting
+  M2 <- rest$r
+  diag(M2) <- NA  # Set the diagonal of the correlation matrix to NA
+  
+  # Step 4: Generate the correlation plot
+  corr_plot <- corrplot(M2,
+                        title = 'Correlation between Sessions',
+                        na.label = "NA",
+                        type = "upper",
+                        method = "square",
+                        p.mat = rest$P,
+                        sig.level = 0.05,
+                        tl.cex = 1.2,
+                        tl.srt = 90,
+                        tl.col = "black",
+                        addCoef.col = "black",
+                        mar = c(10, 0, 1, 0))
+  
+  # If save_plot is TRUE, save the plot as an image
+  if (save_plot) {
+    # Save the plot as a PNG file (or any other format you prefer)
+    ggsave(plot_filename, plot = corr_plot, width = 8, height = 6)
+    cat("Plot saved as", plot_filename, "\n")
+  }
+  
+  # Return the correlation plot
+  return(corr_plot)
 }
 ```
 
@@ -56,17 +116,14 @@ Before filtering the dataset we have 251 genotypes
 data250pisum_01 <- data250pisum_00 %>% filter(!is.na(larvae_total_number))
 data250pisum_01$genotype <- droplevels(data250pisum_01$genotype)
 analyse_outpout(data = data250pisum_01)
+# Call the function to generate and display the correlation plot
+analyse_data_correlation(data250pisum_01, 
+                         group_cols = c("short_code", "session"), 
+                         value_col = "larvae_total_number")
+
 ```
 
 Few genotypes did not germinates, therefore we only have 249 genotypes. Heritability is quite low, only 0.17
-
-```{r}
-data250pisum_02<- data250pisum_01 %>% filter(adult_alive != "0") #remove if no adult
-data250pisum_02$genotype <- droplevels(data250pisum_02$genotype)
-analyse_outpout(data = data250pisum_02)
-
-
-```
 
 ## Remove row with no adult alive
 
@@ -77,7 +134,10 @@ We chose to remove all data from plants on which no adult aphid was found. This 
 data250pisum_02<- data250pisum_01 %>% filter(adult_alive != "0") #remove if no adult
 data250pisum_02$genotype <- droplevels(data250pisum_02$genotype)
 analyse_outpout(data = data250pisum_02)
-
+# Call the function to generate and display the correlation plot
+analyse_data_correlation(data250pisum_02, 
+                         group_cols = c("short_code", "session"), 
+                         value_col = "larvae_total_number")
 ```
 
 this filtering led to the loss of 1 genotype but increased broad sense heritability up to 0.36
@@ -97,6 +157,11 @@ data250pisum_03 <- data250pisum_02 %>%
   ungroup()  
 data250pisum_03$genotype <- droplevels(data250pisum_03$genotype)
 analyse_outpout(data = data250pisum_03)
+# Call the function to generate and display the correlation plot
+analyse_data_correlation(data250pisum_03, 
+                         group_cols = c("short_code", "session"), 
+                         value_col = "larvae_total_number")
+
 ```
 
 However, we lose some genotypes and data, which can reduce statistical power. This does not necessarily lead to an increase in heritability; in fact, the opposite occur. Having fewer repetitions for certain genotypes is not a significant issue, as it is the SNPs that we aim to replicate. If we have sufficient replication for different haplotypes, repetition from the exact same plant is not essential.
