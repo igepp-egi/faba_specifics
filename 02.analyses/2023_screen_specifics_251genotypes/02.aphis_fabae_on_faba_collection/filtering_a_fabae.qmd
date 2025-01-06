@@ -4,6 +4,14 @@ format: html
 editor: visual
 ---
 
+```{r}
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("lme4"))
+suppressPackageStartupMessages(library("Hmisc"))
+suppressPackageStartupMessages(library("corrplot"))
+```
+
+
 ## fix me: reformuler les parties texte
 
 ## fix me correlation moyenne?
@@ -11,11 +19,13 @@ editor: visual
 First I create a function giving the broad sense heritability and the number of genotypes of a given dataset
 
 ```{r}
+#| echo: false
+
 # Define the function
-analyse_outpout <- function(data) {
+analyse_output <- function(data) {
   
   # Fit the model with a fixed formula
-  mod_h2 <- lmer(larvae_total_number ~ (1 | short_code) + (1 | session), data = data)
+  mod_h2 <- lme4::lmer(larvae_total_number ~ (1 | short_code) + (1 | session), data = data)
   
   # Get the variance components
   estimates <- as.data.frame(VarCorr(mod_h2))
@@ -102,19 +112,19 @@ analyse_data_correlation <- function(data, group_cols, value_col, save_plot = FA
 ## Raw dataset
 
 ```{r}
-data250fabae_00 <- read.csv("aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv") %>% 
+data250fabae_00 <- read.csv("../../../01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = FALSE) %>% 
   mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) %>% mutate(short_code = as.factor(short_code))
-analyse_outpout(data = data250fabae_00)
+analyse_output(data = data250fabae_00)
 ```
 
-Before filtering the dataset we have 222 genotypes
+Before filtering the dataset we have 251 genotypes
 
 ## Missing data
 
 ```{r}
 data250fabae_01 <- data250fabae_00 %>% filter(!is.na(larvae_total_number))
 data250fabae_01$genotype <- droplevels(data250fabae_01$genotype)
-analyse_outpout(data = data250fabae_01)
+analyse_output(data = data250fabae_01)
 # Call the function to generate and display the correlation plot
 analyse_data_correlation(data250fabae_01, 
                          group_cols = c("short_code", "session"), 
@@ -122,7 +132,7 @@ analyse_data_correlation(data250fabae_01,
 
 ```
 
-Few genotypes did not germinates, therefore we only have 220 genotypes. Heritability is quite low, only 0.097
+Few genotypes did not germinates, therefore we only have 249 genotypes. Heritability is quite low, only 0.17
 
 ## Remove row with no adult alive
 
@@ -132,7 +142,7 @@ We chose to remove all data from plants on which no adult aphid was found. This 
 
 data250fabae_02<- data250fabae_01 %>% filter(adult_alive != "0") #remove if no adult
 data250fabae_02$genotype <- droplevels(data250fabae_02$genotype)
-analyse_outpout(data = data250fabae_02)
+analyse_output(data = data250fabae_02)
 # Call the function to generate and display the correlation plot
 analyse_data_correlation(data250fabae_02, 
                          group_cols = c("short_code", "session"), 
@@ -140,7 +150,7 @@ analyse_data_correlation(data250fabae_02,
 qqnorm(data250fabae_02$larvae_total_number)
 ```
 
-this filtering led to the loss of no genotype and increased broad sense heritability up to 0.289
+this filtering led to the loss of 1 genotype but increased broad sense heritability up to 0.36
 
 ## filtering of genotypes with less than 6 repetitions
 
@@ -156,7 +166,7 @@ data250fabae_03 <- data250fabae_02 %>%
   filter(n() >= 6) %>%             # Keep only groups with 6 or more repetitions
   ungroup()  
 data250fabae_03$genotype <- droplevels(data250fabae_03$genotype)
-analyse_outpout(data = data250fabae_03)
+analyse_output(data = data250fabae_03)
 # Call the function to generate and display the correlation plot
 analyse_data_correlation(data250fabae_03, 
                          group_cols = c("short_code", "session"), 
@@ -165,31 +175,28 @@ qqnorm(data250fabae_03$larvae_total_number)
 
 ```
 
-However, we lose some genotypes and data, which can reduce statistical power. This does not necessarily lead to an increase in heritability; in our specific case, the opposite occur. With this filtering we lose a lot of genotypes, going down to 191.
+However, we lose some genotypes and data, which can reduce statistical power. This does not necessarily lead to an increase in heritability; in our specific case, the opposite occur.
 
 ```{r}
-#data250fabae_04 <- data250fabae_02[-order(-data250fabae_02$larvae_total_number)[1:3], ]
+
 data250fabae_04 <- data250fabae_02 %>%
   group_by(short_code) %>%           # Group by genotype
-  filter(n() >= 4) %>%             # Keep only groups with 6 or more repetitions
+  filter(n() >= 3) %>%             # Keep only groups with 6 or more repetitions
   ungroup()  
 data250fabae_04$genotype <- droplevels(data250fabae_04$genotype)
-analyse_outpout(data = data250fabae_04)
-
+analyse_output(data = data250fabae_04)
 # Call the function to generate and display the correlation plot
 analyse_data_correlation(data250fabae_04, 
                          group_cols = c("short_code", "session"), 
                          value_col = "larvae_total_number")
-
 qqnorm(data250fabae_04$larvae_total_number)
 
 ```
 
 ```{r}
-# dfb <- data.frame(Column1 = character(), Column2 = character(), Column3 = character()) #optional
+dfb <- data.frame(Column1 = character(), Column2 = character(), Column3 = character())
 
-for (i in 0:12) {
-  data<- data[-order(-data$larvae_total_number)[1:3], ]
+for (i in 1:12) {
   data <- data250fabae_02 %>%
     group_by(short_code) %>%           # Group by genotype
     filter(n() >= i) %>%             # Keep only groups with i or more repetitions
@@ -223,7 +230,9 @@ plot(Nrep~Ngen, data =dfb)
 
 plot(Nrep~H2, data =dfb)
 
-plot(Nrep~Nob, data =dfb)
+plot(Nrep~Nob, data = dfb)
+plot(Ngen~Nob, data = dfb)
+
 ```
 
 based on these results it seems appropriate to keep the \>= 6 threshold

@@ -4,6 +4,14 @@ format: html
 editor: visual
 ---
 
+```{r}
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("lme4"))
+suppressPackageStartupMessages(library("Hmisc"))
+suppressPackageStartupMessages(library("corrplot"))
+```
+
+
 ## fix me: reformuler les parties texte
 
 ## fix me correlation moyenne?
@@ -11,11 +19,13 @@ editor: visual
 First I create a function giving the broad sense heritability and the number of genotypes of a given dataset
 
 ```{r}
+#| echo: false
+
 # Define the function
-analyse_outpout <- function(data) {
+analyse_output <- function(data) {
   
   # Fit the model with a fixed formula
-  mod_h2 <- lmer(larvae_total_number ~ (1 | short_code) + (1 | session), data = data)
+  mod_h2 <- lme4::lmer(larvae_total_number ~ (1 | short_code) + (1 | session), data = data)
   
   # Get the variance components
   estimates <- as.data.frame(VarCorr(mod_h2))
@@ -102,9 +112,9 @@ analyse_data_correlation <- function(data, group_cols, value_col, save_plot = FA
 ## Raw dataset
 
 ```{r}
-data250pisum_00 <- read.csv("acyrthospipon_pisum_fecundity_on_faba_collection.csv") %>% 
+data250pisum_00 <- read.csv("../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", stringsAsFactors = FALSE) %>% 
   mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) %>% mutate(short_code = as.factor(short_code))
-analyse_outpout(data = data250pisum_00)
+analyse_output(data = data250pisum_00)
 ```
 
 Before filtering the dataset we have 251 genotypes
@@ -114,7 +124,7 @@ Before filtering the dataset we have 251 genotypes
 ```{r}
 data250pisum_01 <- data250pisum_00 %>% filter(!is.na(larvae_total_number))
 data250pisum_01$genotype <- droplevels(data250pisum_01$genotype)
-analyse_outpout(data = data250pisum_01)
+analyse_output(data = data250pisum_01)
 # Call the function to generate and display the correlation plot
 analyse_data_correlation(data250pisum_01, 
                          group_cols = c("short_code", "session"), 
@@ -132,7 +142,7 @@ We chose to remove all data from plants on which no adult aphid was found. This 
 
 data250pisum_02<- data250pisum_01 %>% filter(adult_alive != "0") #remove if no adult
 data250pisum_02$genotype <- droplevels(data250pisum_02$genotype)
-analyse_outpout(data = data250pisum_02)
+analyse_output(data = data250pisum_02)
 # Call the function to generate and display the correlation plot
 analyse_data_correlation(data250pisum_02, 
                          group_cols = c("short_code", "session"), 
@@ -156,7 +166,7 @@ data250pisum_03 <- data250pisum_02 %>%
   filter(n() >= 6) %>%             # Keep only groups with 6 or more repetitions
   ungroup()  
 data250pisum_03$genotype <- droplevels(data250pisum_03$genotype)
-analyse_outpout(data = data250pisum_03)
+analyse_output(data = data250pisum_03)
 # Call the function to generate and display the correlation plot
 analyse_data_correlation(data250pisum_03, 
                          group_cols = c("short_code", "session"), 
@@ -174,7 +184,7 @@ data250pisum_04 <- data250pisum_02 %>%
   filter(n() >= 3) %>%             # Keep only groups with 6 or more repetitions
   ungroup()  
 data250pisum_04$genotype <- droplevels(data250pisum_04$genotype)
-analyse_outpout(data = data250pisum_04)
+analyse_output(data = data250pisum_04)
 # Call the function to generate and display the correlation plot
 analyse_data_correlation(data250pisum_04, 
                          group_cols = c("short_code", "session"), 
@@ -220,7 +230,9 @@ plot(Nrep~Ngen, data =dfb)
 
 plot(Nrep~H2, data =dfb)
 
-plot(Nrep~Nob, data =dfb)
+plot(Nrep~Nob, data = dfb)
+plot(Ngen~Nob, data = dfb)
+
 ```
 
 based on these results it seems appropriate to keep the \>= 6 threshold
