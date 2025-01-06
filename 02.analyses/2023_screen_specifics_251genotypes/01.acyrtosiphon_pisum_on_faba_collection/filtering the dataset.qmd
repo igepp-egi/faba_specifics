@@ -4,10 +4,9 @@ format: html
 editor: visual
 ---
 
-
 ## fix me: reformuler les parties texte
 
-## fix me correlation moyenne
+## fix me correlation moyenne?
 
 First I create a function giving the broad sense heritability and the number of genotypes of a given dataset
 
@@ -138,6 +137,7 @@ analyse_outpout(data = data250pisum_02)
 analyse_data_correlation(data250pisum_02, 
                          group_cols = c("short_code", "session"), 
                          value_col = "larvae_total_number")
+qqnorm(data250pisum_02$larvae_total_number)
 ```
 
 this filtering led to the loss of 1 genotype but increased broad sense heritability up to 0.36
@@ -161,9 +161,67 @@ analyse_outpout(data = data250pisum_03)
 analyse_data_correlation(data250pisum_03, 
                          group_cols = c("short_code", "session"), 
                          value_col = "larvae_total_number")
+qqnorm(data250pisum_03$larvae_total_number)
 
 ```
 
-However, we lose some genotypes and data, which can reduce statistical power. This does not necessarily lead to an increase in heritability; in fact, the opposite occur. Having fewer repetitions for certain genotypes is not a significant issue, as it is the SNPs that we aim to replicate. If we have sufficient replication for different haplotypes, repetition from the exact same plant is not essential.
+However, we lose some genotypes and data, which can reduce statistical power. This does not necessarily lead to an increase in heritability; in our specific case, the opposite occur. 
 
-It's important to note that GWAS were originally developed for animals, not plants. In animal studies, such as those with humans or livestock, it is not uncommon to have fewer repetitions of the same individual. This doesn't present a problem in terms of statistical analysis, as the focus is on genetic variation rather than individual replication.
+```{r}
+
+data250pisum_04 <- data250pisum_02 %>%
+  group_by(short_code) %>%           # Group by genotype
+  filter(n() >= 3) %>%             # Keep only groups with 6 or more repetitions
+  ungroup()  
+data250pisum_04$genotype <- droplevels(data250pisum_04$genotype)
+analyse_outpout(data = data250pisum_04)
+# Call the function to generate and display the correlation plot
+analyse_data_correlation(data250pisum_04, 
+                         group_cols = c("short_code", "session"), 
+                         value_col = "larvae_total_number")
+qqnorm(data250pisum_04$larvae_total_number)
+
+```
+```{r}
+dfb <- data.frame(Column1 = character(), Column2 = character(), Column3 = character())
+
+for (i in 0:13) {
+  data <- data250pisum_02 %>%
+    group_by(short_code) %>%           # Group by genotype
+    filter(n() >= i) %>%             # Keep only groups with i or more repetitions
+    ungroup() 
+  data$genotype <- droplevels(data$genotype)
+  nlvl<-nlevels(data$genotype)
+  
+  
+  # Fit the model with a fixed formula
+  mod_h2 <- lmer(larvae_total_number ~ (1 | short_code) + (1 | session), data = data)
+  
+  # Get the variance components
+  estimates <- as.data.frame(VarCorr(mod_h2))
+  
+  # Extract the relevant variance components
+  genetic_variance <- estimates$vcov[1]
+  residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
+  
+  # Get the number of levels for the 'session' random effect
+  nbE <- nlevels(data$session)
+  
+  # Calculate heritability (h2)
+  h2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
+  
+  nnotation<-nrow(data)
+  
+  df <- data.frame(Nrep = i, Ngen = nlvl, H2 = h2, Nob = nnotation)
+  dfb<-rbind(df, dfb)
+}
+plot(Nrep~Ngen, data =dfb)
+
+plot(Nrep~H2, data =dfb)
+
+plot(Nrep~Nob, data =dfb)
+```
+
+
+based on these results it seems appropriate to keep the >= 6 threshold 
+
