@@ -165,7 +165,7 @@ qqnorm(data250pisum_03$larvae_total_number)
 
 ```
 
-However, we lose some genotypes and data, which can reduce statistical power. This does not necessarily lead to an increase in heritability; in our specific case, the opposite occur. 
+However, we lose some genotypes and data, which can reduce statistical power. This does not necessarily lead to an increase in heritability; in our specific case, the opposite occur.
 
 ```{r}
 
@@ -182,6 +182,7 @@ analyse_data_correlation(data250pisum_04,
 qqnorm(data250pisum_04$larvae_total_number)
 
 ```
+
 ```{r}
 dfb <- data.frame(Column1 = character(), Column2 = character(), Column3 = character())
 
@@ -222,6 +223,4 @@ plot(Nrep~H2, data =dfb)
 plot(Nrep~Nob, data =dfb)
 ```
 
-
-based on these results it seems appropriate to keep the >= 6 threshold 
-
+based on these results it seems appropriate to keep the \>= 6 threshold
