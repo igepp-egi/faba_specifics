@@ -1,0 +1,25 @@
+﻿day,series1_mean_size_mm,series2_mean_size_mm,series3_mean_size_mm,aphid_species
+1,1.61,NA,1.02,acyrthosiphon_pisum
+2,1.285,NA,"1,06 mais plus 1,20",acyrthosiphon_pisum
+3,1.87,1.78,1.325,acyrthosiphon_pisum
+4,1.93,1.96,NA,acyrthosiphon_pisum
+5,NA,2.16,NA,acyrthosiphon_pisum
+6,NA,2.27,1.58,acyrthosiphon_pisum
+7,2.54,2.53,NA,acyrthosiphon_pisum
+8,3.16,NA,NA,acyrthosiphon_pisum
+9,3.36,NA,NA,acyrthosiphon_pisum
+10,4.01,3.416,NA,acyrthosiphon_pisum
+11,4.22,3.8,NA,acyrthosiphon_pisum
+12,NA,NA,NA,acyrthosiphon_pisum
+1,1.37,NA,0.77,aphis_fabae
+2,0.875,NA,0.8,aphis_fabae
+3,0.96,1.15,1,aphis_fabae
+4,1.065,1.15,1.02,aphis_fabae
+5,NA,1.47,NA,aphis_fabae
+6,NA,1.56,NA,aphis_fabae
+7,1.17,1.47,1.7375,aphis_fabae
+8,NA,NA,1.803,aphis_fabae
+9,NA,NA,1.873,aphis_fabae
+10,NA,1.9,2.04,aphis_fabae
+11,,1.96,2.435,aphis_fabae
+12,NA,NA,NA,aphis_fabae

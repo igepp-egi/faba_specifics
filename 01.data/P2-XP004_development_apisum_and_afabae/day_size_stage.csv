@@ -1,0 +1,25 @@
+﻿day,mean_size_mm,stage,aphid_species
+0,0.93,L1,acyrthosiphon_pisum
+1,1.02,L1,acyrthosiphon_pisum
+2,1.2425,L1 to L2,acyrthosiphon_pisum
+3,1.62,L2,acyrthosiphon_pisum
+4,1.945,L2 to L3 transition,acyrthosiphon_pisum
+5,2.16,L3 to L4 transition,acyrthosiphon_pisum
+6,2.27,L4,acyrthosiphon_pisum
+7,2.535,L4,acyrthosiphon_pisum
+8,3.16,L4 to adult transition,acyrthosiphon_pisum
+9,3.36,Adult,acyrthosiphon_pisum
+10,3.713,Adult,acyrthosiphon_pisum
+11,4.01,Adult,acyrthosiphon_pisum
+0,0.62,L1,aphis_fabae
+1,0.77,L1 to L2 transition,aphis_fabae
+2,0.8375,L2,aphis_fabae
+3,1.04,L2 to L3 transition,aphis_fabae
+4,1.08,L3,aphis_fabae
+5,1.47,L3 to L4 transition,aphis_fabae
+6,1.56,L4,aphis_fabae
+7,1.60375,,aphis_fabae
+8,1.803,L4 to adult transition,aphis_fabae
+9,1.873,Adult,aphis_fabae
+10,1.97,Adult,aphis_fabae
+11,2.1975,Adult,aphis_fabae
