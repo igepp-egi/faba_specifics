@@ -8,22 +8,6 @@ suppressPackageStartupMessages(library("patchwork"))
 ## Data import 
 ##############
 
-###########################################################
-### Genetic structure info (Jonathan, UMR Agroécologie/ECP)
-##########################################################
-igepp_to_ivip <- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_ids.csv") %>% 
-  rename("ivip" = "seedbank_id") %>% 
-  rename("genotype" = "igepp_id")
-
-genetic_structure <- read.csv("00.info/02.genetic_structure_jonathan_dijon/genetic_groups_K_equal_to_6.csv") %>% 
-  rename("ivip" = "genotype")
-
-igepp_ivip_genetic_group <- inner_join(igepp_to_ivip, genetic_structure)
-rm(igepp_to_ivip, genetic_structure)
-
-###################
-### Fecundity data
-##################
 # 248 unique genotypes
 # Keep only data if N>6
 apisum_fecundity <- read.csv("01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", 
@@ -32,8 +16,8 @@ apisum_fecundity <- read.csv("01.data/2023_screen_specifics_251genotypes/01.acyr
   mutate(type = gsub(pattern = "Minor", x = type, replacement = "Vicia faba var. minor")) %>% 
   mutate(type = gsub(pattern = "Major", x = type, replacement = "Vicia faba var. major")) %>% 
   mutate(type = gsub(pattern = "Paucijuga", x = type, replacement = "Vicia paucijuga")) %>% 
-  filter(larvae_total_number != 0 & adult_alive == 1) %>% # Larvae died but initial L1 larvae developed into an adult
-  inner_join(., igepp_ivip_genetic_group, by = "genotype") 
+  filter(larvae_total_number != 0 & adult_alive == 1) # Larvae died but initial L1 larvae developed into an adult
+ 
 
 genotypes_nrep_higher_than_6 = 
   apisum_fecundity %>% 
@@ -190,6 +174,11 @@ p_combined
 ggsave(plot = p_combined, 
        filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot05_apisum_most_contrasted_genotypes_ivip_and_shortcode.pdf", 
        width = 16, height = 10)
+
+ggsave(plot = p_combined, 
+       filename = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/plot05_apisum_most_contrasted_genotypes_ivip_and_shortcode.png", 
+       width = 16, height = 10)
+
 #####################
 ## List of genotypes
 #####################
