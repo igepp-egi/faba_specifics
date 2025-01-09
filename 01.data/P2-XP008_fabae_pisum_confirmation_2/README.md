@@ -28,7 +28,7 @@ Plants to test :
 - IVIP100310  
 
 Plants to check experimental batch effects with P2-XP006:  
-- IVIP100872, 
-- IVIP100899, 
-- IVIP100388, 
-- IVIP100123  
+-7 IVIP100123  
+-88 IVIP100947  
+-52 IVIP100376  
+-162 IVIP101799  
