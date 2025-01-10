@@ -1,9 +1,11 @@
-Readme second fecondity experiement A.pisum
+# P2-XP008: Second fecondity experiment _A.pisum_
 
 ## growth chamber: 
- L057 132
+
+L057 132
  
-## objectives:
+## Objectives:
+
 In the first confirmation test for __A. pisum__ 4 genotypes were not available.  
 Therefore, a second confirmation test is required to test the missing genotypes as well as 4 others genotypes that were already confirmed (as batch effect controls).
 
@@ -12,23 +14,22 @@ Therefore, a second confirmation test is required to test the missing genotypes 
 P123 is a clone of _Acyrtosiphon pisum_ from the pea biotype (cf Ollivier et al. 2022 TAG).  
 
 - Step 1: G0 adults were transferred on Castell faba bean plants for 24h to obtain several single one-day old L1 larvae (G1-L1).  
-
-... fix me: adapt depending on what happends
 - Step 2: these G1-L1 larvae developped into adults (G1-adults) during approx. 15 days at 18-/+ 1.5 degrees.   
 - Step 3: these G1-adults were transfered for 24h on new faba Castell plants to obtain G2-L1 larvae.  
 - Step 4: one L1 larvae was placed on each plant for 15 days.   
 
 
-## Plants 
+## Genotypes 
 
-Plants to test :  
-- IVIP102492,  
-- IVIP101701,  
-- IVIP100396,  
-- IVIP100310  
+Genotypes to test :    
+- 221 / IVIP102492, South America
+- 148 / IVIP101701,  East
+- 61 / IVIP100396,  South
+- 38 / IVIP100310  North
 
 Plants to check experimental batch effects with P2-XP006:  
--7 IVIP100123  
--88 IVIP100947  
--52 IVIP100376  
--162 IVIP101799  
+- 7 / IVIP100123 / North (Cluster 4)
+- 57 / IVIP100388 / South (Cluster 3)
+- 232 / IVIP103069 / North (Cluster 4)
+- 113 / IVIP101320 / South (Cluster 3)
+

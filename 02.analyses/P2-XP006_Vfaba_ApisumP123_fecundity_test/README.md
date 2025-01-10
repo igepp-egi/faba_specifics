@@ -3,6 +3,7 @@
 ## Goal
 
 P2-XP006 is a fecundity test assay using the most 20 contrasted _Vicia faba_ genotypes (10 sensitive, 10 resistant) to A. pisum P123 (cf 02.analyses/2023_....). 
+
 This experiment is set to confirm the aphid fecundity results by getting rid of the batch effect since all genotypes are tested within the same experiment. 
 
 ## Remarks 
