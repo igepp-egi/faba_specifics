@@ -21,7 +21,7 @@ P123 is a clone of _Acyrtosiphon pisum_ from the pea biotype (cf Ollivier et al.
 
 ## Genotypes 
 
-Genotypes to test :    
+Genotypes to test:    
 - 221 / IVIP102492, South America
 - 148 / IVIP101701,  East
 - 61 / IVIP100396,  South
@@ -33,3 +33,12 @@ Plants to check experimental batch effects with P2-XP006:
 - 232 / IVIP103069 / North (Cluster 4)
 - 113 / IVIP101320 / South (Cluster 3)
 
+The decision to not retest genotypes #221 and #148 was taken due to the fact that they belong to genetic groups for which there are no PR in their groups = no partially resistant in South America and East groups. 
+
+**Final list of genotypes to test:**    
+- 61 / IVIP100396,  South
+- 38 / IVIP100310  North
+- 7 / IVIP100123 / North (Cluster 4)
+- 57 / IVIP100388 / South (Cluster 3)
+- 232 / IVIP103069 / North (Cluster 4)
+- 113 / IVIP101320 / South (Cluster 3)
