@@ -15,3 +15,5 @@
 | 14 		  |  KF0160     |  IVIP100204 |   Paucijuga           | 1               |
 | 170 		  |  KF0188     |  IVIP101957 |   South               | 3               |
 
+#we decided to remove all but northem and sourthem genotypes, therefore 77, 84  
+#and 14 were removed
