@@ -42,3 +42,7 @@ The decision to not retest genotypes #221 and #148 was taken due to the fact tha
 - 57 / IVIP100388 / South (Cluster 3)
 - 232 / IVIP103069 / North (Cluster 4)
 - 113 / IVIP101320 / South (Cluster 3)
+
+Plus Hedin/2 to assess its resistance/sensitivity. 
+
+Remark: genotype 61 came from two batches: P2F0824 (N=15 seeds) and JF2129 (N=5). 
