@@ -65,7 +65,7 @@ Growth chamber used: L057 132 (after installation up to counting).
 - end_date: end date of the experiment (total offspring count) 
 - adult_alive: number of adults alive seen on the plant.  
 - adult_winged: number of winged adult seen on the plant. 
-- offspring_count: total number of larvae (all apterous stage) counted visually from one single G2-L1 larvae.  
+- larvae_total_number: total number of larvae (all apterous stage) counted visually from one single G2-L1 larvae.  
 - comment: optional free-text comments. 
 
 ## Reference of the protocol
