@@ -29,10 +29,14 @@ _Vicia faba_ plants of two weeks [2 to 3-leaf stage (LP.02 to LP.03)](https://ww
 
 ## Method
 
+## Falcon tube and beads weight
+
+Number Falcon tubes and weight tube + beads (tare).
+
 ### Sample collection
 
 1. After 2 weeks of growth, above-ground parts of the plant seedlings are harvested.    
-2. the plant is quickly immersed in liquid nitrogen  
+2. The plant is quickly immersed in liquid nitrogen  
 3. Aphids are brushed away above the nitrogen  
 4. Liquid nitrogen is pourred on the mortar  
 5. The frozen plant is broken into small fragment (0,5 * 0,5 cm) in the mortar  
@@ -45,7 +49,7 @@ _Vicia faba_ plants of two weeks [2 to 3-leaf stage (LP.02 to LP.03)](https://ww
 
 ### Sample lyophilization and grinding
 
-12. All samples are freeze-dried for 24 h  [FIXME: max capacity of lyophylisation]   
+12. All samples are freeze-dried for 9 days at -40°C then -30°C. Max. number of Falcon tubes = 4 x 16 + X pour aller à 80.   
 13. Grind the dried plant material into a fine homogenized powder by vigorously shaking for 4 min using a paint shaker [FIXME: ref].  
 14. Weight each falcon tube + beads + dry sample powder = sample dry weight.  
 
