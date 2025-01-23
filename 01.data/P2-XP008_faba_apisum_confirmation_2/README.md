@@ -1,8 +1,40 @@
 # P2-XP008: Second fecondity experiment _A.pisum_
 
-## growth chamber: 
+## Growth chamber: 
 
-L057 132
+L057 chamber 132
+
+3 temperature and humidity sensors Milesight (EM300-TH) were placed next to the trays on Thu 23-01-2025 at 15:50. 
+
+- Sensor 40: 1st shelf (bottom) right at the back of the room.  
+- Sensor 43: 2st shelf (bottom) right at the back of the room.
+- Sensor 42: 1st shelf
+
+Scheme of the growth chamber
+
+Left: left trays  
+Right: right trays  
+
+**Back of the growth chamber**
+
+|  Left | Left  | Corridor  | Right                      | Right  |
+|-------|-------|-----------|----------------------------|--------|
+|       |       |           |  40: 1st shelf bottom      |        |
+|       |       |           |                            |        |
+|       |       |           |                       | 43: 2st shelf middle |
+|       |       |           |                            |        |
+|       |       |           |                            |        |
+|       |       |           |                            |        |
+|       |       |           |                            |        |
+|       |       |           |                            |        |
+|       |       |           |  42: 2st shelf bottom      |        |
+|       |       |  **Door** |                            |        |
+
+
+
+
+
+
  
 ## Objectives:
 
