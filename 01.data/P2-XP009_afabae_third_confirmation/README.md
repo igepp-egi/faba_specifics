@@ -1,5 +1,7 @@
 # P2-XP009 third confirmation Aphis fabae
 
+Experiment conducted in chamber 123 (building 345). 
+
 ## Genotypes
 
 Decision was made to remove IVIP101799 (Winter) and IVIP100887 (South America) since no PR genotype are present in the same genetic group.
@@ -19,3 +21,15 @@ Decision was made to remove IVIP101799 (Winter) and IVIP100887 (South America) s
 | 224 		  |  PF0781 	|  IVIP102547 | South         | 3 	            |
 
 Plus Hedin/2 (seed batch KF2229) to assess its resistance/sensitivity. 
+
+## Remote temperature and sensors
+
+Positions are indicated below. They are in the right part of the chamber. 
+
+**Wall**
+		38	39  41
+
+		35  36	37
+
+		32	33	34
+**Door**  
