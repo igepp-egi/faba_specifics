@@ -4,7 +4,7 @@ Experiment conducted in chamber 123 (building 345).
 
 ## Genotypes
 
-Decision was made to remove IVIP101799 (Winter) and IVIP100887 (South America) since no PR genotype are present in the same genetic group.
+Decision was made to remove IVIP101799 (Winter) and IVIP100887 (South America) since no PR (Partially Resistant) genotype is present in the same genetic group.
 
 **Final list of genotypes to test**  
 
@@ -16,7 +16,7 @@ Decision was made to remove IVIP101799 (Winter) and IVIP100887 (South America) s
 | 49  		  |  PF0759 	|  IVIP100355 | South         | 3               |
 | 58  		  |  KF2209 	|  IVIP100390 | South         | 3               |
 | 88 		  |  JF2152 	|  IVIP100947 | North         | 4               |
-| 189 		  |  KF0190 	|  IVIP102302 | South         | 3               |
+| 189 		  |  KF0190 	|  IVIP102198 | South         | 3               |
 | 198 		  |  PF0775 	|  IVIP102302 | North         | 4               |
 | 224 		  |  PF0781 	|  IVIP102547 | South         | 3 	            |
 
