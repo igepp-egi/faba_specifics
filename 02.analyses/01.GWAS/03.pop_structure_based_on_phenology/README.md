@@ -19,5 +19,6 @@ Phenotypic data were acquired in Dijon (UMR Agroécologie) on the PeaMUST Vicia 
 
 **Seed traits**  
 - Seed color: 0 (absence), 1 (black), 2 (brown), 3 (beige), 4 (green), 5 (red), 6 (purple), 7 (yellow), 8 (cream), 9 (grey), 10 (pink) or mixed (X).  
-- Seed ornementation spot: 0 (absence), 1 (concentric), 2 (stained), 3 (marbled), 5 (speckled), 6 (spotted), 7 (mottled).     
+- Seed ornementation spot: 0 (absence), 1 (concentric), 2 (stained), 3 (marbled), 5 (speckled), 6 (spotted), 7 (mottled).  
+-    
 
