@@ -1,11 +1,11 @@
 ---
 title: "filtering the screening dataset a pisum"
-format: pdf
+format: 
+  html: 
+    toc: true
+    toc-depth: 2
 editor: visual
 ---
-
-
-
 
 ```{r}
 suppressPackageStartupMessages(library("tidyverse"))
@@ -160,7 +160,6 @@ x repetition. When we selected the genotypes to keep for the metabolomic and tra
 observed at least x times to unsure that we select a genotype stable across\
 observations. with he folowing code:
 
-
 ```{r}
 dfb <- data.frame(Column1 = character(), Column2 = character(), Column3 = character())
 
@@ -204,9 +203,7 @@ plot(Ngen~Nob, data = dfb)
 
 ```
 
-based on these results it seems appropriate to use a \>= 6 threshold
-which is equivalent to filtering for 5 genotypes
-
+based on these results it seems appropriate to use a \>= 6 threshold which is equivalent to filtering for 5 genotypes
 
 ```{r}
 

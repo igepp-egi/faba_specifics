@@ -3,6 +3,7 @@ title: "Filtering the 2023-2024 dataset for Aphis fabae"
 format: 
   pdf: 
     toc: true
+    toc-depth: 2
 ---
 
 
@@ -38,102 +39,10 @@ Two helper functions are created:\
 - `calculate_broad_heritability()` giving the broad sense heritability (H^2^) and the number of genotypes of a given dataset.\
 - `create_correlation_plot()` to calculate the correlations between experimental sessions.
 
-```{r broad sense heritability function}
-#| echo: false
 
-# Define the function
-calculate_broad_heritability <- function(data) {
-  
-  # Fit the model with a fixed formula
-  mod_h2 <- lme4::lmer(larvae_total_number ~ (1 | genotype) + (1 | session), data = data)
-  
-  # Get the variance components
-  estimates <- as.data.frame(VarCorr(mod_h2))
-  
-  # Extract the relevant variance components
-  genetic_variance <- estimates$vcov[1]
-  residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
-  
-  # Get the number of levels for the 'session' random effect
-  nbE <- nlevels(data$session)
-  
-  # Calculate heritability (h2)
-  h2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
-  
-
-  nlvl<-nlevels(data$genotype)
-  
-  nnotation<-nrow(data)
-  
-  # Return a list with heritability and variance components
-  result <- list(
-    heritability = h2,
-    number_of_genotypes = nlvl,
-    number_of_notation = nnotation)
-  
-  #return(result)
-}
-```
-
-```{r correlation plot function}
-#| echo: false
-
-# Define the function to process data and generate correlation plots
-create_correlation_plot <- function(data, 
-                                    group_cols, 
-                                    value_col, 
-                                    save_plot = FALSE, 
-                                    plot_filename = "correlation_plot.png") {
-  
-  # Step 1: Summarize duplicates by calculating the mean of the specified value column
-  data_summarized <- data %>%
-    group_by(across(all_of(group_cols))) %>%  # Group by the relevant columns (e.g., genotype, session)
-    summarise(
-      mean_value = mean(!!sym(value_col), na.rm = TRUE), # Calculate the mean for the specified value column
-      .groups = "drop" # Remove grouping after summarizing
-    )
-  
-  # Step 2: Pivot the summarized dataset to widen the data (one column per unique value in 'session' or other categorical column)
-  data_wide <- data_summarized %>%
-    pivot_wider(
-      names_from = group_cols[2],              # Use the second column in 'group_cols' to create new columns (e.g., session)
-      values_from = mean_value                  # Fill new columns with the calculated mean values
-    ) %>%
-    select(-group_cols[1])  # Remove the first grouping column (e.g., genotype)
-  
-  # Step 3: Compute the correlation matrix between the session columns
-  
-  # Compute correlation coefficients and p-values using rcorr
-  rest <- rcorr(as.matrix(data_wide), type = "pearson")
-  
-  # Create the correlation matrix for plotting
-  M2 <- rest$r
-  diag(M2) <- NA  # Set the diagonal of the correlation matrix to NA
-  
-  # Step 4: Generate the correlation plot
-  corr_plot <- corrplot(M2,
-                        title = 'Correlation between Sessions',
-                        na.label = "NA",
-                        type = "upper",
-                        method = "square",
-                        p.mat = rest$P,
-                        sig.level = 0.05,
-                        tl.cex = 1.2,
-                        tl.srt = 90,
-                        tl.col = "black",
-                        addCoef.col = "black",
-                        mar = c(10, 0, 1, 0))
-  
-  # If save_plot is TRUE, save the plot as an image
-  if (save_plot) {
-    # Save the plot as a PNG file (or any other format you prefer)
-    ggsave(plot_filename, plot = corr_plot, width = 8, height = 6)
-    cat("Plot saved as", plot_filename, "\n")
-  }
-  
-  # Return the correlation plot
-  return(corr_plot)
-}
+```{r}
+source("../broad_heritability_function.R")
+source("../create_correlation_plot.R")
 ```
 
 # Broad-sense heritability calculations
@@ -143,11 +52,11 @@ create_correlation_plot <- function(data,
 ```{r}
 #| echo: true
 
-data250_aphis-fabae_00 <- read.csv("../../../../../01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = FALSE, sep = ",") %>%  
+data250_afabae_00 <- read.csv("../../../../../01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = FALSE, sep = ",") %>%  
   mutate(genotype = as.factor(genotype)) %>% 
   mutate(session = as.factor(session)) 
 
-res <- calculate_broad_heritability(data = data250_aphis-fabae_00)
+res <- calculate_broad_heritability(data = data250_afabae_00)
 ```
 
 ::: callout-tip
@@ -162,10 +71,10 @@ Conclusions:\
 Remove NA values.
 
 ```{r}
-data250_aphis-fabae_01 <- data250_aphis-fabae_00 %>% filter(!is.na(larvae_total_number))
-data250_aphis-fabae_01$genotype <- droplevels(data250_aphis-fabae_01$genotype)
+data250_afabae_01 <- data250_afabae_00 %>% filter(!is.na(larvae_total_number))
+data250_afabae_01$genotype <- droplevels(data250_afabae_01$genotype)
 
-res2 <- calculate_broad_heritability(data = data250_aphis-fabae_01)
+res2 <- calculate_broad_heritability(data = data250_afabae_01)
 ```
 
 ::: callout-tip
@@ -177,7 +86,7 @@ Conclusions:\
 
 ```{r}
 #| eval: false
-create_correlation_plot(data250_aphis-fabae_01, 
+create_correlation_plot(data250_afabae_01, 
                          group_cols = c("genotype", "session"), 
                          value_col = "larvae_total_number")
 ```
@@ -191,10 +100,10 @@ When the adult aphid dies, the number of larvae will drop but only because the a
 ```{r}
 #| echo: true
 
-data250_aphis-fabae_02<- data250_aphis-fabae_01 %>% filter(adult_alive != "0") #remove if no adult
-data250_aphis-fabae_02$genotype <- droplevels(data250_aphis-fabae_02$genotype)
+data250_afabae_02<- data250_afabae_01 %>% filter(adult_alive != "0") #remove if no adult
+data250_afabae_02$genotype <- droplevels(data250_afabae_02$genotype)
 
-res3 <- calculate_broad_heritability(data = data250_aphis-fabae_02)
+res3 <- calculate_broad_heritability(data = data250_afabae_02)
 ```
 
 ::: callout-note
@@ -208,7 +117,7 @@ Heritability strongly increases. 602 measurements are lost. The number of genoty
 
 ```{r}
 #| eval: false
-create_correlation_plot(data250_aphis-fabae_02, 
+create_correlation_plot(data250_afabae_02, 
                          group_cols = c("genotype", "session"), 
                          value_col = "larvae_total_number")
 ```
@@ -218,7 +127,7 @@ create_correlation_plot(data250_aphis-fabae_02,
 #| fig-width: 8
 
 # With outliers
-p_with <- data250_aphis-fabae_02 %>% 
+p_with <- data250_afabae_02 %>% 
   ggplot(mapping = aes(sample=larvae_total_number)) +
   stat_qq() +
   stat_qq_line() +
@@ -234,20 +143,20 @@ A few data outliers (n=3) with high larvae number values seem to be problematic.
 #| echo: true
 
 # Identify the indices of the top 3 highest values
-top_3_indices <- order(data250_aphis-fabae_02$larvae_total_number, decreasing = TRUE)[1:3]
+top_3_indices <- order(data250_afabae_02$larvae_total_number, decreasing = TRUE)[1:3]
 
 # View the top 3 highest values
-data250_aphis-fabae_02[top_3_indices, ] %>% dplyr::select(genotype, ivip, aphid, larvae_total_number)
+data250_afabae_02[top_3_indices, ] %>% dplyr::select(genotype, ivip, aphid, larvae_total_number)
 
 # Remove the rows with the top 3 highest values
-data250_aphis-fabae_03 <- data250_aphis-fabae_02[-top_3_indices, ]
+data250_afabae_03 <- data250_afabae_02[-top_3_indices, ]
 ```
 
 ```{r comparison of qqplots with and without outliers}
 #| fig-width: 8
 
 # Without outliers
-p_without <- data250_aphis-fabae_03 %>% 
+p_without <- data250_afabae_03 %>% 
   ggplot(mapping = aes(sample=larvae_total_number)) +
   stat_qq() +
   stat_qq_line() +
@@ -274,7 +183,7 @@ Let's extract:
 dfb <- data.frame(Column1 = character(), Column2 = character(), Column3 = character())
 
 for (i in 1:12) {
-  data <- data250_aphis-fabae_03 %>%
+  data <- data250_afabae_03 %>%
     group_by(genotype) %>%           # Group by genotype
     filter(n() >= i) %>%             # Keep only groups with i or more repetitions
     ungroup() 
@@ -337,6 +246,7 @@ ggplot(dfb, aes(x = H2, y = Nrep)) +
   labs(y = "Number of biological replicates", x = "Broad-sense heritability") +
   ggtitle("Heritability =f(N biol. replicates)")
 ```
+
 ## N observations = f(N biological replicates)
 
 ```{r}
@@ -349,25 +259,26 @@ ggplot(dfb, aes(x = Nrep, y = Nob)) +
   labs(y = "Number of observations", x = "Number of biological replicates") +
   ggtitle("N observations = f(N biol. replicates)")
 ```
+
 :::{.callout-important}
 Based on these results, a threshold of >=5 biological replicates seems appropriate. That is keeping all genotypes for which at least 5 biological replicates are available. 
 :::
 
 \newpage
 
-## Final filtering: keep genotypes with at least 5 repetitions
+# Final filtering: keep genotypes with at least 5 repetitions
 
 ```{r broad sense heritability }
 #| echo: true
 #| eval: true
 
-data250_aphis-fabae_04 <- data250_aphis-fabae_03 %>%
+data250_afabae_04 <- data250_afabae_03 %>%
   group_by(genotype) %>%           # Group by genotype
   filter(n() >= 5) %>%             # Keep only groups with 6 or more repetitions
   ungroup()  
-data250_aphis-fabae_04$genotype <- droplevels(data250_aphis-fabae_04$genotype)
+data250_afabae_04$genotype <- droplevels(data250_afabae_04$genotype)
 
-res4 <- calculate_broad_heritability(data = data250_aphis-fabae_04)
+res4 <- calculate_broad_heritability(data = data250_afabae_04)
 ```
 
 ::: callout-important
@@ -381,16 +292,16 @@ Conclusions:\
 ```{r}
 #| eval: false
 
-create_correlation_plot(data250_aphis-fabae_04, 
+create_correlation_plot(data250_afabae_04, 
                          group_cols = c("genotype", "session"), 
                          value_col = "larvae_total_number")
-qqnorm(data250_aphis-fabae_04$larvae_total_number)
+qqnorm(data250_afabae_04$larvae_total_number)
 ```
 
 ```{r}
 #| fig-width: 8
 
-p <- data250_aphis-fabae_04 %>% 
+p <- data250_afabae_04 %>% 
   ggplot(mapping = aes(sample=larvae_total_number)) +
   stat_qq() +
   stat_qq_line() +
