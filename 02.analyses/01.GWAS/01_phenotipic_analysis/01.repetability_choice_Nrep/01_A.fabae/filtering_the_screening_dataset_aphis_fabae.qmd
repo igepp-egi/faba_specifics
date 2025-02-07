@@ -143,11 +143,11 @@ create_correlation_plot <- function(data,
 ```{r}
 #| echo: true
 
-data250pisum_00 <- read.csv("../../../../../01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = FALSE, sep = ",") %>%  
+data250_aphis-fabae_00 <- read.csv("../../../../../01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = FALSE, sep = ",") %>%  
   mutate(genotype = as.factor(genotype)) %>% 
   mutate(session = as.factor(session)) 
 
-res <- calculate_broad_heritability(data = data250pisum_00)
+res <- calculate_broad_heritability(data = data250_aphis-fabae_00)
 ```
 
 ::: callout-tip
@@ -162,10 +162,10 @@ Conclusions:\
 Remove NA values.
 
 ```{r}
-data250pisum_01 <- data250pisum_00 %>% filter(!is.na(larvae_total_number))
-data250pisum_01$genotype <- droplevels(data250pisum_01$genotype)
+data250_aphis-fabae_01 <- data250_aphis-fabae_00 %>% filter(!is.na(larvae_total_number))
+data250_aphis-fabae_01$genotype <- droplevels(data250_aphis-fabae_01$genotype)
 
-res2 <- calculate_broad_heritability(data = data250pisum_01)
+res2 <- calculate_broad_heritability(data = data250_aphis-fabae_01)
 ```
 
 ::: callout-tip
@@ -177,7 +177,7 @@ Conclusions:\
 
 ```{r}
 #| eval: false
-create_correlation_plot(data250pisum_01, 
+create_correlation_plot(data250_aphis-fabae_01, 
                          group_cols = c("genotype", "session"), 
                          value_col = "larvae_total_number")
 ```
@@ -191,10 +191,10 @@ When the adult aphid dies, the number of larvae will drop but only because the a
 ```{r}
 #| echo: true
 
-data250pisum_02<- data250pisum_01 %>% filter(adult_alive != "0") #remove if no adult
-data250pisum_02$genotype <- droplevels(data250pisum_02$genotype)
+data250_aphis-fabae_02<- data250_aphis-fabae_01 %>% filter(adult_alive != "0") #remove if no adult
+data250_aphis-fabae_02$genotype <- droplevels(data250_aphis-fabae_02$genotype)
 
-res3 <- calculate_broad_heritability(data = data250pisum_02)
+res3 <- calculate_broad_heritability(data = data250_aphis-fabae_02)
 ```
 
 ::: callout-note
@@ -208,7 +208,7 @@ Heritability strongly increases. 602 measurements are lost. The number of genoty
 
 ```{r}
 #| eval: false
-create_correlation_plot(data250pisum_02, 
+create_correlation_plot(data250_aphis-fabae_02, 
                          group_cols = c("genotype", "session"), 
                          value_col = "larvae_total_number")
 ```
@@ -218,7 +218,7 @@ create_correlation_plot(data250pisum_02,
 #| fig-width: 8
 
 # With outliers
-p_with <- data250pisum_02 %>% 
+p_with <- data250_aphis-fabae_02 %>% 
   ggplot(mapping = aes(sample=larvae_total_number)) +
   stat_qq() +
   stat_qq_line() +
@@ -234,20 +234,20 @@ A few data outliers (n=3) with high larvae number values seem to be problematic.
 #| echo: true
 
 # Identify the indices of the top 3 highest values
-top_3_indices <- order(data250pisum_02$larvae_total_number, decreasing = TRUE)[1:3]
+top_3_indices <- order(data250_aphis-fabae_02$larvae_total_number, decreasing = TRUE)[1:3]
 
 # View the top 3 highest values
-data250pisum_02[top_3_indices, ] %>% dplyr::select(genotype, ivip, aphid, larvae_total_number)
+data250_aphis-fabae_02[top_3_indices, ] %>% dplyr::select(genotype, ivip, aphid, larvae_total_number)
 
 # Remove the rows with the top 3 highest values
-data250pisum_03 <- data250pisum_02[-top_3_indices, ]
+data250_aphis-fabae_03 <- data250_aphis-fabae_02[-top_3_indices, ]
 ```
 
 ```{r comparison of qqplots with and without outliers}
 #| fig-width: 8
 
 # Without outliers
-p_without <- data250pisum_03 %>% 
+p_without <- data250_aphis-fabae_03 %>% 
   ggplot(mapping = aes(sample=larvae_total_number)) +
   stat_qq() +
   stat_qq_line() +
@@ -274,7 +274,7 @@ Let's extract:
 dfb <- data.frame(Column1 = character(), Column2 = character(), Column3 = character())
 
 for (i in 1:12) {
-  data <- data250pisum_03 %>%
+  data <- data250_aphis-fabae_03 %>%
     group_by(genotype) %>%           # Group by genotype
     filter(n() >= i) %>%             # Keep only groups with i or more repetitions
     ungroup() 
@@ -361,13 +361,13 @@ Based on these results, a threshold of >=5 biological replicates seems appropria
 #| echo: true
 #| eval: true
 
-data250pisum_04 <- data250pisum_03 %>%
+data250_aphis-fabae_04 <- data250_aphis-fabae_03 %>%
   group_by(genotype) %>%           # Group by genotype
   filter(n() >= 5) %>%             # Keep only groups with 6 or more repetitions
   ungroup()  
-data250pisum_04$genotype <- droplevels(data250pisum_04$genotype)
+data250_aphis-fabae_04$genotype <- droplevels(data250_aphis-fabae_04$genotype)
 
-res4 <- calculate_broad_heritability(data = data250pisum_04)
+res4 <- calculate_broad_heritability(data = data250_aphis-fabae_04)
 ```
 
 ::: callout-important
@@ -381,16 +381,16 @@ Conclusions:\
 ```{r}
 #| eval: false
 
-create_correlation_plot(data250pisum_04, 
+create_correlation_plot(data250_aphis-fabae_04, 
                          group_cols = c("genotype", "session"), 
                          value_col = "larvae_total_number")
-qqnorm(data250pisum_04$larvae_total_number)
+qqnorm(data250_aphis-fabae_04$larvae_total_number)
 ```
 
 ```{r}
 #| fig-width: 8
 
-p <- data250pisum_04 %>% 
+p <- data250_aphis-fabae_04 %>% 
   ggplot(mapping = aes(sample=larvae_total_number)) +
   stat_qq() +
   stat_qq_line() +
