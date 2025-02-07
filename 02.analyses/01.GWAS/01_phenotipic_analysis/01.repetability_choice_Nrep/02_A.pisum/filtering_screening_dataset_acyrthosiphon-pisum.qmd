@@ -1,166 +1,139 @@
 ---
 title: "filtering the screening dataset a pisum"
 format: 
-  html: 
+  pdf: 
     toc: true
     toc-depth: 2
-editor: visual
 ---
+
+# Setup 
+
+## Packages required
 
 ```{r}
 suppressPackageStartupMessages(library("tidyverse"))
 suppressPackageStartupMessages(library("lme4"))
 suppressPackageStartupMessages(library("Hmisc"))
 suppressPackageStartupMessages(library("corrplot"))
+suppressPackageStartupMessages(library("ggrepel"))
 ```
+``
 
-## fix me: reformuler les parties texte
-
-## fix me correlation moyenne?
-
-First I create a function giving the broad sense heritability and the number of genotypes of a given dataset
+## Import helper functions
 
 ```{r}
-#| echo: false
-
-# Define the function
-analyse_output <- function(data) {
-  
-  # Fit the model with a fixed formula
-  mod_h2 <- lme4::lmer(larvae_total_number ~ (1 | genotype) + (1 | session), data = data)
-  
-  # Get the variance components
-  estimates <- as.data.frame(VarCorr(mod_h2))
-  
-  # Extract the relevant variance components
-  genetic_variance <- estimates$vcov[1]
-  residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
-  
-  # Get the number of levels for the 'session' random effect
-  nbE <- nlevels(data$session)
-  
-  # Calculate heritability (h2)
-  h2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
-  
-
-  nlvl<-nlevels(data$genotype)
-  
-  nnotation<-nrow(data)
-  # Return a list with heritability and variance components
-  result <- list(
-    heritability = h2,
-    number_of_genotypes = nlvl,
-    number_of_notation = nnotation)
-  
-  return(result)
-  
-  
-
-}
-# Define the function to process data and generate correlation plots
-analyse_data_correlation <- function(data, group_cols, value_col, save_plot = FALSE, plot_filename = "correlation_plot.png") {
-  
-  # Step 1: Summarize duplicates by calculating the mean of the specified value column
-  data_summarized <- data %>%
-    group_by(across(all_of(group_cols))) %>%  # Group by the relevant columns (e.g., genotype, session)
-    summarise(
-      mean_value = mean(!!sym(value_col), na.rm = TRUE), # Calculate the mean for the specified value column
-      .groups = "drop" # Remove grouping after summarizing
-    )
-  
-  # Step 2: Pivot the summarized dataset to widen the data (one column per unique value in 'session' or other categorical column)
-  data_wide <- data_summarized %>%
-    pivot_wider(
-      names_from = group_cols[2],              # Use the second column in 'group_cols' to create new columns (e.g., session)
-      values_from = mean_value                  # Fill new columns with the calculated mean values
-    ) %>%
-    select(-group_cols[1])  # Remove the first grouping column (e.g., genotype)
-  
-  # Step 3: Compute the correlation matrix between the session columns
-  
-  # Compute correlation coefficients and p-values using rcorr
-  rest <- rcorr(as.matrix(data_wide), type = "pearson")
-  
-  # Create the correlation matrix for plotting
-  M2 <- rest$r
-  diag(M2) <- NA  # Set the diagonal of the correlation matrix to NA
-  
-  # Step 4: Generate the correlation plot
-  corr_plot <- corrplot(M2,
-                        title = 'Correlation between Sessions',
-                        na.label = "NA",
-                        type = "upper",
-                        method = "square",
-                        p.mat = rest$P,
-                        sig.level = 0.05,
-                        tl.cex = 1.2,
-                        tl.srt = 90,
-                        tl.col = "black",
-                        addCoef.col = "black",
-                        mar = c(10, 0, 1, 0))
-  
-  # If save_plot is TRUE, save the plot as an image
-  if (save_plot) {
-    # Save the plot as a PNG file (or any other format you prefer)
-    ggsave(plot_filename, plot = corr_plot, width = 8, height = 6)
-    cat("Plot saved as", plot_filename, "\n")
-  }
-  
-  # Return the correlation plot
-  return(corr_plot)
-}
+source("../broad_heritability_function.R")
+source("../create_correlation_plot.R")
 ```
+
+# Broad sense heritability calculations
 
 ## Raw dataset
 
 ```{r}
-data250pisum_00 <- read.csv("../../../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) 
-analyse_output(data = data250pisum_00)
+data250pisum_00 <- read.csv("../../../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", 
+                            stringsAsFactors = FALSE, 
+                            sep = ",") %>%  
+  mutate(genotype = as.factor(genotype)) %>% 
+  mutate(session = as.factor(session)) 
+
+res <- calculate_broad_heritability(data = data250pisum_00)
 ```
 
-Before filtering the dataset we have 251 genotypes
+::: callout-tip
+Conclusions:\
+- Heritability is equal to `r round(res$heritability, digits=3)`.\
+- There are `r res$number_of_genotypes` genotypes in total.\
+- There are `r res$number_of_notation` measurements in total.
+:::
 
-## Missing data
+## Missing data removed
 
 ```{r}
 data250pisum_01 <- data250pisum_00 %>% filter(!is.na(larvae_total_number))
 data250pisum_01$genotype <- droplevels(data250pisum_01$genotype)
-analyse_output(data = data250pisum_01)
-# Call the function to generate and display the correlation plot
-analyse_data_correlation(data250pisum_01, 
-                         group_cols = c("genotype", "session"), 
-                         value_col = "larvae_total_number")
 
+res2 <- calculate_broad_heritability(data = data250pisum_01)
 ```
 
-Few genotypes did not germinates, therefore we only have 249 genotypes. Heritability is quite low, only 0.17
+\newpage
 
-## Remove row with no adult alive
-
-We chose to remove all data from plants on which no adult aphid was found. This desision was made to get rid of biais and only asses the reproduction ability of the aphid. When the adult aphid dies the number of larvae will drop but only because the adult stayed less longer on the plant and not because the plant was not suitable for the reproduction.
+::: callout-tip
+Conclusions:\
+- Heritability is equal to `r round(res2$heritability, digits=3)`.\
+- There are `r res2$number_of_genotypes` genotypes in total.\
+- There are `r res2$number_of_notation` measurements in total.
+:::
 
 ```{r}
+#| eval: false
+#| echo: true
 
-data250pisum_02<- data250pisum_01 %>% filter(adult_alive != "0") #remove if no adult
+create_correlation_plot(data = data250pisum_01)
+```
+
+
+## Remove observations with no adult alive
+
+We chose to remove all data from plants on which no adult aphid was found. This decision was made to get rid of larvae installation bias and only assess the reproduction ability of the aphid.
+
+When the adult aphid dies, the number of larvae will drop but only because the adult stayed less longer on the plant and not because the plant was not suitable for the reproduction.
+
+```{r remove observations with adult not alive}
+
+data250pisum_02<- data250pisum_01 %>% filter(adult_alive != "0") 
 data250pisum_02$genotype <- droplevels(data250pisum_02$genotype)
-analyse_output(data = data250pisum_02)
-# Call the function to generate and display the correlation plot
-analyse_data_correlation(data250pisum_02, 
-                         group_cols = c("genotype", "session"), 
-                         value_col = "larvae_total_number")
-qqnorm(data250pisum_02$larvae_total_number)
+
+res3 <- calculate_broad_heritability(data = data250pisum_02)
 ```
 
-this filtering led to the loss of 1 genotype but increased broad sense heritability up to 0.36
+::: callout-tip
+Conclusions:\
+- Heritability is equal to `r round(res3$heritability, digits=3)`.\
+- There are `r res3$number_of_genotypes` genotypes in total.\
+- There are `r res3$number_of_notation` measurements in total.
+:::
 
-## filtering of genotypes with less than x repetitions
-
-Now the question is :should we filter genotypes for which we have less than\
-x repetition. When we selected the genotypes to keep for the metabolomic and transcriptomic analysis, it made sense to select only genotypes that we\
-observed at least x times to unsure that we select a genotype stable across\
-observations. with he folowing code:
+This filtering led to the loss of 1 genotype but increased broad sense heritability up to 0.36
 
 ```{r}
+#| eval: false
+
+# Call the function to generate and display the correlation plot
+create_correlation_plot(data250pisum_02, 
+                         group_cols = c("genotype", "session"), 
+                         value_col = "larvae_total_number")
+```
+
+Distribution normality check. 
+```{r}
+#| echo: true
+#| fig-width: 8
+
+p1 <- data250pisum_02 %>% 
+  ggplot(mapping = aes(sample=larvae_total_number)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(y = "Observed quantiles", x = "Theoretical quantiles") +
+  ggtitle("Without NA values") +
+  theme_bw()
+p1
+```
+\newpage
+
+# Finding the optimal number of biological replicates
+
+Now the question is: should we filter genotypes for which we have less than X biological repetitions?
+
+Let's extract:   
+- The number of genotypes available for X number of biological replicates.\
+- The number of observations available for X number of biological replicates.\
+- The broad-sense heritability for X number of biological replicates.
+
+```{r calculate variation per N biological replicates}
+#| echo: false
+#| eval: true
+
 dfb <- data.frame(Column1 = character(), Column2 = character(), Column3 = character())
 
 for (i in 1:13) {
@@ -193,29 +166,88 @@ for (i in 1:13) {
   df <- data.frame(Nrep = i, Ngen = nlvl, H2 = h2, Nob = nnotation)
   dfb<-rbind(df, dfb)
 }
-plot(Nrep~Ngen, data =dfb)
-
-plot(Nrep~H2, data =dfb)
-
-plot(Nrep~Nob, data = dfb)
-plot(Ngen~Nob, data = dfb)
-
-
 ```
 
-based on these results it seems appropriate to use a \>= 6 threshold which is equivalent to filtering for 5 genotypes
+
+## N observations = f(N biological replicates)
 
 ```{r}
+ggplot(dfb, aes(x = Nrep, y = Nob)) + 
+  geom_point() +
+  scale_x_continuous(breaks=seq(1,13,1)) +
+  scale_y_continuous(limits = c(0,3000)) +
+  geom_text_repel(aes(label = Nob)) +
+  theme_bw() +
+  labs(x = "N biological replicates", y = "N observations")
+```
 
+## N genotypes = f(N biological replicates)
+```{r}
+ggplot(dfb, aes(x = Nrep, y = Ngen)) + 
+  geom_point() +
+  scale_x_continuous(breaks=seq(1,13,1)) +
+  scale_y_continuous(limits = c(0,250)) +
+  theme_bw() +
+  ggrepel::geom_text_repel(aes(label = Ngen), arrow = T) +
+  labs(x = "N biological replicates", y = "N genotypes") +
+  ggtitle("N genotypes = f(N biological replicates)")
+```
+
+## Heritability = f(N biological replicates)
+
+```{r}
+ggplot(dfb, aes(x = H2, y = Nrep)) + 
+  geom_point() +
+  scale_y_continuous(breaks=seq(1,13,1)) +
+  scale_x_continuous(limits = c(0,0.5)) +
+  theme_bw() +
+  ggrepel::geom_text_repel(aes(label = round(H2,digits = 3))) +
+  labs(y = "Number of biological replicates", x = "Broad-sense heritability") +
+  ggtitle("Heritability =f(N biol. replicates)")
+```
+:::{.callout-important}
+Based on these results, a threshold of >=6 biological replicates seems appropriate. That is keeping all genotypes for which at least 6 biological replicates are available. 
+:::
+
+# Final filtering: keep genotypes with at least 6 biological repetitions
+
+```{r}
 data250pisum_04 <- data250pisum_02 %>%
   group_by(genotype) %>%           # Group by genotype
   filter(n() >= 6) %>%             # Keep only groups with 7 or more repetitions
   ungroup()  
 data250pisum_04$genotype <- droplevels(data250pisum_04$genotype)
-analyse_output(data = data250pisum_04)
+res4 <- calculate_broad_heritability(data = data250pisum_04)
+```
+
+::: callout-important
+Conclusions:\
+- Heritability is equal to `r round(res4$heritability, digits=3)`.\
+- There are `r res4$number_of_genotypes` genotypes in total.\
+- There are `r res4$number_of_notation` measurements in total.
+:::
+
+```{r}
+#| echo: false
+#| eval: false
+
 # Call the function to generate and display the correlation plot
-analyse_data_correlation(data250pisum_04, 
+create_correlation_plot(data250pisum_04, 
                          group_cols = c("genotype", "session"), 
                          value_col = "larvae_total_number")
-qqnorm(data250pisum_04$larvae_total_number)
+```
+
+Distribution normality check. 
+```{r}
+#| echo: true
+#| fig-width: 8
+
+p <- data250pisum_04 %>% 
+  ggplot(mapping = aes(sample=larvae_total_number)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(y = "Observed quantiles", x = "Theoretical quantiles") +
+  ggtitle("Dataset filtered with N >= 6") +
+  theme_bw()
+p
 ```
