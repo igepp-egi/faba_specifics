@@ -1,0 +1,131 @@
+---
+title: "Calculation of genotype values (BLUEs) emmeans a pisum"
+format: 
+  pdf: 
+    toc: true
+    toc-depth: 2
+editor: visual
+---
+
+# Setup 
+
+## Packages
+
+```{r}
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("lme4"))
+suppressPackageStartupMessages(library("Hmisc"))
+suppressPackageStartupMessages(library("corrplot"))
+suppressPackageStartupMessages(library("emmeans"))
+suppressPackageStartupMessages(library("performance"))
+suppressPackageStartupMessages(library("MASS"))
+```
+
+## Filtered data import
+
+```{r}
+data250pisum_04 <- read.csv("../../01_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", stringsAsFactors = F)
+```
+
+## Data distribution
+
+```{r}
+data250pisum_04 %>% 
+  ggplot(., aes(x = larvae_total_number)) + 
+  geom_histogram(binwidth = 5, fill = "white", color = "black") 
+```
+
+
+# Linear model fitting and emmeans extraction
+
+[Useful lesson on LMMs](https://r.qcbs.ca/workshop07/book-en/fixed-vs.-random-effects.html).  
+
+## Fit linear models
+
+```{r}
+model0 <- lm(larvae_total_number ~ 1, data = data250pisum_04)
+model1 <- lm(larvae_total_number ~ genotype, data = data250pisum_04)
+model2 <- lmer(larvae_total_number ~ genotype + (1 | session), data = data250pisum_04)
+```
+
+```{r}
+compare_performance(model0, model1, model2, rank = FALSE, verbose = TRUE)
+```
+::: {.callout-important}
+Model2 that models session as a random fixed factor is a slightly but significant better model.
+:::
+
+## Diagnostics
+
+```{r}
+check_model(model2)
+```
+::: {.callout-important}
+Most assumptions seem to be valid: normality of residuals, normality of random effects, linear relationship, homogeneity of variance, multicollinearity. 
+:::
+
+## Model performances
+
+```{r}
+plot(compare_performance(model0, model1, model2))
+```
+
+```{r}
+test_lrt(model0, model1)
+```
+
+```{r}
+test_lrt(model1, model2)
+```
+
+
+# Generalized model fitting (negative binomial distribution)
+
+```{r}
+model3 <- glm.nb(formula = larvae_total_number ~ genotype, data = data250pisum_04)
+#model4 <- glmer(formula = larvae_total_number ~ genotype + (genotype | session), data = data250pisum_04, family = 'poisson')
+#model4 <- lme4::glmer.nb(larvae_total_number ~ genotype + (1 | session), data = data250pisum_04)
+```
+
+
+```{r}
+
+model <- lmer(larvae_total_number~genotype + (1 | session), data= data250pisum_04)
+model <- lm(larvae_total_number~ genotype + session, data= data250pisum_04)
+anova(model)
+
+#variance stability
+
+
+
+
+
+# Extract fitted values and residuals
+fitted_values <- fitted(model)
+residuals_values <- residuals(model)
+
+#homosedasticity
+# Plot residuals vs fitted values
+plot(fitted_values, residuals_values, 
+     main="Residuals vs Fitted", 
+     xlab="Fitted values", 
+     ylab="Residuals")
+abline(h=0, col="red")
+
+#residual normality
+hist(residuals_values, main="Histogram of Residuals", xlab="Residuals", breaks=20)
+# 2. Q-Q Plot for Residuals
+qqnorm(residuals_values)
+qqline(residuals_values, col = "red")
+
+#residual independance
+# Plot residuals over time (for time-series data)
+plot(residuals(model), type="o", col="blue", main="Residuals over Time", xlab="Index", ylab="Residuals")
+
+
+# Extract EMMeans for genotype
+emm_genotype <- emmeans(model, ~ genotype)
+emm_df <- as.data.frame(emm_genotype)
+hist(emm_df$emmean)
+
+```

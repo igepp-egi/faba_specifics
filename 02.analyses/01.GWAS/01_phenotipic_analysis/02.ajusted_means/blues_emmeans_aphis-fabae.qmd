@@ -14,7 +14,9 @@ suppressPackageStartupMessages(library("corrplot"))
 suppressPackageStartupMessages(library("emmeans"))
 
 ```
- preparation of the data based on the result from the filtering script :
+
+preparation of the data based on the result from the filtering script :
+
 ```{r}
 data250pisum_02 <- read.csv("../../../../../faba_specifics/01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) %>% filter(adult_alive != "0")
 
