@@ -31,10 +31,9 @@ Right: right trays
 |       |       |  **Door** |                            |        |
 
 
+Note: sensors moved to same shelf (top shelf) during the experiment.  
 
-
-
-
+Temperature and hygrometry data were recorded from installation to offspring counting (15 days). Data are available in this folder under `temperature_hygrometry_data.csv`
  
 ## Objectives:
 

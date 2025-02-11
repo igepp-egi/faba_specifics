@@ -8,10 +8,11 @@ Phenotypic data were acquired in Dijon (UMR Agroécologie) on the PeaMUST Vicia 
 **SumTem (Semis-DFLO) (base 0)**: ?  
 
 **Flower color:**  
-  - Banner ("étendard") color: 0 (NA) to 9 or 10 (mixed).  
-  - Stripe color intensity on the banner: from 0 (absence) to 9 (intense).  
-  - Wing petal color intensity: 1 (white), 2 (uniform color) or 3 (spotted).  
-  - Spot color: 0 (absence), 1 (white), 2 (violet), 3 (dark brown), 4 (pale brown), 5 (pink), 6 (red), 7 (yellow), 8 (other color) or 9 (mixed  ).  
+  - Banner ("étendard") color: 0 (NA), 1 (white), 2 (purple), 3 (dark brown), 4 (pale brown), 5 (pink), 6 (red), 7 (yellow), 8 (other) or 9 (mixed).   
+  - Stripe color intensity on the banner: from 0 (absence) to 9 (intense).   
+  - Wing petal color: 1 (white), 2 (uniform color) or 3 (spotted).  
+  - Spot color: 0 (absence), 1 (white), 2 (violet), 3 (dark brown), 4 (pale brown), 5 (pink), 6 (red), 7 (yellow), 8 (other color) or 9 (mixed).  
+
  
 **Growth**
   - Growth type: i (indeterminate), i/2 (semi-determinate), ti (terminal inflorescence).  
