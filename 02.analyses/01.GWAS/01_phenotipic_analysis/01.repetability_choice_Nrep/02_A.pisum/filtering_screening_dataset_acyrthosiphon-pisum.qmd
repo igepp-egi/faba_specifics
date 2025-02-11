@@ -251,3 +251,12 @@ p <- data250pisum_04 %>%
   theme_bw()
 p
 ```
+
+**Write final dataset to .csv**
+
+```{r}
+write.csv(x = data250pisum_04, 
+          file = "../../../01_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", 
+          quote = F, row.names = F)
+```
+

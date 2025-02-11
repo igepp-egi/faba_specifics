@@ -311,4 +311,11 @@ p <- data250_afabae_04 %>%
 p
 ```
 
+**Write final results to .csv**
+
+```{r write final filtered data to .csv}
+write.csv(x = data250_afabae_04, 
+          file = "../../../01_phenotipic_analysis/aphis_fabae_data_filtered.csv", 
+          quote = F, row.names = F)
+```
 
