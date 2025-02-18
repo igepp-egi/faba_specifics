@@ -42,7 +42,7 @@ data250pisum_04$genotype <- droplevels(data250pisum_04$genotype)
 
 ```{r}
 
-model <- lmer(larvae_total_number~genotype + (1 | session), data= data250pisum_04)
+model <- lmer(larvae_total_number~ivip + (1 | session), data= data250pisum_04)
 anova(model)
 
 #variance stability
@@ -71,10 +71,14 @@ plot(residuals(model), type="o", col="blue", main="Residuals over Time", xlab="I
 
 
 # Extract EMMeans for genotype
-emm_genotype <- emmeans(model, ~ genotype)
+emm_genotype <- emmeans(model, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
 hist(emm_df$emmean)
 
+# Define the file path
+file_path <- "~/Documents/gitrepo/faba_specifics/01.data/emmeans_fabae.csv"
 
+# Save the data frame to the specified location
+  write.csv(emm_df, file = file_path, row.names = FALSE)
 
 ```

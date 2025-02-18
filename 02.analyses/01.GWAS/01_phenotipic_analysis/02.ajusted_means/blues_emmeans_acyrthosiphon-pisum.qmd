@@ -7,7 +7,7 @@ format:
 editor: visual
 ---
 
-# Setup 
+# Setup
 
 ## Packages
 
@@ -25,6 +25,7 @@ suppressPackageStartupMessages(library("MASS"))
 
 ```{r}
 data250pisum_04 <- read.csv("../../01_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", stringsAsFactors = F)
+data250pisum_04$genotype <- as.factor(data250pisum_04$genotype)
 ```
 
 ## Data distribution
@@ -35,10 +36,9 @@ data250pisum_04 %>%
   geom_histogram(binwidth = 5, fill = "white", color = "black") 
 ```
 
-
 # Linear model fitting and emmeans extraction
 
-[Useful lesson on LMMs](https://r.qcbs.ca/workshop07/book-en/fixed-vs.-random-effects.html).  
+[Useful lesson on LMMs](https://r.qcbs.ca/workshop07/book-en/fixed-vs.-random-effects.html).
 
 ## Fit linear models
 
@@ -51,7 +51,8 @@ model2 <- lmer(larvae_total_number ~ genotype + (1 | session), data = data250pis
 ```{r}
 compare_performance(model0, model1, model2, rank = FALSE, verbose = TRUE)
 ```
-::: {.callout-important}
+
+::: callout-important
 Model2 that models session as a random fixed factor is a slightly but significant better model.
 :::
 
@@ -60,8 +61,9 @@ Model2 that models session as a random fixed factor is a slightly but significan
 ```{r}
 check_model(model2)
 ```
-::: {.callout-important}
-Most assumptions seem to be valid: normality of residuals, normality of random effects, linear relationship, homogeneity of variance, multicollinearity. 
+
+::: callout-important
+Most assumptions seem to be valid: normality of residuals, normality of random effects, linear relationship, homogeneity of variance, multicollinearity.
 :::
 
 ## Model performances
@@ -78,7 +80,6 @@ test_lrt(model0, model1)
 test_lrt(model1, model2)
 ```
 
-
 # Generalized model fitting (negative binomial distribution)
 
 ```{r}
@@ -87,11 +88,10 @@ model3 <- glm.nb(formula = larvae_total_number ~ genotype, data = data250pisum_0
 #model4 <- lme4::glmer.nb(larvae_total_number ~ genotype + (1 | session), data = data250pisum_04)
 ```
 
-
 ```{r}
 
-model <- lmer(larvae_total_number~genotype + (1 | session), data= data250pisum_04)
-model <- lm(larvae_total_number~ genotype + session, data= data250pisum_04)
+model <- lmer(larvae_total_number~genotype + (1|session), data= data250pisum_04)
+
 anova(model)
 
 #variance stability
@@ -127,5 +127,12 @@ plot(residuals(model), type="o", col="blue", main="Residuals over Time", xlab="I
 emm_genotype <- emmeans(model, ~ genotype)
 emm_df <- as.data.frame(emm_genotype)
 hist(emm_df$emmean)
+
+# Define the file path
+file_path <- "~/Documents/gitrepo/faba_specifics/01.data/emmeans_pisum.csv"
+
+# Save the data frame to the specified location
+  write.csv(emm_df, file = file_path, row.names = FALSE)
+
 
 ```
