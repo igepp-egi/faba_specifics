@@ -90,7 +90,7 @@ model3 <- glm.nb(formula = larvae_total_number ~ genotype, data = data250pisum_0
 
 ```{r}
 
-model <- lmer(larvae_total_number~genotype + (1|session), data= data250pisum_04)
+model <- lmer(larvae_total_number~ivip + (1|session), data= data250pisum_04)
 
 anova(model)
 
@@ -124,12 +124,14 @@ plot(residuals(model), type="o", col="blue", main="Residuals over Time", xlab="I
 
 
 # Extract EMMeans for genotype
-emm_genotype <- emmeans(model, ~ genotype)
+emm_genotype <- emmeans(model, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
 hist(emm_df$emmean)
 
+emm_df <- emm_df[,c(1,2)]
+
 # Define the file path
-file_path <- "~/Documents/gitrepo/faba_specifics/01.data/emmeans_pisum.csv"
+file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/emmeans_pisum.csv"
 
 # Save the data frame to the specified location
   write.csv(emm_df, file = file_path, row.names = FALSE)
