@@ -16,7 +16,7 @@ Illustrated here for _Aphis fabae_ but same for _Acyrthosiphon pisum_.
 - seed_batch: the seed lot used in the experiment (from own greenhoue multiplication).   
 - ivip: seed stock number accession identifier.   
 - aphid: aphid species and clone used in experiment. 
-- tray_id: number of the tray on which plants were grown.   
+- block: experimental block number (tray) on which plants were grown.   
 - rep: plant individual replicate number (biological replicate).  
 - session: experimental batch (corresponds to a different time period, one experiment per month approx.).  
 - climate_chb: identifier of the growth chamber

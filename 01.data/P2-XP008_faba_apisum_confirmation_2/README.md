@@ -110,3 +110,14 @@ The decision to not retest genotypes #221 and #148 was taken due to the fact tha
 - adult_winged: number of winged adult seen on the plant. 
 - larvae_total_number: total number of larvae (all apterous stage) counted visually from one single G2-L1 larvae.  
 - comment: optional free-text comments. 
+
+
+## Plots
+
+**Temperature per hour**
+
+<img src="./processed_data_temp_hygrometry/temperature_hourly_average.png" width="100%">
+
+**Hygrometry per hour** 
+
+<img src="./processed_data_temp_hygrometry/hygrometry_hourly_average.png" width="100%">

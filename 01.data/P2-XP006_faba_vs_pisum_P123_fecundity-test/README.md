@@ -68,6 +68,7 @@ Growth chamber used: L057 132 (after installation up to counting).
 - larvae_total_number: total number of larvae (all apterous stage) counted visually from one single G2-L1 larvae.  
 - comment: optional free-text comments. 
 
+
 ## Reference of the protocol
 
 Ollivier, R., Glory, I., Cloteau, R. et al. A major-effect genetic locus, ApRVII, controlling resistance against both adapted and non-adapted aphid biotypes in pea. Theor Appl Genet 135, 1511–1528 (2022). https://doi.org/10.1007/s00122-022-04050-x
