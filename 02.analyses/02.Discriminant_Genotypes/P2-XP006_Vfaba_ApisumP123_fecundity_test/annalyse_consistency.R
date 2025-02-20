@@ -14,9 +14,9 @@ suppressPackageStartupMessages(library(agricolae))
 ####### ploting median consistency ##########################################
 
 #data prep screening of the 250 genotypes ----
-#data250<-read.csv("../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", sep =",")
+data250<-read.csv("../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", sep =",")
 
-data250<-read.csv("../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", sep =",")
+#data250<-read.csv("../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", sep =",")
 
 # Remove rows with missing values in 'column_name'
 data250 <- data250 %>% filter(!is.na(larvae_total_number))
@@ -36,9 +36,9 @@ data_filtered_250_inf6$session<-as.factor(data_filtered_250_inf6$session)
 
 #data prep P2XP006 ----
 
-#data_xp006<-read.csv("../01.data/P2-XP006_faba_vs_pisum_P123_fecundity-test/P2-XP006_larvae_fecundity_results.csv", sep =",")
+data_xp006<-read.csv("../01.data/P2-XP006_faba_vs_pisum_P123_fecundity-test/P2-XP006_larvae_fecundity_results.csv", sep =",")
 
-data_xp006<-read.csv("../../../01.data/P2-XP006_faba_vs_pisum_P123_fecundity-test/P2-XP006_larvae_fecundity_results.csv", sep =",")
+#data_xp006<-read.csv("../../../01.data/P2-XP006_faba_vs_pisum_P123_fecundity-test/P2-XP006_larvae_fecundity_results.csv", sep =",")
 
 data_xp006 <- data_xp006 %>% filter(!is.na(larvae_total_number))
 data_filtered_xp006 <- data_xp006 %>% filter(adult_alive != "0")
@@ -54,8 +54,8 @@ summary(data_filtered_xp006_inf6)
 
 #data prep P2XP008 ----
 
-#data_xp008<-read.csv("../01.data/P2-XP008_faba_apisum_confirmation_2/P2-XP008_fecundity_data_apisum.csv", sep =",")
-data_xp008<-read.csv("../../../01.data/P2-XP008_faba_apisum_confirmation_2/P2-XP008_fecundity_data_apisum.csv", sep =",")
+data_xp008<-read.csv("../01.data/P2-XP008_faba_apisum_confirmation_2/P2-XP008_fecundity_data_apisum.csv", sep =",")
+#data_xp008<-read.csv("../../../01.data/P2-XP008_faba_apisum_confirmation_2/P2-XP008_fecundity_data_apisum.csv", sep =",")
 
 data_xp008 <- data_xp008 %>% filter(!is.na(larvae_total_number))
 data_xp008$ivip <-as.factor(data_xp008$ivip)
@@ -78,8 +78,8 @@ summary(data_filtered_xp008_inf6)
 
 #data prep P2XP010 ----
 
-# data_xp010<-read.csv("../01.data/P2-XP010_fabae_pisum_third_confirmation/P2XP010.csv", sep =",")
-data_xp010<-read.csv("../../../01.data/P2-XP010_fabae_pisum_third_confirmation/P2XP010.csv", sep =",")
+data_xp010<-read.csv("../01.data/P2-XP010_fabae_pisum_third_confirmation/P2XP010.csv", sep =",")
+#data_xp010<-read.csv("../../../01.data/P2-XP010_fabae_pisum_third_confirmation/P2XP010.csv", sep =",")
 
 
 data_xp010 <- data_xp010 %>% filter(!is.na(larvae_total_number))
@@ -172,9 +172,9 @@ ggplot(df_long, aes(x = test, y = expe, group = ivip, color = ivip)) +
 
 #add the genetic cluster info ----
 
-#datagen<-read.csv("../00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", sep =",")
+datagen<-read.csv("../00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", sep =",")
 
-datagen<-read.csv("../../../00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", sep =",")
+#datagen<-read.csv("../../../00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", sep =",")
 
 
 # Select only the specific column to merge from data2
@@ -243,43 +243,57 @@ df_combined <- df_combined[,c(1,3,7,12,14,15,20)]
 # Annalyse with only the genotypes evaluated 3 or 4 time----
 data_trimmed1 <- df_combined %>%
   filter(ivip %in% combined_data$ivip)
+
+data_trimmed1 <- merge(data_trimmed1,data2_unique, by = "ivip", all.x = TRUE)
 summary(data_trimmed1)
+#ivip + block /session
+mod<-lm(larvae_total_number ~ ivip+session / block,data=data_trimmed1)
+anova(mod)
+
+
+emm_genotype <- emmeans(mod, ~ ivip)
+emm_df <- as.data.frame(emm_genotype)
+
+emmeans_genetcluster1 <- merge(emm_df,data2_unique, by = "ivip", all.x = TRUE)
+
+
+mod_anova <- aov(larvae_total_number ~ ivip + session/ block 
+                 ,data = data_trimmed1)
+
+tukey_groups2 <- HSD.test(mod_anova, "ivip", console = TRUE)
+tukey_groups2<-as.data.frame(tukey_groups2$groups)
+
+# IVIP alone
 
 mod<-lm(larvae_total_number ~ ivip,data=data_trimmed1)
 anova(mod)
 
-mod<-lm(larvae_total_number ~ ivip+session / block,data=data_trimmed1)
-anova(mod)
-
-mod<-lm(larvae_total_number ~ ivip+ session / block + bbch_25days,data=data_trimmed1)
-anova(mod)
-
 emm_genotype <- emmeans(mod, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
-hist(emm_df$emmean)
 
 
-emmeans_genetcluster1 <- merge(emm_df,data2_unique, by = "ivip", all.x = TRUE)
+mod_anova <- aov(larvae_total_number ~ ivip, data = data_trimmed1)
 
-##### analyse with all genotypes ----
-mod<-lm(larvae_total_number ~ ivip,data=df_combined)
-anova(mod)
+tukey_groups2 <- HSD.test(mod_anova, "ivip", console = TRUE)
+tukey_groups2<-as.data.frame(tukey_groups2$groups)
 
-mod<-lm(larvae_total_number ~ ivip + session / block,data=df_combined)
-anova(mod)
+data_trimmed1$ivip <- droplevels(data_trimmed1$ivip)
 
-mod<-lm(larvae_total_number ~ ivip+ session / block + bbch_25days,data=df_combined)
-anova(mod)
+ggplot(data_trimmed1, aes(x = ivip, y = larvae_total_number, fill = ivip)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of Larvae Total Number by IVIP",
+       x = "IVIP", y = "Larvae Total Number") +
+  theme_minimal()
 
 
-emm_genotype <- emmeans(mod, ~ ivip)
-emm_df <- as.data.frame(emm_genotype)
-hist(emm_df$emmean)
-
-datate_filtered_after <- emm_df %>%
-  filter(ivip %in% combined_data$ivip)
-
-emmeans_genetcluster2 <- merge(datate_filtered_after,data2_unique, by = "ivip", all.x = TRUE)
+data_trimmed2 <- subset(data_trimmed1, ivip != "IVIP100388")
+data_trimmed2 <- subset(data_trimmed2, ivip != "IVIP100396")
+ggplot(data_trimmed2, aes(x = ivip, y = larvae_total_number, fill = cluster_name)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("red", "blue")) +  # Adjust colors as needed
+  theme_minimal() +
+  labs(title = "Boxplot of Larvae Total Number by IVIP",
+       x = "IVIP", y = "Larvae Total Number", fill = "Cluster Name")
 
 
 #annalyse P2XP008 ----
