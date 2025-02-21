@@ -143,3 +143,40 @@ df_long <- combined_data %>%
 
 # View the reshaped data
 print(df_long, n=250)
+
+
+#merging 250screening and P2XP007 ----
+
+combined_data2 <- merge(data_median_expe250, data_median_XP006, by = "ivip", all = TRUE)
+
+combined_data2 <- combined_data2 %>%
+  rowwise() %>%
+  filter(sum(!is.na(c_across(starts_with("expe")))) > 1) %>%
+  ungroup()
+
+colnames(combined_data2) <- trimws(tolower(colnames(combined_data2)))  # Trim spaces and make lowercase
+# Reshape the data into long format
+df_long2 <- combined_data2 %>%
+  pivot_longer(cols = starts_with("expe"), 
+               names_to = "xp", 
+               names_prefix = "expe",
+               values_to = "median_larvae_number")
+
+# View the reshaped data
+print(df_long, n=250)
+
+#-----
+combined_data3<- combined_data[,c(1,2,3)]
+
+
+colnames(combined_data3) <- trimws(tolower(colnames(combined_data3)))  # Trim spaces and make lowercase
+
+# Reshape the data into long format
+df_long3 <- combined_data3 %>%
+  pivot_longer(cols = starts_with("expe"), 
+               names_to = "xp", 
+               names_prefix = "expe",
+               values_to = "median_larvae_number")
+
+# View the reshaped data
+print(df_long, n=250)

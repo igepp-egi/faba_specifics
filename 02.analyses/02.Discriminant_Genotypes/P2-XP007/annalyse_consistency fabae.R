@@ -257,7 +257,7 @@ data_filtered_XP009_inf6$session <-"XP009"
 df_combined <- bind_rows(data_filtered_250_inf6, data_filtered_XP007_inf6, data_filtered_XP009_inf6)
 
 #remove useless columns for clarity
-df_combined <- df_combined[,c(1,3,7,12,14,15)]
+df_combined <- dplyr::select(df_combined, c(genotype,ivip,block,session,larvae_total_number))
 
 # Annalyse with only the genotypes evaluated 3 or 4 time----
 data_trimmed1 <- df_combined %>%
@@ -268,7 +268,6 @@ summary(data_trimmed1)
 #ivip + block /session
 mod<-lm(larvae_total_number ~ ivip+session / block,data=data_trimmed1)
 anova(mod)
-
 
 emm_genotype <- emmeans(mod, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
@@ -305,3 +304,9 @@ ggplot(data_trimmed1, aes(x = ivip, y = larvae_total_number, fill = ivip)) +
   theme_minimal()
 
 
+
+n_obs_per_ivip <- data_trimmed1 %>% 
+  group_by(ivip) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n))
+ 
