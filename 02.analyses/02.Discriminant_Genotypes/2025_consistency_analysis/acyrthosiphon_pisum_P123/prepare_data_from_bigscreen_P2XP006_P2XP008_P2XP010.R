@@ -180,3 +180,11 @@ df_long3 <- combined_data3 %>%
 
 # View the reshaped data
 print(df_long, n=250)
+
+#import cluster ----
+infos_cluster<- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", 
+                         sep =",", 
+                         stringsAsFactors = F) %>% 
+  dplyr::select(ivip, cluster_name) %>% 
+  distinct()
+

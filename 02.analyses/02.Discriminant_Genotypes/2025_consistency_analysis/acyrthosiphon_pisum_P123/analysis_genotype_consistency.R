@@ -138,7 +138,7 @@ p_4genotypes +
 data_trimmed1 <- df_combined %>%
   filter(ivip %in% combined_data$ivip)
 
-data_trimmed1 <- merge(data_trimmed1,data2_unique, by = "ivip", all.x = TRUE)
+data_trimmed1 <- merge(data_trimmed1,infos_cluster, by = "ivip", all.x = TRUE)
 summary(data_trimmed1)
 
 #ivip + block /session
@@ -149,7 +149,7 @@ anova(mod)
 emm_genotype <- emmeans(mod, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
 
-emmeans_genetcluster1 <- merge(emm_df,data2_unique, by = "ivip", all.x = TRUE)
+emmeans_genetcluster1 <- merge(emm_df,infos_cluster, by = "ivip", all.x = TRUE)
 
 
 mod_anova <- aov(larvae_total_number ~ ivip + session/ block 
