@@ -118,12 +118,12 @@ colnames(data_median_XP010)[colnames(data_median_XP010) == "Median_fecondity"] <
 # merging the newly created file: 250 genotypes screening, P2XP006, P2XP008 and P2XP10 ----
 # Merge the data frames by Genotype, ensuring all genotypes are kept
 
-combined_data <- merge(data_median_expe250, data_median_XP006, by = "ivip", all = TRUE)
-combined_data <- merge(combined_data, data_median_XP008, by = "ivip", all = TRUE)
-combined_data <- merge(combined_data, data_median_XP010, by = "ivip", all = TRUE)
+combined_data_250_xp6 <- merge(data_median_expe250, data_median_XP006, by = "ivip", all = TRUE)
+combined_data_250_xp6_xp8 <- merge(combined_data_250_xp6, data_median_XP008, by = "ivip", all = TRUE)
+combined_data_250_xp6_xp8_xp10 <- merge(combined_data_250_xp6_xp8, data_median_XP010, by = "ivip", all = TRUE)
 
 
-combined_data <- combined_data %>%
+median_combined_250_xp6_xp8_xp10_filtered <- combined_data_250_xp6_xp8_xp10 %>%
   rowwise() %>%
   filter(sum(!is.na(c_across(starts_with("expe")))) > 2) %>%
   ungroup()
@@ -131,55 +131,52 @@ combined_data <- combined_data %>%
 
 
 
-colnames(combined_data) <- trimws(tolower(colnames(combined_data)))  # Trim spaces and make lowercase
+colnames(median_combined_250_xp6_xp8_xp10_filtered) <- trimws(tolower(colnames(median_combined_250_xp6_xp8_xp10_filtered)))  # Trim spaces and make lowercase
 
 
 # Reshape the data into long format
-df_long <- combined_data %>%
+df_long_median_combined_250_xp6_xp8_xp10_filtered <- median_combined_250_xp6_xp8_xp10_filtered %>%
   pivot_longer(cols = starts_with("expe"), 
                names_to = "xp", 
                names_prefix = "expe",
                values_to = "median_larvae_number")
 
-# View the reshaped data
-print(df_long, n=250)
 
 
-#merging 250screening and P2XP007 ----
+#merging 250screening and P2XP006 ----
 
-combined_data2 <- merge(data_median_expe250, data_median_XP006, by = "ivip", all = TRUE)
-
-combined_data2 <- combined_data2 %>%
+median_combined_250_xp6_filtered <- combined_data_250_xp6 %>%
   rowwise() %>%
   filter(sum(!is.na(c_across(starts_with("expe")))) > 1) %>%
   ungroup()
 
-colnames(combined_data2) <- trimws(tolower(colnames(combined_data2)))  # Trim spaces and make lowercase
+colnames(median_combined_250_xp6_filtered) <- trimws(tolower(colnames(median_combined_250_xp6_filtered)))  # Trim spaces and make lowercase
 # Reshape the data into long format
-df_long2 <- combined_data2 %>%
+df_long_250_xp6 <- combined_data_250_xp6 %>%
   pivot_longer(cols = starts_with("expe"), 
                names_to = "xp", 
                names_prefix = "expe",
                values_to = "median_larvae_number")
 
-# View the reshaped data
-print(df_long, n=250)
-
-#-----
-combined_data3<- combined_data[,c(1,2,3)]
 
 
-colnames(combined_data3) <- trimws(tolower(colnames(combined_data3)))  # Trim spaces and make lowercase
 
+#merging 250screening and P2XP008 ----
+
+median_combined_250_xp8 <- merge(data_median_expe250, data_median_XP008, by = "ivip", all = TRUE)
+
+median_combined_250_xp8_filtered <- median_combined_250_xp8 %>%
+  rowwise() %>%
+  filter(sum(!is.na(c_across(starts_with("expe")))) > 1) %>%
+  ungroup()
+
+colnames(median_combined_250_xp8_filtered) <- trimws(tolower(colnames(median_combined_250_xp8_filtered)))  # Trim spaces and make lowercase
 # Reshape the data into long format
-df_long3 <- combined_data3 %>%
+df_long_250_xp8 <- median_combined_250_xp8_filtered %>%
   pivot_longer(cols = starts_with("expe"), 
                names_to = "xp", 
                names_prefix = "expe",
                values_to = "median_larvae_number")
-
-# View the reshaped data
-print(df_long, n=250)
 
 #import cluster ----
 infos_cluster<- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", 

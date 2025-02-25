@@ -112,10 +112,10 @@ df_combined_subset_with_genetic_clusters %>%
        x = "IVIP", y = "Larvae Total Number", fill = "Cluster Name") 
 
 # Boxplots: only consistent genotypes selected through all experiments, excluding IVIP100388 and IVIP100396
-inconsistent_genotypes <- c("IVIP100388", "IVIP100396")
+inconsistent_genotypes <- c("IVIP102547", "IVIP102302")
+test <- df_combined_subset_with_genetic_clusters %>% filter(!ivip %in% inconsistent_genotypes)
 
-p_4genotypes <- df_combined_subset_with_genetic_clusters %>% 
-  filter(!ivip %in% inconsistent_genotypes) %>%
+p_4genotypes <- test %>% 
   ggplot(aes(x = ivip, y = larvae_total_number, fill = cluster_name)) +
   geom_boxplot() +
   geom_jitter(width = 0.05, alpha = 0.4, aes(shape = xp_id)) +
