@@ -18,34 +18,70 @@ suppressPackageStartupMessages(library("emmeans"))
 preparation of the data based on the result from the filtering script :
 
 ```{r}
-data250pisum_02 <- read.csv("../../../../../faba_specifics/01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) %>% filter(adult_alive != "0")
+data250fabae_02 <- read.csv("../../../../../faba_specifics/01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) %>% filter(adult_alive != "0")
 
-data250pisum_02$genotype <- droplevels(data250pisum_02$genotype)
+data250fabae_02$genotype <- droplevels(data250fabae_02$genotype)
 
 
 # Identify the indices of the top 3 highest values
-top_3_indices <- order(data250pisum_02$larvae_total_number, decreasing = TRUE)[1:3]
+top_3_indices <- order(data250fabae_02$larvae_total_number, decreasing = TRUE)[1:3]
 
 # View the top 3 highest values
-data250pisum_02[top_3_indices, ]
+data250fabae_02[top_3_indices, ]
 
 # Remove the rows with the top 3 highest values
-data250pisum_03 <- data250pisum_02[-top_3_indices, ]
+data250fabae_03 <- data250fabae_02[-top_3_indices, ]
 
-data250pisum_04 <- data250pisum_03 %>%
+data250fabae_04 <- data250fabae_03 %>%
   group_by(genotype) %>%           # Group by genotype
   filter(n() >= 5) %>%             # Keep only groups with 5 or more repetitions
   ungroup()  
-data250pisum_04$genotype <- droplevels(data250pisum_04$genotype)
+data250fabae_04$genotype <- droplevels(data250fabae_04$genotype)
 
 ```
 
 ```{r}
+data250fabae_04 %>% 
+  ggplot(., aes(x = larvae_total_number)) + 
+  geom_histogram(binwidth = 5, fill = "white", color = "black") 
+```
 
-model <- lmer(larvae_total_number~ivip + (1 | session), data= data250pisum_04)
+```{r}
+model0 <- lm(larvae_total_number ~ 1, data = data250fabae_04)
+model1 <- lm(larvae_total_number ~ ivip, data = data250fabae_04)
+model2 <- lmer(larvae_total_number ~ ivip + (1 | session), data = data250fabae_04)
+model3 <- lmer(larvae_total_number ~ ivip + (1 | session/block), data = data250fabae_04)
+model4 <- glm.nb(formula = larvae_total_number ~ ivip +session/block, data = data250fabae_04)
+model5 <- glm.nb(formula = larvae_total_number ~ ivip +session, data = data250fabae_04)
+```
+
+```{r}
+compare_performance(model0, model1, model2,model3,model4,model5, rank = FALSE, verbose = TRUE)
+```
+
+```{r}
+test_lrt(model0, model1)
+```
+
+```{r}
+test_lrt(model1, model2)
+```
+
+```{r}
+test_lrt(model2, model3)
+```
+
+```{r}
+
+model <- model3
+
 anova(model)
 
 #variance stability
+
+
+
+
 
 # Extract fitted values and residuals
 fitted_values <- fitted(model)
@@ -73,18 +109,15 @@ plot(residuals(model), type="o", col="blue", main="Residuals over Time", xlab="I
 # Extract EMMeans for genotype
 emm_genotype <- emmeans(model, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
+hist(emm_df$emmean)
 
 emm_df <- emm_df[,c(1,2)]
-
-hist(emm_df$emmean)
 
 # Define the file path
 file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/emmeans_fabae.csv"
 
 # Save the data frame to the specified location
   write.csv(emm_df, file = file_path, row.names = FALSE)
-  
-  
- 
+
 
 ```

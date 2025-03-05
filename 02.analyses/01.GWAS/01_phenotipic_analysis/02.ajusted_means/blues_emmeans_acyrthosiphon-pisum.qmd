@@ -26,6 +26,7 @@ suppressPackageStartupMessages(library("MASS"))
 ```{r}
 data250pisum_04 <- read.csv("../../01_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", stringsAsFactors = F)
 data250pisum_04$genotype <- as.factor(data250pisum_04$genotype)
+data250pisum_04$block <- paste(data250pisum_04$session, data250pisum_04$tray_id, sep = "_")
 ```
 
 ## Data distribution
@@ -44,22 +45,25 @@ data250pisum_04 %>%
 
 ```{r}
 model0 <- lm(larvae_total_number ~ 1, data = data250pisum_04)
-model1 <- lm(larvae_total_number ~ genotype, data = data250pisum_04)
-model2 <- lmer(larvae_total_number ~ genotype + (1 | session), data = data250pisum_04)
+model1 <- lm(larvae_total_number ~ ivip, data = data250pisum_04)
+model2 <- lmer(larvae_total_number ~ ivip + (1 | session), data = data250pisum_04)
+model3 <- lmer(larvae_total_number ~ ivip + (1 | session/block), data = data250pisum_04)
+model4 <- glm.nb(formula = larvae_total_number ~ ivip +session/block, data = data250pisum_04)
+model5 <- glm.nb(formula = larvae_total_number ~ ivip +session, data = data250pisum_04)
 ```
 
 ```{r}
-compare_performance(model0, model1, model2, rank = FALSE, verbose = TRUE)
+compare_performance(model0, model1, model2,model3,model4,model5, rank = FALSE, verbose = TRUE)
 ```
 
 ::: callout-important
-Model2 that models session as a random fixed factor is a slightly but significant better model.
+Model3 that models session as a random fixed factor and block nested within session is a slightly but significant better model.
 :::
 
 ## Diagnostics
 
 ```{r}
-check_model(model2)
+check_model(model3)
 ```
 
 ::: callout-important
@@ -69,7 +73,7 @@ Most assumptions seem to be valid: normality of residuals, normality of random e
 ## Model performances
 
 ```{r}
-plot(compare_performance(model0, model1, model2))
+plot(compare_performance(model0, model1, model2,model3))
 ```
 
 ```{r}
@@ -80,17 +84,16 @@ test_lrt(model0, model1)
 test_lrt(model1, model2)
 ```
 
-# Generalized model fitting (negative binomial distribution)
-
 ```{r}
-model3 <- glm.nb(formula = larvae_total_number ~ genotype, data = data250pisum_04)
-#model4 <- glmer(formula = larvae_total_number ~ genotype + (genotype | session), data = data250pisum_04, family = 'poisson')
-#model4 <- lme4::glmer.nb(larvae_total_number ~ genotype + (1 | session), data = data250pisum_04)
+test_lrt(model2, model3)
 ```
 
+# Generalized model fitting (negative binomial distribution)
+
+
 ```{r}
 
-model <- lmer(larvae_total_number~ivip + (1|session), data= data250pisum_04)
+model <- model3
 
 anova(model)
 
