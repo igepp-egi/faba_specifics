@@ -1,3 +1,11 @@
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("lme4"))
+suppressPackageStartupMessages(library("Hmisc"))
+suppressPackageStartupMessages(library("corrplot"))
+suppressPackageStartupMessages(library("emmeans"))
+suppressPackageStartupMessages(library("performance"))
+suppressPackageStartupMessages(library("MASS"))
+
 
 #data prep screening of the 250 genotypes ----
 data250 <- read.csv(

@@ -15,18 +15,33 @@ library(tidyverse)
 
 
 pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/emmeans_fabae.csv", sep = ",")        
-myGD1 <-fread(file = "02.analyses/01.GWAS/06.GWAS_MLM/testgwas/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE)%>% select(-1)
+
+pheno<- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", 
+                                      sep =",", 
+                                      stringsAsFactors = F) %>% 
+  dplyr::select(ivip, cluster_name) %>% 
+  distinct() %>%
+  inner_join(., pheno, by = "ivip")
+
+pheno <- subset(pheno, cluster_name == "South")
+pheno <- subset(pheno, cluster_name %in% c("South", "South_America"))
+
+
+pheno <- pheno[,c(1,3)]
+
+
+myGD1 <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE)%>% select(-1)
 
 
 
-myGD2 <-fread(file = "02.analyses/01.GWAS/06.GWAS_MLM/testgwas/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.indv",header = FALSE,stringsAsFactors =  FALSE)
+myGD2 <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.indv",header = FALSE,stringsAsFactors =  FALSE)
 
-myKI <- fread(file = "02.analyses/01.GWAS/06.GWAS_MLM/testgwas/PEAMUST_vfaba_F1_SNP_imputed_MAF5_kinship.cXX.txt")
+myKI <- fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5_kinship.cXX.txt")
 # Load datasets
 
 
 
-myGM <-fread(file = "02.analyses/01.GWAS/06.GWAS_MLM/testgwas/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
+myGM <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
     "chromosome" = "V1",
     "position" = "V2"
   )%>% mutate(snp_id=paste(chromosome,position, sep = "_")) %>% relocate(snp_id,.before = chromosome) 
