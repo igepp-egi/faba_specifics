@@ -1,7 +1,7 @@
 require(dplyr)
 require(tidyr)
 require(corrplot)
-
+require(glue)
 
 # Define the function to process data and generate correlation plots
 create_correlation_plot <- function(data, 
@@ -24,7 +24,7 @@ create_correlation_plot <- function(data,
       names_from = group_cols[2],              # Use the second column in 'group_cols' to create new columns (e.g., session)
       values_from = mean_value                  # Fill new columns with the calculated mean values
     ) %>%
-    select(-group_cols[1])  # Remove the first grouping column (e.g., genotype)
+    dplyr::select(-group_cols[1])  # Remove the first grouping column (e.g., genotype)
   
   # Step 3: Compute the correlation matrix between the session columns
   

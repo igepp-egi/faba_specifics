@@ -69,7 +69,9 @@ Conclusions:\
 #| eval: false
 #| echo: true
 
-create_correlation_plot(data = data250pisum_01)
+create_correlation_plot(data = data250pisum_01,
+                        group_cols = c("genotype", "session"),
+                        value_col = "larvae_total_number")
 ```
 
 

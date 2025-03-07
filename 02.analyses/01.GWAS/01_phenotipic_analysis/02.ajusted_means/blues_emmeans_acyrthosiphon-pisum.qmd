@@ -24,15 +24,14 @@ suppressPackageStartupMessages(library("MASS"))
 ## Filtered data import
 
 ```{r}
-data250pisum_04 <- read.csv("../../01_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", stringsAsFactors = F)
-data250pisum_04$genotype <- as.factor(data250pisum_04$genotype)
-data250pisum_04$block <- paste(data250pisum_04$session, data250pisum_04$tray_id, sep = "_")
+data250pisum <- read.csv("../../01_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", stringsAsFactors = F)
+data250pisum$genotype <- as.factor(data250pisum$genotype)
 ```
 
 ## Data distribution
 
 ```{r}
-data250pisum_04 %>% 
+data250pisum %>% 
   ggplot(., aes(x = larvae_total_number)) + 
   geom_histogram(binwidth = 5, fill = "white", color = "black") 
 ```
@@ -43,13 +42,15 @@ data250pisum_04 %>%
 
 ## Fit linear models
 
+We tested few model to see which one is better to estimate the larvae fecundity
+
 ```{r}
-model0 <- lm(larvae_total_number ~ 1, data = data250pisum_04)
-model1 <- lm(larvae_total_number ~ ivip, data = data250pisum_04)
-model2 <- lmer(larvae_total_number ~ ivip + (1 | session), data = data250pisum_04)
-model3 <- lmer(larvae_total_number ~ ivip + (1 | session/block), data = data250pisum_04)
-model4 <- glm.nb(formula = larvae_total_number ~ ivip +session/block, data = data250pisum_04)
-model5 <- glm.nb(formula = larvae_total_number ~ ivip +session, data = data250pisum_04)
+model0 <- lm(larvae_total_number ~ 1, data = data250pisum)
+model1 <- lm(larvae_total_number ~ ivip, data = data250pisum)
+model2 <- lmer(larvae_total_number ~ ivip + (1 | session), data = data250pisum)
+model3 <- lmer(larvae_total_number ~ ivip + (1 | session/block), data = data250pisum)
+model4 <- glm.nb(formula = larvae_total_number ~ ivip +session/block, data = data250pisum)
+model5 <- glm.nb(formula = larvae_total_number ~ ivip +session, data = data250pisum)
 ```
 
 ```{r}
@@ -76,9 +77,7 @@ Most assumptions seem to be valid: normality of residuals, normality of random e
 plot(compare_performance(model0, model1, model2,model3))
 ```
 
-```{r}
-test_lrt(model0, model1)
-```
+
 
 ```{r}
 test_lrt(model1, model2)
@@ -90,12 +89,11 @@ test_lrt(model2, model3)
 
 # Generalized model fitting (negative binomial distribution)
 
-
 ```{r}
 
-model <- model3
 
-anova(model)
+
+anova(model3)
 
 #variance stability
 
@@ -104,8 +102,8 @@ anova(model)
 
 
 # Extract fitted values and residuals
-fitted_values <- fitted(model)
-residuals_values <- residuals(model)
+fitted_values <- fitted(model3)
+residuals_values <- residuals(model3)
 
 #homosedasticity
 # Plot residuals vs fitted values
@@ -123,11 +121,11 @@ qqline(residuals_values, col = "red")
 
 #residual independance
 # Plot residuals over time (for time-series data)
-plot(residuals(model), type="o", col="blue", main="Residuals over Time", xlab="Index", ylab="Residuals")
+plot(residuals(model3), type="o", col="blue", main="Residuals over Time", xlab="Index", ylab="Residuals")
 
 
 # Extract EMMeans for genotype
-emm_genotype <- emmeans(model, ~ ivip)
+emm_genotype <- emmeans(model3, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
 hist(emm_df$emmean)
 
