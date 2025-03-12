@@ -14,8 +14,6 @@ suppressPackageStartupMessages(library(emmeans))
 #################################################################################
 
 
-# Import all fecundity measurements from 2022-2023 (N=251 genotypes), P2-xp007, P2-xp009
-source("02.analyses/02.Discriminant_Genotypes/2025_consistency_analysis/Aphis Fabae/preparation data fabae.R")
 
 
 ####### ploting median consistency ##########################################

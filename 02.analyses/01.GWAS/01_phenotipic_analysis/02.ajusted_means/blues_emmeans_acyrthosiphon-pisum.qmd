@@ -77,8 +77,6 @@ Most assumptions seem to be valid: normality of residuals, normality of random e
 plot(compare_performance(model0, model1, model2,model3))
 ```
 
-
-
 ```{r}
 test_lrt(model1, model2)
 ```

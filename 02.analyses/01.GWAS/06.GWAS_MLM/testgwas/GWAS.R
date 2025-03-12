@@ -11,12 +11,13 @@ testmyGM=read.table(file="http://zzlab.net/GAPIT/data/mdp_SNP_information.txt",h
 library(data.table)
 library(vcfR)   
 library(tidyverse)
+library(dplyr)
 
 
 
-pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/emmeans_fabae.csv", sep = ",")        
+pheno<-read.csv("01_phenotipic_analysis/02.ajusted_means/BLUEs_pisum.csv", sep = ",")        
 
-pheno<- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", 
+#pheno<- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", 
                                       sep =",", 
                                       stringsAsFactors = F) %>% 
   dplyr::select(ivip, cluster_name) %>% 
@@ -30,18 +31,21 @@ pheno <- subset(pheno, cluster_name %in% c("South", "South_America"))
 pheno <- pheno[,c(1,3)]
 
 
-myGD1 <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE)%>% select(-1)
 
 
 
-myGD2 <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.indv",header = FALSE,stringsAsFactors =  FALSE)
+myGD1 <-fread(file = "../../../../../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
+myGD1 <- myGD1[, -1, with = FALSE]  # Removes the first column
 
-myKI <- fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5_kinship.cXX.txt")
+
+myGD2 <-fread(file = "../../../../../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.indv",header = FALSE,stringsAsFactors =  FALSE)
+
+myKI <- fread(file = "../../../../../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5_kinship.cXX.txt")
 # Load datasets
 
 
 
-myGM <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
+myGM <-fread(file = "../../../../../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
     "chromosome" = "V1",
     "position" = "V2"
   )%>% mutate(snp_id=paste(chromosome,position, sep = "_")) %>% relocate(snp_id,.before = chromosome) 
@@ -65,6 +69,6 @@ myGAPIT_MLM <- GAPIT(
   GM=myGM,
   KI = myKI,
   PCA.total=3,
-  model=c("GLM", "MLM", "CMLM", "FarmCPU", "Blink"),
+  model=c("MLM", "FarmCPU", "Blink"),
   Multiple_analysis=TRUE)
 
