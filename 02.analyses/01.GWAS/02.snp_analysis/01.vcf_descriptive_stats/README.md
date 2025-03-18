@@ -56,6 +56,22 @@ GT:AD:DP:GQ:PL
 - **PL: Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification**.   
 
 
+## Calculation using vcftools
+
+### Heterozygosity
+
+Definition and Calculation:
+
+> The inbreeding coefficient F is calculated as F=1−O(Het)/E(Het) 
+	where O(Het) is the observed heterozygosity and E(Het) is the expected heterozygosity under Hardy-Weinberg equilibrium. 
+	This formula measures the excess or deficit of heterozygosity at a variant site (https://gatk.broadinstitute.org/hc/en-us/articles/360035531992-Inbreeding-Coefficient)
+
+```bash
+vcftools --vcf vfaba_noindels_bisnps_maf_miss.recode.vcf --het --out heterozygosity_stats
+```
+
+
+
 
 
 # Complete header of PeaMUST Vicia faba VCF file
