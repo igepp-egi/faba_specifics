@@ -4,7 +4,7 @@ require(lme4)
 calculate_broad_heritability <- function(data) {
   
   # Fit the model with a fixed formula
-  mod_h2 <- lme4::lmer(larvae_total_number ~ (1 | genotype) + (1 | session), data = data)
+  mod_h2 <- lme4::lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data)
   
   # Get the variance components
   estimates <- as.data.frame(VarCorr(mod_h2))
@@ -20,7 +20,7 @@ calculate_broad_heritability <- function(data) {
   h2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
   
   
-  nlvl<-nlevels(data$genotype)
+  nlvl<-nlevels(data$ivip)
   
   nnotation<-nrow(data)
   

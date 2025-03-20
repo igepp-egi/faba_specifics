@@ -34,7 +34,7 @@ source("../create_correlation_plot.R")
 data250pisum_00 <- read.csv("../../../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", 
                             stringsAsFactors = FALSE, 
                             sep = ",") %>%  
-  mutate(genotype = as.factor(genotype)) %>% 
+  mutate(ivip = as.factor(ivip)) %>% 
   mutate(session = as.factor(session)) 
 
 res <- calculate_broad_heritability(data = data250pisum_00)
@@ -51,7 +51,7 @@ Conclusions:\
 
 ```{r}
 data250pisum_01 <- data250pisum_00 %>% filter(!is.na(larvae_total_number))
-data250pisum_01$genotype <- droplevels(data250pisum_01$genotype)
+data250pisum_01$ivip <- droplevels(data250pisum_01$ivip)
 
 res2 <- calculate_broad_heritability(data = data250pisum_01)
 ```
@@ -70,7 +70,7 @@ Conclusions:\
 #| echo: true
 
 create_correlation_plot(data = data250pisum_01,
-                        group_cols = c("genotype", "session"),
+                        group_cols = c("ivip", "session"),
                         value_col = "larvae_total_number")
 ```
 
@@ -84,7 +84,7 @@ When the adult aphid dies, the number of larvae will drop but only because the a
 ```{r remove observations with adult not alive}
 
 data250pisum_02<- data250pisum_01 %>% filter(adult_alive != "0") 
-data250pisum_02$genotype <- droplevels(data250pisum_02$genotype)
+data250pisum_02$ivip <- droplevels(data250pisum_02$ivip)
 
 res3 <- calculate_broad_heritability(data = data250pisum_02)
 ```
@@ -103,7 +103,7 @@ This filtering led to the loss of 1 genotype but increased broad sense heritabil
 
 # Call the function to generate and display the correlation plot
 create_correlation_plot(data250pisum_02, 
-                         group_cols = c("genotype", "session"), 
+                         group_cols = c("ivip", "session"), 
                          value_col = "larvae_total_number")
 ```
 
@@ -112,16 +112,53 @@ Distribution normality check.
 #| echo: true
 #| fig-width: 8
 
-p1 <- data250pisum_02 %>% 
+p_with <- data250pisum_02 %>% 
   ggplot(mapping = aes(sample=larvae_total_number)) +
   stat_qq() +
   stat_qq_line() +
   labs(y = "Observed quantiles", x = "Theoretical quantiles") +
   ggtitle("Without NA values") +
   theme_bw()
-p1
+p_with
 ```
+
+
+
+```{r comparison of qqplots with and without outliers}
+
+x<-1.5
+IQR_value <- IQR(data250pisum_02$larvae_total_number)
+lower_bound <- quantile(data250pisum_02$larvae_total_number, 0.25) - x * IQR_value
+upper_bound <- quantile(data250pisum_02$larvae_total_number, 0.75) + x * IQR_value
+
+# Filter out outliers
+data250pisum_03 <- data250pisum_02[data250pisum_02$larvae_total_number >= lower_bound & data250pisum_02$larvae_total_number <= upper_bound, ]
+
+# Identify the rows that were removed (outliers)
+removed_outliers <- data250pisum_02[data250pisum_02$larvae_total_number < lower_bound | data250pisum_02$larvae_total_number > upper_bound, ]
+
+
+#| fig-width: 8
+
+# Without outliers
+p_without <- data250pisum_03 %>% 
+  ggplot(mapping = aes(sample=larvae_total_number)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(y = "Observed quantiles", x = "Theoretical quantiles") +
+  ggtitle("Without outliers") +
+  theme_bw()
+
+
+p_with + p_without
+
+```
+
 \newpage
+
+
+
+
 
 # Finding the optimal number of biological replicates
 
@@ -138,17 +175,20 @@ Let's extract:
 
 dfb <- data.frame(Column1 = character(), Column2 = character(), Column3 = character())
 
-for (i in 1:13) {
-  data <- data250pisum_02 %>%
-    group_by(genotype) %>%           # Group by genotype
+data250pisum_03 <- na.omit(data250pisum_03)
+
+
+for (i in 1:12) {
+  data <- data250pisum_03 %>%
+    group_by(ivip) %>%           # Group by genotype
     filter(n() >= i) %>%             # Keep only groups with i or more repetitions
     ungroup() 
-  data$genotype <- droplevels(data$genotype)
-  nlvl<-nlevels(data$genotype)
+  data$ivip <- droplevels(data$ivip)
+  nlvl<-nlevels(data$ivip)
   
   
   # Fit the model with a fixed formula
-  mod_h2 <- lmer(larvae_total_number ~ (1 | genotype) + (1 | session), data = data)
+  mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data)
   
   # Get the variance components
   estimates <- as.data.frame(VarCorr(mod_h2))
@@ -214,11 +254,11 @@ Based on these results, a threshold of >=6 biological replicates seems appropria
 # Final filtering: keep genotypes with at least 6 biological repetitions
 
 ```{r}
-data250pisum_04 <- data250pisum_02 %>%
-  group_by(genotype) %>%           # Group by genotype
+data250pisum_04 <- data250pisum_03 %>%
+  group_by(ivip) %>%           # Group by genotype
   filter(n() >= 6) %>%             # Keep only groups with 7 or more repetitions
   ungroup()  
-data250pisum_04$genotype <- droplevels(data250pisum_04$genotype)
+data250pisum_04$ivip <- droplevels(data250pisum_04$ivip)
 res4 <- calculate_broad_heritability(data = data250pisum_04)
 ```
 
@@ -235,7 +275,7 @@ Conclusions:\
 
 # Call the function to generate and display the correlation plot
 create_correlation_plot(data250pisum_04, 
-                         group_cols = c("genotype", "session"), 
+                         group_cols = c("ivip", "session"), 
                          value_col = "larvae_total_number")
 ```
 

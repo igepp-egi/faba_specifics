@@ -12,6 +12,7 @@ suppressPackageStartupMessages(library("lme4"))
 suppressPackageStartupMessages(library("Hmisc"))
 suppressPackageStartupMessages(library("corrplot"))
 suppressPackageStartupMessages(library("emmeans"))
+suppressPackageStartupMessages(library("performance"))
 
 ```
 

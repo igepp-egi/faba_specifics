@@ -25,7 +25,7 @@ suppressPackageStartupMessages(library("MASS"))
 
 ```{r}
 data250pisum <- read.csv("../../01_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", stringsAsFactors = F)
-data250pisum$genotype <- as.factor(data250pisum$genotype)
+data250pisum$genotype <- as.factor(data250pisum$ivip)
 ```
 
 ## Data distribution
