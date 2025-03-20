@@ -4,13 +4,28 @@ format: pdf
 editor: visual
 ---
 
+```{r library}
+#| echo: false
+#| warning: false
 
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("lme4"))
+suppressPackageStartupMessages(library("Hmisc"))
+suppressPackageStartupMessages(library("corrplot"))
+suppressPackageStartupMessages(library("emmeans"))
+suppressPackageStartupMessages(library("patchwork"))
+suppressPackageStartupMessages(library("ggplot2"))
+suppressPackageStartupMessages(library("dplyr"))
+
+
+```
 
 ## data prep
 
 the dataset is loaded and curred. We remove adult = 0 and NAs
+
 ```{r}
-data250_afabae_00 <- read.csv("01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = FALSE, sep = ",") %>%  
+data250_afabae_00 <- read.csv("../../../../01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = FALSE, sep = ",") %>%  
   mutate(ivip = as.factor(ivip)) %>% 
   mutate(session = as.factor(session)) 
 
@@ -26,6 +41,7 @@ data250_afabae_02$ivip <-as.factor(data250_afabae_02$ivip)
 
 
 ```
+
 Once we have removed the NAs and all rows for which we don't have an adult, we can still make adjustments to the dataset. We can remove outliers to ensure that our distribution approaches a normal distribution, and we can also filter out genotypes based on a threshold for the minimum number of repetitions required to keep a genotype.
 
 The goal of this script is to study how our model reacts to changes in the outlier removal rate and the minimum number of repetitions required to retain a genotype.
@@ -43,9 +59,7 @@ results <- data.frame(x = numeric(0), i = numeric(0), AIC = numeric(0), BIC = nu
 
 # Loop through different values of x
 for (x in x_values) {
-  print(x)
   for (i in 3:7) {
-    print(i)
     # Calculate IQR and bounds for outlier removal
     IQR_value <- IQR(data250_afabae_02$larvae_total_number)
     lower_bound <- quantile(data250_afabae_02$larvae_total_number, 0.25) - x * IQR_value
@@ -124,8 +138,7 @@ for (x in x_values) {
 
 the file results contain all the data we need
 
-to annalyse it we can plot different parameters
-also we can colorate the graph based on the value of i or x to understand the patern and impact of these 2 parameters. 
+to annalyse it we can plot different parameters also we can colorate the graph based on the value of i or x to understand the patern and impact of these 2 parameters.
 
 ```{r}
 
@@ -136,7 +149,16 @@ ggplot(results, aes(x = n_after, y = shapiro, color = i)) +
        y = "Shapiro-Wilk p-value", 
        color = "i Variable") +  # Color legend label
   theme_minimal()
+
+ggplot(results, aes(x = n_after, y = shapiro, color = x)) + 
+  geom_point() +  # Scatter plot with colored points based on 'x'
+  labs(title = "Shapiro-Wilk Test p-values vs n_after", 
+       x = "n_after", 
+       y = "Shapiro-Wilk p-value", 
+       color = "x Variable") +  # Color legend label
+  theme_minimal()
 ```
+
 a high shapiro value indicate a more normal distribution of the residuals
 
 ```{r}
@@ -147,9 +169,17 @@ ggplot(results, aes(x = NGEN, y = AIC, color = x)) +
        y = "AIC", 
        color = "X Variable") +  # Color legend label
   theme_minimal()
-```
-ngen = how many genotypes we keep
 
+ggplot(results, aes(x = NGEN, y = AIC, color = i)) + 
+  geom_point() +  # Scatter plot with colored points based on 'i'
+  labs(title = "NGEN vs AIC", 
+       x = "NGEN", 
+       y = "AIC", 
+       color = "i Variable") +  # Color legend label
+  theme_minimal()
+```
+
+ngen = how many genotypes we keep
 
 ```{r}
 ggplot(results, aes(x = NGEN, y = RMSE, color = i)) + 
@@ -158,6 +188,14 @@ ggplot(results, aes(x = NGEN, y = RMSE, color = i)) +
        x = "NGEN", 
        y = "RMSE", 
        color = "i Variable") +  # Color legend label
+  theme_minimal()
+
+ggplot(results, aes(x = NGEN, y = RMSE, color = x)) + 
+  geom_point() +  # Scatter plot with colored points based on 'x'
+  labs(title = "NGEN vs RMSE", 
+       x = "NGEN", 
+       y = "RMSE", 
+       color = "x Variable") +  # Color legend label
   theme_minimal()
 
 ```
@@ -170,8 +208,15 @@ ggplot(results, aes(x = NGEN, y = H2, color = x)) +
        y = "H2", 
        color = "X Variable") +  # Color legend label
   theme_minimal()
-```
 
+ggplot(results, aes(x = NGEN, y = H2, color = i)) + 
+  geom_point() +  # Scatter plot with colored points based on 'i'
+  labs(title = "NGEN vs H2", 
+       x = "NGEN", 
+       y = "H2", 
+       color = "i Variable") +  # Color legend label
+  theme_minimal()
+```
 
 ```{r}
 ggplot(results, aes(x = AIC, y = H2, color = i)) + 
@@ -191,7 +236,4 @@ ggplot(results, aes(x = RMSE, y = AIC, color = i)) +
        y = "Shapiro-Wilk p-value", 
        color = "X Variable") +  # Color legend label
   theme_minimal()
-
 ```
-
-
