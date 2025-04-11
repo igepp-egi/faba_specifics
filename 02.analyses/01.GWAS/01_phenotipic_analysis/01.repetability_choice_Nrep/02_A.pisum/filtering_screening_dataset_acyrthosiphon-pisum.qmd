@@ -123,6 +123,35 @@ p_with
 ```
 
 
+```{r}
+#data250pisum_03<- data250pisum_02 %>% filter(larvae_total_number != "0") 
+#data250pisum_03$ivip <- droplevels(data250pisum_03$ivip)
+
+#res4 <- calculate_broad_heritability(data = data250pisum_03)
+```
+
+
+
+```{r comparison of qqplots with and without outliers}
+#| fig-width: 8
+
+# Without outliers
+p_without <- data250pisum_03 %>% 
+  ggplot(mapping = aes(sample=larvae_total_number)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(y = "Observed quantiles", x = "Theoretical quantiles") +
+  ggtitle("Without outliers") +
+  theme_bw()
+
+p_with + p_without 
+
+```
+
+
+
+
+
 
 ```{r comparison of qqplots with and without outliers}
 
@@ -256,7 +285,7 @@ Based on these results, a threshold of >=6 biological replicates seems appropria
 ```{r}
 data250pisum_04 <- data250pisum_03 %>%
   group_by(ivip) %>%           # Group by genotype
-  filter(n() >= 6) %>%             # Keep only groups with 7 or more repetitions
+  filter(n() >= 3) %>%             # Keep only groups with 7 or more repetitions
   ungroup()  
 data250pisum_04$ivip <- droplevels(data250pisum_04$ivip)
 res4 <- calculate_broad_heritability(data = data250pisum_04)

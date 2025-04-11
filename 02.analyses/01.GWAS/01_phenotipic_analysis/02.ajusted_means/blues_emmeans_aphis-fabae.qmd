@@ -81,6 +81,11 @@ hist(residuals_values, main="Histogram of Residuals", xlab="Residuals", breaks=2
 qqnorm(residuals_values)
 qqline(residuals_values, col = "red")
 
+shapiro_result <- shapiro.test(residuals_values)
+    
+    # Print the p-value (this is your quantification of normality)
+    shapiro <- shapiro_result$p.value
+
 #residual independance
 # Plot residuals over time (for time-series data)
 plot(residuals(model3), type="o", col="blue", main="Residuals over Time", xlab="Index", ylab="Residuals")

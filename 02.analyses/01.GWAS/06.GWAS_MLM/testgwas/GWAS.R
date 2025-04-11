@@ -74,6 +74,6 @@ myGAPIT_MLM <- GAPIT(
 
 
 
-as.data.frame(test) <- myGD$chr5_1349197397
+ as.data.frame(test) <- myGD$chr5_1349197397
 test<-as.data.frame(myGD$chr5_1349197397)
 test2 <-cbind(test,myY)

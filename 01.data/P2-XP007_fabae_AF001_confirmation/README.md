@@ -12,7 +12,6 @@ Once the most contrasted genotypes are confirmed, they can be further investigat
 
 ### L1 larvae aphid rearing
 
-P123 is a clone of _Acyrtosiphon pisum_ from the pea biotype (cf Ollivier et al. 2022 TAG).  
 
 - Step 1: G0 adults were transferred on Castell faba bean plants for 24h to obtain several single one-day old L1 larvae (G1-L1).   
 - Step 2: these G1-L1 larvae developped into adults (G1-adults) during approx. 15 days at 18-/+ 1.5 degrees.   

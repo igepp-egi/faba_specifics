@@ -93,7 +93,7 @@ create_correlation_plot(data250_afabae_01,
 
 We chose to remove all data from plants on which no adult aphid was found. This decision was made to get rid of larvae installation bias and only assess the reproduction ability of the aphid.
 
-When the adult aphid dies, the number of larvae will drop but only because the adult stayed less longer on the plant and not because the plant was not suitable for the reproduction.
+When the adult aphid dies, the number of larvae will drop but only because the adult stayed spent less time on the plant and not because the plant was not suitable for the reproduction.
 
 ```{r}
 #| echo: true
@@ -148,6 +148,12 @@ data250_afabae_02[top_3_indices, ] %>% dplyr::select(genotype, ivip, aphid, larv
 
 # Remove the rows with the top 3 highest values
 data250_afabae_03 <- data250_afabae_02[-top_3_indices, ]
+
+data250_afabae_03<- data250_afabae_03 %>% filter(larvae_total_number != "0") #remove if no adult
+data250_afabae_03$ivip <- droplevels(data250_afabae_03$ivip)
+
+res4 <- calculate_broad_heritability(data = data250_afabae_03)
+
 ```
 
 ```{r comparison of qqplots with and without outliers}
@@ -168,7 +174,7 @@ p_with + p_without
 
 ```{r comparison of qqplots with and without outliers}
 
-x<-1.45
+x<-1.5
 IQR_value <- IQR(data250_afabae_02$larvae_total_number)
 lower_bound <- quantile(data250_afabae_02$larvae_total_number, 0.25) - x * IQR_value
 upper_bound <- quantile(data250_afabae_02$larvae_total_number, 0.75) + x * IQR_value
@@ -316,7 +322,7 @@ Based on these results, a threshold of \>=5 biological replicates seems appropri
 
 data250_afabae_04 <- data250_afabae_03 %>%
   group_by(ivip) %>%           # Group by genotype
-  filter(n() >= 4) %>%             # Keep only groups with 6 or more repetitions
+  filter(n() >= 3) %>%             # Keep only groups with 6 or more repetitions
   ungroup()  
 data250_afabae_04$ivip <- droplevels(data250_afabae_04$ivip)
 

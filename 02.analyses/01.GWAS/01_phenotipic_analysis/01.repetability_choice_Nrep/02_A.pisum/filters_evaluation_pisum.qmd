@@ -1,0 +1,415 @@
+---
+title: "choosing filters"
+format: pdf
+editor: visual
+---
+
+```{r library}
+#| echo: false
+#| warning: false
+
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("lme4"))
+suppressPackageStartupMessages(library("Hmisc"))
+suppressPackageStartupMessages(library("corrplot"))
+suppressPackageStartupMessages(library("emmeans"))
+suppressPackageStartupMessages(library("patchwork"))
+suppressPackageStartupMessages(library("ggplot2"))
+suppressPackageStartupMessages(library("dplyr"))
+
+
+```
+
+## data prep
+
+the dataset is loaded and curred. We remove adult = 0 and NAs
+
+```{r}
+data250_apisum_00 <- read.csv("../../../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", stringsAsFactors = FALSE, sep = ",") %>%  
+  mutate(ivip = as.factor(ivip)) %>% 
+  mutate(session = as.factor(session)) 
+
+
+
+data250_apisum_01 <- data250_apisum_00 %>% filter(!is.na(larvae_total_number))
+data250_apisum_01$ivip <- droplevels(data250_apisum_01$ivip)
+
+data250_apisum_02<- data250_apisum_01 %>% filter(adult_alive != "0") #remove if no adult
+data250_apisum_02$ivip <- droplevels(data250_apisum_02$ivip)
+
+data250_apisum_02$ivip <-as.factor(data250_apisum_02$ivip)
+
+
+```
+
+Once we have removed the NAs and all rows for which we don't have an adult, we can still make adjustments to the dataset. We can remove outliers to ensure that our distribution approaches a normal distribution, and we can also filter out genotypes based on a threshold for the minimum number of repetitions required to keep a genotype.
+
+The goal of this script is to study how our model reacts to changes in the outlier removal rate and the minimum number of repetitions required to retain a genotype.
+
+in the folowing loop we varry two parameters, i and x the coef of stringensy for the outliers removal and the minimal number of reps for the genotypes respectively.
+
+when x = 1 we remove a lot of outlier and when x = 2 almost no outliers are removed
+
+```{r}
+
+# Initialize an empty data frame to store results
+results <- data.frame(x = numeric(0), i = numeric(0), AIC = numeric(0), BIC = numeric(0), RMSE = numeric(0), 
+                      n_before = numeric(0), n_after = numeric(0), n_diff = numeric(0), H2=numeric(0),shapiro=numeric(0),shapiro_res=numeric(0),NGEN=numeric(0), stringsAsFactors = FALSE)
+
+# Loop through different values of x
+for (i in 3:7) {
+  ###filter based on IQR
+    # Calculate IQR and bounds for outlier removal
+    IQR_value <- IQR(data250_apisum_02$larvae_total_number)
+    lower_bound <- quantile(data250_apisum_02$larvae_total_number, 0.25) - 1.5 * IQR_value
+    upper_bound <- quantile(data250_apisum_02$larvae_total_number, 0.75) + 1.5 * IQR_value
+    filter ="IQR"
+    # Filter out outliers
+    data <- data250_apisum_02[data250_apisum_02$larvae_total_number >= lower_bound & data250_apisum_02$larvae_total_number <= upper_bound, ]
+    
+    
+    data <- data %>%
+      group_by(ivip) %>%           # Group by genotype
+      filter(n() >= i) %>%             # Keep only groups with i or more repetitions
+      ungroup() 
+    
+    
+    data$ivip <- droplevels(data$ivip)
+    
+    NGEN<-nlevels(data$ivip)
+    
+   
+    # Number of rows before removing outliers
+    n_before <- nrow(data250_apisum_02)
+    
+    
+    # Number of rows after removing outliers
+    n_after <- nrow(data)
+    
+    # Calculate the difference in number of observations
+    n_diff <- n_before - n_after
+    
+    # Fit the model
+    mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
+    
+    # Extract fitted values and residuals
+    fitted_values <- fitted(mod)
+    residuals_values <- residuals(mod)
+    
+    # Perform the Shapiro-Wilk test
+    shapiro_result <- shapiro.test(residuals_values)
+    
+    # Print the p-value (this is your quantification of normality)
+    shapiro_res <- shapiro_result$p.value
+    
+    # Perform the Shapiro-Wilk test
+    shapiro_result <- shapiro.test(data$larvae_total_number)
+    
+    # Print the p-value (this is your quantification of normality)
+    shapiro <- shapiro_result$p.value
+    
+    # Calculate AIC and BIC
+    model_AIC <- AIC(mod)
+    model_BIC <- BIC(mod)
+    
+    # Calculate RMSE (Root Mean Squared Error)
+    RMSE <- sqrt(mean(residuals_values^2))
+    
+    # Fit the model with a fixed formula
+    mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data)
+    
+    # Get the variance components
+    estimates <- as.data.frame(VarCorr(mod_h2))
+    
+    # Extract the relevant variance components
+    genetic_variance <- estimates$vcov[1]
+    residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
+    
+    nbE <-nlevels(data$session)
+    
+    # Calculate heritability (h2)
+    H2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
+    
+    
+    
+    # Store the results in the data frame
+    results <- rbind(results, data.frame(filter = filter, i = i, AIC = model_AIC, BIC = model_BIC, RMSE = RMSE, n_before = n_before, n_after = n_after, n_diff = n_diff, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
+}
+
+for (i in 3:7) {
+  data <- data250_apisum_02
+  filter <- "no_filter"
+ 
+
+    data <- data %>%
+      group_by(ivip) %>%           # Group by genotype
+      filter(n() >= i) %>%             # Keep only groups with i or more repetitions
+      ungroup() 
+    
+    
+    data$ivip <- droplevels(data$ivip)
+    
+    NGEN<-nlevels(data$ivip)
+    
+   
+    # Number of rows before removing outliers
+    n_before <- nrow(data250_apisum_02)
+    
+    
+    # Number of rows after removing outliers
+    n_after <- nrow(data)
+    
+    # Calculate the difference in number of observations
+    n_diff <- n_before - n_after
+    
+    # Fit the model
+    mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
+    
+    # Extract fitted values and residuals
+    fitted_values <- fitted(mod)
+    residuals_values <- residuals(mod)
+    
+    # Perform the Shapiro-Wilk test
+    shapiro_result <- shapiro.test(residuals_values)
+    
+    # Print the p-value (this is your quantification of normality)
+    shapiro_res <- shapiro_result$p.value
+    
+    # Perform the Shapiro-Wilk test
+    shapiro_result <- shapiro.test(data$larvae_total_number)
+    
+    # Print the p-value (this is your quantification of normality)
+    shapiro <- shapiro_result$p.value
+    # Calculate AIC and BIC
+    model_AIC <- AIC(mod)
+    model_BIC <- BIC(mod)
+    
+    # Calculate RMSE (Root Mean Squared Error)
+    RMSE <- sqrt(mean(residuals_values^2))
+    
+    # Fit the model with a fixed formula
+    mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data)
+    
+    # Get the variance components
+    estimates <- as.data.frame(VarCorr(mod_h2))
+    
+    # Extract the relevant variance components
+    genetic_variance <- estimates$vcov[1]
+    residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
+    
+    nbE <-nlevels(data$session)
+    
+    # Calculate heritability (h2)
+    H2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
+    
+    
+    
+    # Store the results in the data frame
+    results <- rbind(results, data.frame(filter =filter, i = i, AIC = model_AIC, BIC = model_BIC, RMSE = RMSE, n_before = n_before, n_after = n_after, n_diff = n_diff, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
+}
+
+for (i in 3:7) {
+ ###manual filter
+  filter <-"manual_filter"
+  
+
+
+data250_apisum_03<- data250_apisum_02 %>% filter(larvae_total_number != "0") 
+
+data250_apisum_03$ivip <- droplevels(data250_apisum_03$ivip)
+data <- data250_apisum_03
+    data <- data %>%
+      group_by(ivip) %>%           # Group by genotype
+      filter(n() >= i) %>%             # Keep only groups with i or more repetitions
+      ungroup() 
+    
+    data$ivip <- droplevels(data$ivip)
+    
+    NGEN<-nlevels(data$ivip)
+    
+   
+    # Number of rows before removing outliers
+    n_before <- nrow(data250_apisum_02)
+    
+    
+    # Number of rows after removing outliers
+    n_after <- nrow(data)
+    
+    # Calculate the difference in number of observations
+    n_diff <- n_before - n_after
+    
+    # Fit the model
+    mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
+    
+    # Extract fitted values and residuals
+    fitted_values <- fitted(mod)
+    residuals_values <- residuals(mod)
+    
+    # Perform the Shapiro-Wilk test
+    shapiro_result <- shapiro.test(residuals_values)
+    
+    # Print the p-value (this is your quantification of normality)
+    shapiro_res <- shapiro_result$p.value
+    
+    
+    # Perform the Shapiro-Wilk test
+    shapiro_result <- shapiro.test(data$larvae_total_number)
+    
+    # Print the p-value (this is your quantification of normality)
+    shapiro <- shapiro_result$p.value
+    
+    # Calculate AIC and BIC
+    model_AIC <- AIC(mod)
+    model_BIC <- BIC(mod)
+    
+    # Calculate RMSE (Root Mean Squared Error)
+    RMSE <- sqrt(mean(residuals_values^2))
+    
+    # Fit the model with a fixed formula
+    mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data)
+    
+    # Get the variance components
+    estimates <- as.data.frame(VarCorr(mod_h2))
+    
+    # Extract the relevant variance components
+    genetic_variance <- estimates$vcov[1]
+    residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
+    
+    nbE <-nlevels(data$session)
+    
+    # Calculate heritability (h2)
+    H2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
+    
+    
+    
+    # Store the results in the data frame
+    results <- rbind(results, data.frame(filter = filter, i = i, AIC = model_AIC, BIC = model_BIC, RMSE = RMSE, n_before = n_before, n_after = n_after, n_diff = n_diff, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
+}
+
+
+
+```
+
+
+```{r}
+write.csv(x = results, 
+          file = "filter_annalysis.csv", 
+          quote = F, row.names = F)
+
+```
+
+
+
+
+
+
+the file results contain all the data we need
+
+to annalyse it we can plot different parameters also we can colorate the graph based on the value of i or x to understand the patern and impact of these 2 parameters.
+
+```{r}
+
+ggplot(results, aes(x = n_after, y = shapiro, color = i)) + 
+  geom_point() +  # Scatter plot with colored points based on 'i'
+  labs(title = "Shapiro-Wilk Test p-values vs n_after", 
+       x = "n_after", 
+       y = "Shapiro-Wilk p-value", 
+       color = "i Variable") +  # Color legend label
+  theme_minimal()
+
+ggplot(results, aes(x = RMSE, y = BIC, color = filter)) + 
+  geom_point() +  # Scatter plot with colored points based on 'x'
+  labs(title = "Shapiro-Wilk Test p-values vs n_after", 
+       x = "RMSE", 
+       y = "BIC", 
+       color = "x Variable") +  # Color legend label
+  theme_minimal()
+
+
+ggplot(results, aes(x = NGEN, y = AIC, color = filter)) + 
+  geom_point() +  # Scatter plot with colored points based on 'i'
+  labs(title = "Shapiro-Wilk Test p-values vs n_after", 
+       x = "shapiro", 
+       y = "shapiro res", 
+       color = "i Variable") +  # Color legend label
+  theme_minimal()
+```
+
+a high shapiro value indicate a more normal distribution of the residuals
+
+```{r}
+ggplot(results, aes(x = NGEN, y = AIC, color = x)) + 
+  geom_point() +  # Scatter plot with colored points based on 'x'
+  labs(title = "NGEN vs AIC", 
+       x = "NGEN", 
+       y = "AIC", 
+       color = "X Variable") +  # Color legend label
+  theme_minimal()
+
+ggplot(results, aes(x = NGEN, y = AIC, color = i)) + 
+  geom_point() +  # Scatter plot with colored points based on 'i'
+  labs(title = "NGEN vs AIC", 
+       x = "NGEN", 
+       y = "AIC", 
+       color = "i Variable") +  # Color legend label
+  theme_minimal()
+```
+
+ngen = how many genotypes we keep
+
+```{r}
+ggplot(results, aes(x = NGEN, y = RMSE, color = i)) + 
+  geom_point() +  # Scatter plot with colored points based on 'i'
+  labs(title = "NGEN vs RMSE", 
+       x = "NGEN", 
+       y = "RMSE", 
+       color = "i Variable") +  # Color legend label
+  theme_minimal()
+
+ggplot(results, aes(x = NGEN, y = RMSE, color = x)) + 
+  geom_point() +  # Scatter plot with colored points based on 'x'
+  labs(title = "NGEN vs RMSE", 
+       x = "NGEN", 
+       y = "RMSE", 
+       color = "x Variable") +  # Color legend label
+  theme_minimal()
+
+```
+
+```{r}
+ggplot(results, aes(x = NGEN, y = H2, color = x)) + 
+  geom_point() +  # Scatter plot with colored points based on 'x'
+  labs(title = "NGEN vs H2", 
+       x = "NGEN", 
+       y = "H2", 
+       color = "X Variable") +  # Color legend label
+  theme_minimal()
+
+ggplot(results, aes(x = NGEN, y = H2, color = i)) + 
+  geom_point() +  # Scatter plot with colored points based on 'i'
+  labs(title = "NGEN vs H2", 
+       x = "NGEN", 
+       y = "H2", 
+       color = "i Variable") +  # Color legend label
+  theme_minimal()
+```
+
+```{r}
+ggplot(results, aes(x = AIC, y = H2, color = i)) + 
+  geom_point() +  # Scatter plot with colored points based on 'x'
+  labs(title = "AIC vs H2", 
+       x = "AIC", 
+       y = "H2", 
+       color = "i Variable") +  # Color legend label
+  theme_minimal()
+```
+
+```{r}
+ggplot(results, aes(x = RMSE, y = AIC, color = i)) + 
+  geom_point() +  # Scatter plot with colored points based on 'i'
+  labs(title = "Shapiro-Wilk Test p-values vs n_after", 
+       x = "n_after", 
+       y = "Shapiro-Wilk p-value", 
+       color = "X Variable") +  # Color legend label
+  theme_minimal()
+```
