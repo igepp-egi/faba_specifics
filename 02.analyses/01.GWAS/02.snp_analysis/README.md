@@ -4,13 +4,15 @@
 
 Goals:  
 - To verify numbers after filtering for minor allele frequency etc. 
-- To describe SNP metrics (number per chromosome, heterozygosity, etc.) before and after filtering. 
+- To describe SNP metrics (number per chromosome) before and after filtering. 
 
-## Analysis 2: population genetic stats
+## Analysis 2: heterozygosity population genetic stats
 
-TO BE DONE > LD decay etc. 
+## Analysis 3: calculate LD decay 
 
-## Analysis 3: analysis per cluster
+[FIXME]
 
-Intra-cluster nucleotide diversity. 
-Comparison of Fst between clusters. 
+## Analysis 4: genetic diversity between and per genetic cluster
+
+Intra-cluster nucleotide diversity.   
+Comparison of Fst between clusters.   

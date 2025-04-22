@@ -1,6 +1,6 @@
-# Steps using vcftools 0.1.16
+# Verify numbers of SNPs after each filter
 
-Goal: to reproduce **PEAMUST_vfaba_F1b.vcf.gz** (SNPs + INDELS with heterozygosity<15%, MAF<1% and less than 10% missing data)
+Goal: to recreate **PEAMUST_vfaba_F1b.vcf.gz** (SNPs + INDELS with heterozygosity<15%, MAF<1% and less than 10% missing data)
 
 Filters: 
 - filter 0: 6,425,454 SNPs in total.   
