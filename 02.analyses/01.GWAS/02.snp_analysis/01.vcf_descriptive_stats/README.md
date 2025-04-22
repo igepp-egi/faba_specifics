@@ -56,9 +56,14 @@ GT:AD:DP:GQ:PL
 - **PL: Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification**.   
 
 
-## Calculation using vcftools
+## SNP calculations
 
-### Heterozygosity
+### 01. SNP numbers after filtering
+
+To verify the numbers in [the different VCF files provided](./snp_different_filters.png). 
+
+
+### 02. Heterozygosity
 
 Definition and Calculation:
 
@@ -69,10 +74,6 @@ Definition and Calculation:
 ```bash
 vcftools --vcf vfaba_noindels_bisnps_maf_miss.recode.vcf --het --out heterozygosity_stats
 ```
-
-
-
-
 
 # Complete header of PeaMUST Vicia faba VCF file
 

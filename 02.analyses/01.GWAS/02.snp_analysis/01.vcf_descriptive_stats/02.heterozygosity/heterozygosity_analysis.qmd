@@ -1,0 +1,38 @@
+---
+title: "heterozygosity_analysis"
+format: 
+  pdf: 
+    toc: true
+---
+
+```{r setup, include=FALSE}
+suppressPackageStartupMessages(library("tidyverse"))
+```
+
+```{r}
+# Load the data
+heterozygosity <- read.delim("heterozygosity_stats.het", stringsAsFactors = FALSE) %>% 
+  rename("ivip" = "INDV") %>%
+  rename("observed_heterozygosity" = "O.HOM.") %>%
+  rename("expected_heterozygosity" = "E.HOM.") %>%
+  rename("inbreeding_coef" = "F") %>%
+  rename("n_sites" = "N_SITES")
+```
+
+```{r}
+ivip_order = 
+  heterozygosity %>% 
+  arrange(desc(inbreeding_coef)) %>%
+  pull(ivip)
+
+heterozygosity %>% 
+  mutate(ivip = factor(ivip, levels = ivip_order)) %>%
+  ggplot(., aes(x = ivip, y = inbreeding_coef)) +
+  geom_bar(stat = "identity") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "Heterozygosity by IVIP",
+       x = "Genotype",
+       y = "Inbreeding coefficient")
+```
+
