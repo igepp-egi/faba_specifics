@@ -62,21 +62,9 @@ GT:AD:DP:GQ:PL
 
 To verify the numbers in [the different VCF files provided](./snp_different_filters.png). 
 
-
-### 02. Heterozygosity
-
-Definition and Calculation:
-
-> The inbreeding coefficient F is calculated as F=1−O(Het)/E(Het) 
-	where O(Het) is the observed heterozygosity and E(Het) is the expected heterozygosity under Hardy-Weinberg equilibrium. 
-	This formula measures the excess or deficit of heterozygosity at a variant site (https://gatk.broadinstitute.org/hc/en-us/articles/360035531992-Inbreeding-Coefficient)
-
-```bash
-vcftools --vcf vfaba_noindels_bisnps_maf_miss.recode.vcf --het --out heterozygosity_stats
-```
+## 02. Key metrics on VCF file 
 
 # Information from Jonathan on his favorite steps
-
 
 First, we filtrate our whole matrix obtained with GATK to keep only 240 genotypes from AMS. Due to those filters, we will maybe see some invariants sites or with only missing data. Use a really low MAF/high missing data to filtrate them now if needed. If not will be done later. 
 
