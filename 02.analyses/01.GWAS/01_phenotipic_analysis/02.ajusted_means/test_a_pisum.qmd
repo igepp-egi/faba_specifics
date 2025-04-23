@@ -1,0 +1,133 @@
+---
+title: "Calculation of genotype values (BLUEs) emmeans a pisum"
+format: 
+  pdf: 
+    toc: true
+    toc-depth: 2
+editor: visual
+---
+
+# Setup
+
+## Packages
+
+```{r}
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("lme4"))
+suppressPackageStartupMessages(library("Hmisc"))
+suppressPackageStartupMessages(library("corrplot"))
+suppressPackageStartupMessages(library("emmeans"))
+suppressPackageStartupMessages(library("performance"))
+suppressPackageStartupMessages(library("MASS"))
+```
+
+## Filtered data import
+
+```{r}
+data250pisum <- read.csv("../../01_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", stringsAsFactors = F)
+data250pisum$genotype <- as.factor(data250pisum$ivip)
+```
+
+## Data distribution
+
+```{r}
+data250pisum %>% 
+  ggplot(., aes(x = larvae_total_number)) + 
+  geom_histogram(binwidth = 5, fill = "white", color = "black") 
+```
+
+# Linear model fitting and emmeans extraction
+
+[Useful lesson on LMMs](https://r.qcbs.ca/workshop07/book-en/fixed-vs.-random-effects.html).
+
+## Fit linear models
+
+We tested few model to see which one is better to estimate the larvae fecundity
+
+```{r}
+model0 <- lm(larvae_total_number ~ 1, data = data250pisum)
+model1 <- lm(larvae_total_number ~ ivip, data = data250pisum)
+model2 <- lmer(larvae_total_number ~ ivip + (1 | session), data = data250pisum)
+model3 <- lmer(larvae_total_number ~ ivip + (1 | session/block), data = data250pisum)
+model4 <- glm.nb(formula = larvae_total_number ~ ivip +session/block, data = data250pisum)
+model5 <- glm.nb(formula = larvae_total_number ~ ivip +session, data = data250pisum)
+```
+
+```{r}
+compare_performance(model0, model1, model2,model3,model4,model5, rank = FALSE, verbose = TRUE)
+```
+
+::: callout-important
+Model3 that models session as a random fixed factor and block nested within session is a slightly but significant better model.
+:::
+
+## Diagnostics
+
+```{r}
+check_model(model3)
+```
+
+::: callout-important
+Most assumptions seem to be valid: normality of residuals, normality of random effects, linear relationship, homogeneity of variance, multicollinearity.
+:::
+
+## Model performances
+
+```{r}
+plot(compare_performance(model0, model1, model2,model3))
+```
+
+```{r}
+test_lrt(model1, model2)
+```
+
+```{r}
+test_lrt(model2, model3)
+```
+
+# Generalized model fitting (negative binomial distribution)
+
+```{r}
+
+
+
+anova(model3)
+
+#variance stability
+
+
+
+
+
+# Extract fitted values and residuals
+fitted_values <- fitted(model3)
+residuals_values <- residuals(model3)
+
+#homosedasticity
+# Plot residuals vs fitted values
+plot(fitted_values, residuals_values, 
+     main="Residuals vs Fitted", 
+     xlab="Fitted values", 
+     ylab="Residuals")
+abline(h=0, col="red")
+
+#residual normality
+hist(residuals_values, main="Histogram of Residuals", xlab="Residuals", breaks=20)
+# 2. Q-Q Plot for Residuals
+qqnorm(residuals_values)
+qqline(residuals_values, col = "red")
+
+#residual independance
+# Plot residuals over time (for time-series data)
+plot(residuals(model3), type="o", col="blue", main="Residuals over Time", xlab="Index", ylab="Residuals")
+
+
+# Extract EMMeans for genotype
+emm_genotype <- emmeans(model3, ~ ivip)
+emm_df <- as.data.frame(emm_genotype)
+hist(emm_df$emmean)
+
+
+
+
+```

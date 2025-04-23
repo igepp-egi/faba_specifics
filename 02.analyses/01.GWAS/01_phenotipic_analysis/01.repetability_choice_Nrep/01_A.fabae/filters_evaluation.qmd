@@ -295,18 +295,12 @@ data <- data250_afabae_03
 
 ```
 
-
 ```{r}
 write.csv(x = results, 
           file = "filter_annalysis.csv", 
           quote = F, row.names = F)
 
 ```
-
-
-
-
-
 
 the file results contain all the data we need
 
