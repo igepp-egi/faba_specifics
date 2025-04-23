@@ -1,6 +1,8 @@
 library(data.table)
 library(tidyverse)
 library(dplyr)
+library(multcompView)
+
 
 #extract marker ----
 myGD1 <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
@@ -102,7 +104,7 @@ combined_median_marker %>%
             size = 5, vjust = 0) +  # Add number of observations text
   theme_minimal() +
   labs(
-    title = "Larvae Number Confirmation Depending on Marker chr2_920208494_1349197397 in South Cluster (A. pisum)",
+    title = "Larvae Number Depending on Marker chr2_920208494_1349197397 (A. pisum)",
     x = "Marker on chr2_920208494",
     y = "Larvae Total Number"
   ) +
@@ -119,14 +121,14 @@ median_marker %>%
   geom_boxplot(fill = "skyblue", color = "black", outlier.shape = 16, outlier.size = 2) +  # Customize the boxplot
   theme_minimal() +
   labs(
-    title = "Larvae Number confirmation depending on marker chr2_920208494 in south cluster (A. pisum)",
+    title = "Larvae Number confirmation depending on marker chr2_920208494 (A. pisum)",
     x = "marker on chr2_920208494",
     y = "Larvae Total Number"
   ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
 
 
-#analyse chr2_1461736473 (South only) ----
+#analyse chr2_1461736473 ----
 data_count <- combined_median_marker %>%
   group_by(chr2_1461736473) %>%
   summarise(n = n())
@@ -137,7 +139,7 @@ combined_median_marker %>%
   geom_boxplot(fill = "skyblue", color = "black", outlier.shape = 16, outlier.size = 2) +  # Customize the boxplot
   theme_minimal() +
   labs(
-    title = "Larvae Number confirmation depending on marker chr2_1461736473 in south cluster (A. pisum)",
+    title = "Larvae Number confirmation depending on marker chr2_1461736473 (A. pisum)",
     x = "marker on chr2_1461736473",
     y = "Larvae Total Number"
   ) +
@@ -153,7 +155,7 @@ median_marker %>%
   geom_boxplot(fill = "skyblue", color = "black", outlier.shape = 16, outlier.size = 2) +  # Customize the boxplot
   theme_minimal() +
   labs(
-    title = "Larvae Number confirmation depending on marker chr2_1461736473 in south cluster (A. pisum)",
+    title = "Larvae Number confirmation depending on marker chr2_1461736473 (A. pisum)",
     x = "marker on chr2_1461736473",
     y = "Larvae Total Number"
   ) +
@@ -172,7 +174,7 @@ combined_median_marker %>%
   geom_boxplot(fill = "skyblue", color = "black", outlier.shape = 16, outlier.size = 2) +  # Customize the boxplot
   theme_minimal() +
   labs(
-    title = "Larvae Number confirmation depending on marker chr2_35683372 in south cluster (A. pisum)",
+    title = "Larvae Number confirmation depending on marker chr2_35683372 (A. pisum)",
     x = "marker on chr2_35683372",
     y = "Larvae Total Number"
   ) +
@@ -188,14 +190,14 @@ median_marker %>%
   geom_boxplot(fill = "skyblue", color = "black", outlier.shape = 16, outlier.size = 2) +  # Customize the boxplot
   theme_minimal() +
   labs(
-    title = "Larvae Number confirmation depending on marker chr2_35683372 in south cluster (A. pisum)",
+    title = "Larvae Number confirmation depending on marker chr2_35683372(A. pisum)",
     x = "marker on chr2_35683372",
     y = "Larvae Total Number"
   ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
 
 
-#analyse all QTL (South only) ----
+#analyse all QTL ----
 #big screen ----
 # Create a new variable for the interaction of the three markers
 median_marker_no1$interaction <- interaction(median_marker_no1$chr2_920208494, 
