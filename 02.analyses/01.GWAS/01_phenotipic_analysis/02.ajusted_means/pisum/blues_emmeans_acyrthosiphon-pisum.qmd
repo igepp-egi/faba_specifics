@@ -24,7 +24,7 @@ suppressPackageStartupMessages(library("MASS"))
 ## Filtered data import
 
 ```{r}
-data250pisum <- read.csv("../../01_phenotipic_analysis/01.repetability_choice_Nrep/02_A.pisum/acyrthosiphon_pisum_filtered.csv", stringsAsFactors = F)
+data250pisum <- read.csv("../../../01_phenotipic_analysis/01.repetability_choice_Nrep/02_A.pisum/final filters/acyrthosiphon_pisum_filtered.csv", stringsAsFactors = F)
 data250pisum$genotype <- as.factor(data250pisum$ivip)
 ```
 
@@ -81,7 +81,7 @@ hist(emm_df$emmean)
 emm_df <- emm_df[,c(1,2)]
 
 # Define the file path
-file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/emmeans_pisum.csv"
+file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum.csv"
 
 # Save the data frame to the specified location
   write.csv(emm_df, file = file_path, row.names = FALSE)
