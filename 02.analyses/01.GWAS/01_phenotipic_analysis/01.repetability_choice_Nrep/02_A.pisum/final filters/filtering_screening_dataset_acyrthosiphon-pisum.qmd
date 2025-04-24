@@ -1,0 +1,209 @@
+---
+title: "filtering the screening dataset a pisum"
+format: 
+  pdf: 
+    toc: true
+    toc-depth: 2
+---
+
+# Setup 
+
+## Packages required
+
+```{r}
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("lme4"))
+suppressPackageStartupMessages(library("Hmisc"))
+suppressPackageStartupMessages(library("corrplot"))
+suppressPackageStartupMessages(library("ggrepel"))
+```
+``
+
+## Import helper functions
+
+```{r}
+source("../../broad_heritability_function.R")
+source("../../create_correlation_plot.R")
+```
+
+# Broad sense heritability calculations
+
+## Raw dataset
+
+```{r}
+data250pisum_00 <- read.csv("../../../../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", 
+                            stringsAsFactors = FALSE, 
+                            sep = ",") %>%  
+  mutate(ivip = as.factor(ivip)) %>% 
+  mutate(session = as.factor(session)) 
+
+res <- calculate_broad_heritability(data = data250pisum_00)
+```
+
+::: callout-tip
+Conclusions:\
+- Heritability is equal to `r round(res$heritability, digits=3)`.\
+- There are `r res$number_of_genotypes` genotypes in total.\
+- There are `r res$number_of_notation` measurements in total.
+:::
+
+## Missing data removed
+
+```{r}
+data250pisum_01 <- data250pisum_00 %>% filter(!is.na(larvae_total_number))
+data250pisum_01$ivip <- droplevels(data250pisum_01$ivip)
+
+res2 <- calculate_broad_heritability(data = data250pisum_01)
+```
+
+\newpage
+
+::: callout-tip
+Conclusions:\
+- Heritability is equal to `r round(res2$heritability, digits=3)`.\
+- There are `r res2$number_of_genotypes` genotypes in total.\
+- There are `r res2$number_of_notation` measurements in total.
+:::
+
+```{r}
+#| eval: false
+#| echo: true
+
+create_correlation_plot(data = data250pisum_01,
+                        group_cols = c("ivip", "session"),
+                        value_col = "larvae_total_number")
+```
+
+
+## Remove observations with no adult alive
+
+We chose to remove all data from plants on which no adult aphid was found. This decision was made to get rid of larvae installation bias and only assess the reproduction ability of the aphid.
+
+When the adult aphid dies, the number of larvae will drop but only because the adult stayed less longer on the plant and not because the plant was not suitable for the reproduction.
+
+```{r remove observations with adult not alive}
+
+data250pisum_02<- data250pisum_01 %>% filter(adult_alive != "0") 
+data250pisum_02$ivip <- droplevels(data250pisum_02$ivip)
+
+res3 <- calculate_broad_heritability(data = data250pisum_02)
+```
+
+::: callout-tip
+Conclusions:\
+- Heritability is equal to `r round(res3$heritability, digits=3)`.\
+- There are `r res3$number_of_genotypes` genotypes in total.\
+- There are `r res3$number_of_notation` measurements in total.
+:::
+
+This filtering led to the loss of 1 genotype but increased broad sense heritability up to 0.36
+
+```{r}
+#| eval: false
+
+# Call the function to generate and display the correlation plot
+create_correlation_plot(data250pisum_02, 
+                         group_cols = c("ivip", "session"), 
+                         value_col = "larvae_total_number")
+```
+
+Distribution normality check. 
+```{r}
+#| echo: true
+#| fig-width: 8
+
+p_with <- data250pisum_02 %>% 
+  ggplot(mapping = aes(sample=larvae_total_number)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(y = "Observed quantiles", x = "Theoretical quantiles") +
+  ggtitle("Without NA values") +
+  theme_bw()
+p_with
+```
+
+```{r comparison of qqplots with and without outliers}
+
+x<-1.5
+IQR_value <- IQR(data250pisum_02$larvae_total_number)
+lower_bound <- quantile(data250pisum_02$larvae_total_number, 0.25) - x * IQR_value
+upper_bound <- quantile(data250pisum_02$larvae_total_number, 0.75) + x * IQR_value
+
+# Filter out outliers
+data250pisum_03 <- data250pisum_02[data250pisum_02$larvae_total_number >= lower_bound & data250pisum_02$larvae_total_number <= upper_bound, ]
+
+# Identify the rows that were removed (outliers)
+removed_outliers <- data250pisum_02[data250pisum_02$larvae_total_number < lower_bound | data250pisum_02$larvae_total_number > upper_bound, ]
+
+res4 <- calculate_broad_heritability(data = data250pisum_03)
+
+#| fig-width: 8
+
+# Without outliers
+p_without <- data250pisum_03 %>% 
+  ggplot(mapping = aes(sample=larvae_total_number)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(y = "Observed quantiles", x = "Theoretical quantiles") +
+  ggtitle("Without outliers") +
+  theme_bw()
+
+
+p_with + p_without
+
+```
+
+\newpage
+
+
+# Final filtering: keep genotypes with at least 6 biological repetitions
+
+```{r}
+data250pisum_04 <- data250pisum_03 %>%
+  group_by(ivip) %>%           # Group by genotype
+  filter(n() >= 5) %>%             # Keep only groups with 7 or more repetitions
+  ungroup()  
+data250pisum_04$ivip <- droplevels(data250pisum_04$ivip)
+res5 <- calculate_broad_heritability(data = data250pisum_04)
+```
+
+::: callout-important
+Conclusions:\
+- Heritability is equal to `r round(res4$heritability, digits=3)`.\
+- There are `r res4$number_of_genotypes` genotypes in total.\
+- There are `r res4$number_of_notation` measurements in total.
+:::
+
+```{r}
+#| echo: false
+#| eval: false
+
+# Call the function to generate and display the correlation plot
+create_correlation_plot(data250pisum_04, 
+                         group_cols = c("ivip", "session"), 
+                         value_col = "larvae_total_number")
+```
+
+Distribution normality check. 
+```{r}
+#| echo: true
+#| fig-width: 8
+
+p <- data250pisum_04 %>% 
+  ggplot(mapping = aes(sample=larvae_total_number)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(y = "Observed quantiles", x = "Theoretical quantiles") +
+  ggtitle("Dataset filtered with N >= 6") +
+  theme_bw()
+p
+```
+
+**Write final dataset to .csv**
+
+```{r}
+write.csv(x = data250pisum_04, 
+          file = "../../../01.repetability_choice_Nrep/02_A.pisum/final filters/acyrthosiphon_pisum_filtered.csv", 
+          quote = F, row.names = F)
+```
+
