@@ -1,5 +1,117 @@
 # README
 
+This README has 4 sections:   
+1. Check SNP numbers  
+2. Information from Jonathan on his favorite steps  
+3. VCF file description  
+4. Complete header of PeaMUST Vicia faba VCF file  
+
+
+# Check SNP numbers 
+
+To verify the numbers in [the different VCF files provided](./snp_different_filters.png). 
+A script called `check_numbers.sh` has been created (see below for its content): 
+
+The related conda environment has to be created first and actived using: 
+```bash
+conda create --name vcf -c conda-forge -c bioconda bcftools && conda activate vcf
+```
+Followed by execution of the script using: `bash check_numbers.sh`.
+```bash
+MY_VCF="vfaba_hedin_peamust_SNP_GATK.vcf.gz"
+
+bcftools view --max-alleles 2 --with-header -Oz --output vcf_biallelic.vcf.gz $MY_VCF
+bcftools view -i 'MAF[0]> 0.01' --threads 5 -Oz -o vcf_biallelic_maf001.vcf.gz vcf_biallelic.vcf.gz
+bcftools view -i 'F_MISSING < 0.1' -Oz -o vcf_biallelic_maf001_miss.vcf.gz --threads 5 vcf_biallelic_maf001.vcf.gz
+bcftools query -f '%CHROM\t%POS\t[%GT\t]\n' vcf_biallelic_maf001_miss.vcf.gz > genotypes.txt
+
+awk -F '\t' '{
+    split($3, genotypes, /[|\/]/);
+    count_hom = 0;
+    count_het = 0;
+    for (i in genotypes) {
+        if (genotypes[i] != "." && genotypes[i] == genotypes[i+1]) {
+            count_hom++;
+        } else if (genotypes[i] != "." && genotypes[i] != genotypes[i+1]) {
+            count_het++;
+        }
+    }
+    total = count_hom + count_het;
+    if (total > 0) {
+        heterozygosity = count_het / total;
+        print $1 "\t" $2 "\t" heterozygosity;
+    }
+}' genotypes.txt > heterozygosity.txt
+
+awk '$3 < 0.15 {print $1 "\t" $2}' heterozygosity.txt > sites_to_keep_less15pc_het.txt
+
+bcftools view --targets-file sites_to_keep_less15pc_het.txt -Oz -o vcf_biallelic_maf001_miss_maxhet.vcf.gz --threads 5 vcf_biallelic_maf001_miss.vcf.gz
+initial_snp_counts=$(zcat vfaba_hedin_peamust_SNP_GATK.vcf.gz           | grep -v "#" |wc -l)
+after_filter1_snp_counts=$(zcat vcf_biallelic.vcf.gz                    | grep -v "#" |wc -l)
+after_filter2_snp_counts=$(zcat vcf_biallelic_maf001.vcf.gz             | grep -v "#" |wc -l)
+after_filter3_snp_counts=$(zcat vcf_biallelic_maf001_miss.vcf.gz        | grep -v "#" |wc -l)
+after_filter4_snp_counts=$(zcat vcf_biallelic_maf001_miss_maxhet.vcf.gz | grep -v "#" |wc -l)
+
+echo "The raw $MY_VCF has $initial_snp_counts lines."
+echo "There are $after_filter1_snp_counts biallelic SNPs."
+echo "There are $after_filter2_snp_counts biallelic SNPs with a MAF higher or equal to 1%."
+echo "There are $after_filter3_snp_counts biallelic SNPs with a MAF higher than 1% and less than 10% missing data."
+echo "There are $after_filter4_snp_counts biallelic SNPs with a MAF higher than 1% and less than 10% missing data and less than 15% heterozygosity."
+```
+
+
+# Information from Jonathan on his favorite steps
+
+First, we filtrate our whole matrix obtained with GATK to keep only 240 genotypes from AMS. Due to those filters, we will maybe see some invariants sites or with only missing data. Use a really low MAF/high missing data to filtrate them now if needed. If not will be done later. 
+
+```bash
+grep -f AMS_theo.txt DonneesPasseport_AMS_GRaSP_AK090523.csv  | cut -f1 IPIP_to_keep.lst
+bcftools view -S IPIP_to_keep.lst -o AMS_v2_raw.vcf.gz -O  z cameor_v2_r3_peamust_genotyped_SNP_hardfilter.vcf.gz
+``` 
+
+I use a really bad custom script to compute a few stats and do some figures. We use one of the file produced to filter site with more than 15% of Htz. This is arbitrary and based on what was done by **R.Ollivier**. I think it works well with GWAS but it could be impossible to detect SNPs in balancing selection in our largest subpopulation. 
+
+```bash
+Rscript --vanilla /GEAPSI/peamust/FABA_2022/Data/vcf_stats.R AMS_v2_raw.vcf.gz False AMS_v2_raw
+awk 'NR>=2 {if( $5 < 240 && ($4)/($2 + $3 + $4 ) <= 0.15){print $0}}' AMS_v2_raw_bySite.csv  |  cut -f1 > SNP_to_keep.csv
+bcftools view --include ID==@SNP_to_keep.csv AMS_v2_raw.vcf.gz  -O z -o   AMS_v2_preF_SNP.vcf.gz
+```
+
+Then we remove SNPs with a MAF < 0.01 and with more than 10% of missing data. Since the precedent work, we saw some difficulties to work with complex traits and better results with a more stringent missing data values. 
+
+```bash
+bcftools view -O u -m2 -M2 AMS_v2_preF_SNP.vcf.gz  | bcftools filter -e 'F_MISSING > 0.1 || MAF <= 0.01' -O z -o AMS_v2_F1_SNP.vcf.gz 
+bcftools sort -o AMS_v2_F1_sorted_SNP.vcf.gz -O z AMS_v2_F1_SNP.vcf.gz 
+```
+
+F1 can be imputed to do GWAS or filtered for LD to work on structure. 
+
+Imputation is always a little tricky, the only best practices actually is to use BEAGLE 5 and not BEAGLE 4. If you want to test some parameters, there is a nice paper in G3 ( https://doi.org/10.1534/g3.119.400798). As we don't have a reference panel, DR2 can't be computed, so testing could be difficult. We then filter for a MAF at 0.05. 
+
+```bash
+ beagle -Xmx80908m  gt=AMS_v2_F1_sorted_SNP.vcf.gz nthreads=20 out=AMS_v2_F1_SNP_imputed impute=true 
+bcftools filter -e 'MAF <= 0.05' -O z -o AMS_v2_F1_SNP_imputed_MAF5.vcf.gz AMS_v2_F1_SNP_imputed.vcf.gz
+```
+
+
+For kinship, I recommand gemma :
+
+```bash
+plink --vcf AMS_v2_F1_SNP_imputed_MAF5.vcf.gz  --make-bed --out AMS_v2_F1_SNP_imputed_MAF5 --allow-extra-chr
+sed -i 's/-9/1/' AMS_v2_F1_SNP_imputed_MAF5.fam 
+gemma -bfile AMS_v2_F1_SNP_imputed_MAF5 -gk 1 -o AMS_v2_F1_SNP_imputed_MAF5
+```
+For Structure, data shouldn't be really different as what is already published in Ollivier et al. or Aubert et al. If you would like to work on it, you need to prune for LD :
+
+```bash
+plink --vcf-idspace-to "_" --double-id --allow-extra-chr --vcf AMS_v2_F1_sorted_SNP.vcf.gz --indep-pairwise 50 10 0.2 --out AMS_v2_F2_SNP
+bcftools view --include ID==@AMS_v2_F2_SNP.prune.in AMS_v2_F1_sorted_SNP.vcf.gz -O z -o AMS_v2_F2_SNP.vcf.gz
+```
+My favorite tools to use for structure are DAPC (package adegenet), fastStructure and sometimes admixture.
+
+
+# VCF file description 
+
 A description of the _Vicia faba_ VCF data. 
 
 See [VCF v4.2 format](./VCFv4.2_format_specifications.pdf) for explanation of FILTER, FORMAT, etc. fields.
@@ -54,65 +166,6 @@ GT:AD:DP:GQ:PL
 - **DP: Approximate read depth**. Approximate read depth (reads with MQ=255 or with bad mates are filtered).    
 - **GQ: Genotype Quality**.   
 - **PL: Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification**.   
-
-
-## SNP calculations
-
-### 01. SNP numbers after filtering
-
-To verify the numbers in [the different VCF files provided](./snp_different_filters.png). 
-
-## 02. Key metrics on VCF file 
-
-# Information from Jonathan on his favorite steps
-
-First, we filtrate our whole matrix obtained with GATK to keep only 240 genotypes from AMS. Due to those filters, we will maybe see some invariants sites or with only missing data. Use a really low MAF/high missing data to filtrate them now if needed. If not will be done later. 
-
-```bash
-grep -f AMS_theo.txt DonneesPasseport_AMS_GRaSP_AK090523.csv  | cut -f1 IPIP_to_keep.lst
-bcftools view -S IPIP_to_keep.lst -o AMS_v2_raw.vcf.gz -O  z cameor_v2_r3_peamust_genotyped_SNP_hardfilter.vcf.gz
-``` 
-
-I use a really bad custom script to compute a few stats and do some figures. We use one of the file produced to filter site with more than 15% of Htz. This is arbitrary and based on what was done by **R.Ollivier**. I think it works well with GWAS but it could be impossible to detect SNPs in balancing selection inour largest subpopulation. 
-
-```bash
-Rscript --vanilla /GEAPSI/peamust/FABA_2022/Data/vcf_stats.R AMS_v2_raw.vcf.gz False AMS_v2_raw
-awk 'NR>=2 {if( $5 < 240 && ($4)/($2 + $3 + $4 ) <= 0.15){print $0}}' AMS_v2_raw_bySite.csv  |  cut -f1 > SNP_to_keep.csv
-bcftools view --include ID==@SNP_to_keep.csv AMS_v2_raw.vcf.gz  -O z -o   AMS_v2_preF_SNP.vcf.gz
-```
-
-Then we remove SNPs with a MAF < 0.01 and with more than 10% of missing data. Since the precedent work, we saw some difficulties to work with complex traits and better results with a more stringent missing data values. 
-
-```bash
-bcftools view -O u -m2 -M2 AMS_v2_preF_SNP.vcf.gz  | bcftools filter -e 'F_MISSING > 0.1 || MAF <= 0.01' -O z -o AMS_v2_F1_SNP.vcf.gz 
-bcftools sort -o AMS_v2_F1_sorted_SNP.vcf.gz -O z AMS_v2_F1_SNP.vcf.gz 
-```
-
-F1 can be imputed to do GWAS or filtered for LD to work on structure. 
-
-Imputation is always a little tricky, the only best practices actually is to use BEAGLE 5 and not BEAGLE 4. If you want to test some parameters, there is a nice paper in G3 ( https://doi.org/10.1534/g3.119.400798). As we don't have a reference panel, DR2 can't be computed, so testing could be difficult. We then filter for a MAF at 0.05. 
-
-```bash
- beagle -Xmx80908m  gt=AMS_v2_F1_sorted_SNP.vcf.gz nthreads=20 out=AMS_v2_F1_SNP_imputed impute=true 
-bcftools filter -e 'MAF <= 0.05' -O z -o AMS_v2_F1_SNP_imputed_MAF5.vcf.gz AMS_v2_F1_SNP_imputed.vcf.gz
-```
-
-
-For kinship, I recommand gemma :
-
-```bash
-plink --vcf AMS_v2_F1_SNP_imputed_MAF5.vcf.gz  --make-bed --out AMS_v2_F1_SNP_imputed_MAF5 --allow-extra-chr
-sed -i 's/-9/1/' AMS_v2_F1_SNP_imputed_MAF5.fam 
-gemma -bfile AMS_v2_F1_SNP_imputed_MAF5 -gk 1 -o AMS_v2_F1_SNP_imputed_MAF5
-```
-For Structure, data shouldn't be really different as what is already published in Ollivier et al. or Aubert et al. If you would like to work on it, you need to prune for LD :
-
-```bash
-plink --vcf-idspace-to "_" --double-id --allow-extra-chr --vcf AMS_v2_F1_sorted_SNP.vcf.gz --indep-pairwise 50 10 0.2 --out AMS_v2_F2_SNP
-bcftools view --include ID==@AMS_v2_F2_SNP.prune.in AMS_v2_F1_sorted_SNP.vcf.gz -O z -o AMS_v2_F2_SNP.vcf.gz
-```
-My favorite tools to use for structure are DAPC (package adegenet), fastStructure and sometimes admixture.
-
 
 # Complete header of PeaMUST Vicia faba VCF file
 
