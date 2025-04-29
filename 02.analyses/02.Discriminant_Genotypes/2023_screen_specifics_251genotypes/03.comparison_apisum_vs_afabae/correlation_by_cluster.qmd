@@ -20,16 +20,16 @@ suppressPackageStartupMessages(library("MASS"))
 ## Importation of the dataset
 
 ```{r}
-#data prep screening of the 250 genotypes fabae 
+# data prep screening of the 250 genotypes fabae 
 data250_fabae <- read.csv(
-  file = "02.analyses/01.GWAS/01_phenotipic_analysis/aphis_fabae_data_filtered.csv", 
+  file = "../../../02.Discriminant_Genotypes/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/analysis01_n_higher_than_6_aphis_fabae.R", 
   sep =",", 
-  stringsAsFactors = F) %>% mutate(ivip=as.factor(data250_fabae$ivip))
+  stringsAsFactors = F) %>% mutate(ivip=as.factor(ivip))
 
 
-#data prep screening of the 250 genotypes pisum 
+# data prep screening of the 250 genotypes pisum 
 data250_pisum <- read.csv(
-  file = "02.analyses/01.GWAS/01_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", 
+  file = "../../../02.Discriminant_Genotypes/2023_screen_specifics_251genotypes/1_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", 
   sep =",", 
   stringsAsFactors = F) %>% mutate(ivip=as.factor(data250_pisum$ivip))
 
@@ -38,14 +38,14 @@ data250_pisum <- read.csv(
 ## Median extract
 
 ```{r}
-#median extract ----
+# median extract ----
 data_median_expe250_fabae <- data250_fabae %>%
   group_by(ivip) %>%
   summarise(Median_fecondity = median(larvae_total_number))
 colnames(data_median_expe250_fabae)[colnames(data_median_expe250_fabae) == "Median_fecondity"] <- "fabae"
 
 
-#median extract ----
+# median extract ----
 data_median_expe250_pisum <- data250_pisum %>%
   group_by(ivip) %>%
   summarise(Median_fecondity = median(larvae_total_number))
@@ -55,10 +55,10 @@ colnames(data_median_expe250_pisum)[colnames(data_median_expe250_pisum) == "Medi
 ## Create a combined dataset with A. pisum and A. fabae
 
 ```{r}
-#combine data
+# combine data
 combined_data <- merge(data_median_expe250_pisum, data_median_expe250_fabae, by = "ivip", all = FALSE)
 
-#add the genetic cluster
+# add the genetic cluster
 
 combined_data_genetcluster<- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", 
                              sep =",", 

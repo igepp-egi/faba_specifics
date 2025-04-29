@@ -1,0 +1,90 @@
+---
+title: "Calculation of genotype values (BLUEs) emmeans a pisum"
+format: 
+  pdf: 
+    toc: true
+    toc-depth: 2
+editor: visual
+---
+
+# Setup
+
+## Packages
+
+```{r}
+suppressPackageStartupMessages(library("tidyverse"))
+suppressPackageStartupMessages(library("lme4"))
+suppressPackageStartupMessages(library("Hmisc"))
+suppressPackageStartupMessages(library("corrplot"))
+suppressPackageStartupMessages(library("emmeans"))
+suppressPackageStartupMessages(library("performance"))
+suppressPackageStartupMessages(library("MASS"))
+```
+
+## Filtered data import
+
+```{r}
+data250pisum <- read.csv("../../../01_phenotipic_analysis/01.repetability_choice_Nrep/02_A.pisum/final filters/acyrthosiphon_pisum_filtered.csv", stringsAsFactors = F)
+data250pisum$genotype <- as.factor(data250pisum$ivip)
+```
+
+## Data distribution
+
+```{r}
+data250pisum %>% 
+  ggplot(., aes(x = larvae_total_number)) + 
+  geom_histogram(binwidth = 5, fill = "white", color = "black") 
+```
+
+# Linear model fitting and emmeans extraction
+
+[Useful lesson on LMMs](https://r.qcbs.ca/workshop07/book-en/fixed-vs.-random-effects.html).
+
+## Fit linear models
+
+We tested few model to see which one is better to estimate the larvae fecundity
+
+```{r}
+model <- lmer(larvae_total_number ~ ivip + (1 | session/block), data = data250pisum)
+
+```
+
+```{r}
+# Extract fitted values and residuals
+fitted_values <- fitted(model)
+residuals_values <- residuals(model)
+
+#homosedasticity
+# Plot residuals vs fitted values
+plot(fitted_values, residuals_values, 
+     main="Residuals vs Fitted", 
+     xlab="Fitted values", 
+     ylab="Residuals")
+abline(h=0, col="red")
+
+#residual normality
+hist(residuals_values, main="Histogram of Residuals", xlab="Residuals", breaks=20)
+# 2. Q-Q Plot for Residuals
+qqnorm(residuals_values)
+qqline(residuals_values, col = "red")
+
+#residual independance
+# Plot residuals over time (for time-series data)
+plot(residuals(model), type="o", col="blue", main="Residuals over Time", xlab="Index", ylab="Residuals")
+
+
+# Extract EMMeans for genotype
+emm_genotype <- emmeans(model, ~ ivip)
+emm_df <- as.data.frame(emm_genotype)
+hist(emm_df$emmean)
+
+emm_df <- emm_df[,c(1,2)]
+
+# Define the file path
+file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum.csv"
+
+# Save the data frame to the specified location
+  write.csv(emm_df, file = file_path, row.names = FALSE)
+
+
+```

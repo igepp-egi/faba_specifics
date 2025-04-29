@@ -22,8 +22,8 @@ suppressPackageStartupMessages(library("ggrepel"))
 ## Import helper functions
 
 ```{r}
-source("../broad_heritability_function.R")
-source("../create_correlation_plot.R")
+source("../../broad_heritability_function.R")
+source("../../create_correlation_plot.R")
 ```
 
 # Broad sense heritability calculations
@@ -31,7 +31,7 @@ source("../create_correlation_plot.R")
 ## Raw dataset
 
 ```{r}
-data250pisum_00 <- read.csv("../../../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", 
+data250pisum_00 <- read.csv("../../../../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", 
                             stringsAsFactors = FALSE, 
                             sep = ",") %>%  
   mutate(ivip = as.factor(ivip)) %>% 
@@ -122,37 +122,6 @@ p_with <- data250pisum_02 %>%
 p_with
 ```
 
-
-```{r}
-#data250pisum_03<- data250pisum_02 %>% filter(larvae_total_number != "0") 
-#data250pisum_03$ivip <- droplevels(data250pisum_03$ivip)
-
-#res4 <- calculate_broad_heritability(data = data250pisum_03)
-```
-
-
-
-```{r comparison of qqplots with and without outliers}
-#| fig-width: 8
-
-# Without outliers
-p_without <- data250pisum_03 %>% 
-  ggplot(mapping = aes(sample=larvae_total_number)) +
-  stat_qq() +
-  stat_qq_line() +
-  labs(y = "Observed quantiles", x = "Theoretical quantiles") +
-  ggtitle("Without outliers") +
-  theme_bw()
-
-p_with + p_without 
-
-```
-
-
-
-
-
-
 ```{r comparison of qqplots with and without outliers}
 
 x<-1.5
@@ -166,6 +135,7 @@ data250pisum_03 <- data250pisum_02[data250pisum_02$larvae_total_number >= lower_
 # Identify the rows that were removed (outliers)
 removed_outliers <- data250pisum_02[data250pisum_02$larvae_total_number < lower_bound | data250pisum_02$larvae_total_number > upper_bound, ]
 
+res4 <- calculate_broad_heritability(data = data250pisum_03)
 
 #| fig-width: 8
 
@@ -186,109 +156,15 @@ p_with + p_without
 \newpage
 
 
-
-
-
-# Finding the optimal number of biological replicates
-
-Now the question is: should we filter genotypes for which we have less than X biological repetitions?
-
-Let's extract:   
-- The number of genotypes available for X number of biological replicates.\
-- The number of observations available for X number of biological replicates.\
-- The broad-sense heritability for X number of biological replicates.
-
-```{r calculate variation per N biological replicates}
-#| echo: false
-#| eval: true
-
-dfb <- data.frame(Column1 = character(), Column2 = character(), Column3 = character())
-
-data250pisum_03 <- na.omit(data250pisum_03)
-
-
-for (i in 1:12) {
-  data <- data250pisum_03 %>%
-    group_by(ivip) %>%           # Group by genotype
-    filter(n() >= i) %>%             # Keep only groups with i or more repetitions
-    ungroup() 
-  data$ivip <- droplevels(data$ivip)
-  nlvl<-nlevels(data$ivip)
-  
-  
-  # Fit the model with a fixed formula
-  mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data)
-  
-  # Get the variance components
-  estimates <- as.data.frame(VarCorr(mod_h2))
-  
-  # Extract the relevant variance components
-  genetic_variance <- estimates$vcov[1]
-  residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
-  
-  # Get the number of levels for the 'session' random effect
-  nbE <- nlevels(data$session)
-  
-  # Calculate heritability (h2)
-  h2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
-  
-  nnotation<-nrow(data)
-  
-  df <- data.frame(Nrep = i, Ngen = nlvl, H2 = h2, Nob = nnotation)
-  dfb<-rbind(df, dfb)
-}
-```
-
-
-## N observations = f(N biological replicates)
-
-```{r}
-ggplot(dfb, aes(x = Nrep, y = Nob)) + 
-  geom_point() +
-  scale_x_continuous(breaks=seq(1,13,1)) +
-  scale_y_continuous(limits = c(0,3000)) +
-  geom_text_repel(aes(label = Nob)) +
-  theme_bw() +
-  labs(x = "N biological replicates", y = "N observations")
-```
-
-## N genotypes = f(N biological replicates)
-```{r}
-ggplot(dfb, aes(x = Nrep, y = Ngen)) + 
-  geom_point() +
-  scale_x_continuous(breaks=seq(1,13,1)) +
-  scale_y_continuous(limits = c(0,250)) +
-  theme_bw() +
-  ggrepel::geom_text_repel(aes(label = Ngen), arrow = T) +
-  labs(x = "N biological replicates", y = "N genotypes") +
-  ggtitle("N genotypes = f(N biological replicates)")
-```
-
-## Heritability = f(N biological replicates)
-
-```{r}
-ggplot(dfb, aes(x = H2, y = Nrep)) + 
-  geom_point() +
-  scale_y_continuous(breaks=seq(1,13,1)) +
-  scale_x_continuous(limits = c(0,0.5)) +
-  theme_bw() +
-  ggrepel::geom_text_repel(aes(label = round(H2,digits = 3))) +
-  labs(y = "Number of biological replicates", x = "Broad-sense heritability") +
-  ggtitle("Heritability =f(N biol. replicates)")
-```
-:::{.callout-important}
-Based on these results, a threshold of >=6 biological replicates seems appropriate. That is keeping all genotypes for which at least 6 biological replicates are available. 
-:::
-
 # Final filtering: keep genotypes with at least 6 biological repetitions
 
 ```{r}
 data250pisum_04 <- data250pisum_03 %>%
   group_by(ivip) %>%           # Group by genotype
-  filter(n() >= 3) %>%             # Keep only groups with 7 or more repetitions
+  filter(n() >= 5) %>%             # Keep only groups with 7 or more repetitions
   ungroup()  
 data250pisum_04$ivip <- droplevels(data250pisum_04$ivip)
-res4 <- calculate_broad_heritability(data = data250pisum_04)
+res5 <- calculate_broad_heritability(data = data250pisum_04)
 ```
 
 ::: callout-important
@@ -327,7 +203,7 @@ p
 
 ```{r}
 write.csv(x = data250pisum_04, 
-          file = "../../../01_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", 
+          file = "../../../01.repetability_choice_Nrep/02_A.pisum/final filters/acyrthosiphon_pisum_filtered.csv", 
           quote = F, row.names = F)
 ```
 

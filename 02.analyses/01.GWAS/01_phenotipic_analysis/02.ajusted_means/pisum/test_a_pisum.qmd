@@ -127,13 +127,7 @@ emm_genotype <- emmeans(model3, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
 hist(emm_df$emmean)
 
-emm_df <- emm_df[,c(1,2)]
 
-# Define the file path
-file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/emmeans_pisum.csv"
-
-# Save the data frame to the specified location
-  write.csv(emm_df, file = file_path, row.names = FALSE)
 
 
 ```

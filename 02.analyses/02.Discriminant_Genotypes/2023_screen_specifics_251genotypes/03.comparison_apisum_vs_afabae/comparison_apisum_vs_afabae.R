@@ -13,46 +13,44 @@ suppressPackageStartupMessages(library("ggpubr"))
 #source("02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/analysis01_n_higher_than_6_aphis_fabae.R")
 
 apisum_fecundity_n6 <- read.csv(
-  file = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/apisum_fecundity_on_faba_n_higher_than_6_no_zeros.csv", 
+  file = "02.analyses/02.Discriminant_Genotypes/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/apisum_fecundity_on_faba_n_higher_than_6_no_zeros.csv", 
+  stringsAsFactors = F)
+most_extreme_genotype_apisum <- read.csv(
+  file = "02.analyses/02.Discriminant_Genotypes/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/apisum_most_contrasted_genotypes.csv", 
   stringsAsFactors = F)
 
 afabae_fecundity_n6 <- read.csv(
-  file = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/aphis_fabae_fecundity_on_faba_collection_N_higher_than_6_no_zeros.csv", 
+  file = "02.analyses/02.Discriminant_Genotypes/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/aphis_fabae_fecundity_on_faba_collection_N_higher_than_6_no_zeros.csv", 
   stringsAsFactors = F)
-
-most_extreme_genotype_apisum <- read.csv(
-  file = "02.analyses/2023_screen_specifics_251genotypes/01.acyrtosiphon_pisum_on_faba_collection/01_analysis1_N_higher_than_6_no-zero/apisum_most_contrasted_genotypes.csv", 
-  stringsAsFactors = F)
-  
 most_extreme_genotype_afabae = read.csv(
-  file = "02.analyses/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/most_extreme_genotypes_aphis_fabae.csv", 
+  file = "02.analyses/02.Discriminant_Genotypes/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/01_analysis1_N_higher_than_6_no-zeros/most_extreme_genotypes_aphis_fabae.csv", 
   stringsAsFactors = F)
 
 #################################
 # Paired plots (absolute numbers)
 #################################
 
-# 223 genotypes
+# 222 genotypes
 res_pisum <- 
   apisum_fecundity_n6 %>% 
-  group_by(genotype) %>% 
+  group_by(ivip) %>% 
   summarise(median_apisum = median(larvae_total_number)) %>% 
   arrange(median_apisum) 
 
-# 193 genotypes
+# 191 genotypes
 res_afabae <- 
   afabae_fecundity_n6 %>% 
-  group_by(genotype) %>% 
+  group_by(ivip) %>% 
   summarise(median_afabae = median(larvae_total_number)) %>% 
   arrange(median_afabae)
 
-# 181 genotypes communs
-res_pisum_and_afabae <- inner_join(res_pisum, res_afabae, by = "genotype") %>% 
+# 190 genotypes communs
+res_pisum_and_afabae <- inner_join(res_pisum, res_afabae, by = "ivip") %>% 
   rename("A_pisum" = "median_apisum") %>% 
   rename("A_fabae" = "median_afabae") 
 
-genotypes_res_afabae <- most_extreme_genotype_afabae %>% filter(phenotype == "Ten most resistant") %>% pull(genotype)
-genotypes_res_pisum <- most_extreme_genotype_apisum %>% filter(phenotype == "Ten most resistant") %>% pull(genotype)
+genotypes_res_afabae <- most_extreme_genotype_afabae %>% filter(phenotype == "Ten most resistant") %>% pull(ivip)
+genotypes_res_pisum <- most_extreme_genotype_apisum %>% filter(phenotype == "Ten most resistant") %>% pull(ivip)
 all_genotypes = c(genotypes_res_afabae, genotypes_res_pisum)
 
 ###############
@@ -60,7 +58,7 @@ all_genotypes = c(genotypes_res_afabae, genotypes_res_pisum)
 ###############
 points_to_label <- 
   res_pisum_and_afabae %>% 
-  filter(genotype %in% all_genotypes) 
+  filter(ivip %in% all_genotypes) 
 
 additional_labels <- res_pisum_and_afabae %>% filter(A_pisum > 35) %>% filter(A_fabae > 40)
 
@@ -68,7 +66,7 @@ points_to_label2 <- bind_rows(points_to_label, additional_labels)
 
 p_scatterplot_continuous <- 
   res_pisum_and_afabae %>% 
-  ggplot(., aes(x = A_fabae, y = A_pisum, label = genotype)) +
+  ggplot(., aes(x = A_fabae, y = A_pisum, label = ivip)) +
   geom_point() +
   labs(x = "Number of larvae from one L1 larvae of A. fabae") + 
   labs(y = "Number of larvae from one L1 larvae of A. pisum") +

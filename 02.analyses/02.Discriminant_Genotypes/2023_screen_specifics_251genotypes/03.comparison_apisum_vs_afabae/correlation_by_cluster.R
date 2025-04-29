@@ -52,18 +52,12 @@ data_median_expe250_fabae <- data_filtered_250_inf6_fabae %>%
 colnames(data_median_expe250_fabae)[colnames(data_median_expe250_fabae) == "Median_fecondity"] <- "fabae"
 
 
-
-
-
-
-
-
-df_long_genetic3 <- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", 
-                             sep =",", 
-                             stringsAsFactors = F) %>% 
-  dplyr::select(ivip, cluster_name) %>% 
-  distinct() %>%
-  inner_join(., df_long3, by = "ivip")
+# df_long_genetic3 <- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", 
+#                              sep =",", 
+#                              stringsAsFactors = F) %>% 
+#   dplyr::select(ivip, cluster_name) %>% 
+#   distinct() %>%
+#   inner_join(., df_long3, by = "ivip")
 
 #median extract ----
 data_median_expe250_pisum <- data_filtered_250_inf6_pisum %>%

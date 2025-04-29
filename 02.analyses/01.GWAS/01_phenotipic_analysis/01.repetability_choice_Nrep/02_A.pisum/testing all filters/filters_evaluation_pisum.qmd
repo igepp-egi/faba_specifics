@@ -57,7 +57,7 @@ results <- data.frame(x = numeric(0), i = numeric(0), AIC = numeric(0), BIC = nu
                       n_before = numeric(0), n_after = numeric(0), n_diff = numeric(0), H2=numeric(0),shapiro=numeric(0),shapiro_res=numeric(0),NGEN=numeric(0), stringsAsFactors = FALSE)
 
 # Loop through different values of x
-for (i in 3:7) {
+for (i in 3:8) {
   ###filter based on IQR
     # Calculate IQR and bounds for outlier removal
     IQR_value <- IQR(data250_apisum_02$larvae_total_number)
@@ -136,7 +136,7 @@ for (i in 3:7) {
     results <- rbind(results, data.frame(filter = filter, i = i, AIC = model_AIC, BIC = model_BIC, RMSE = RMSE, n_before = n_before, n_after = n_after, n_diff = n_diff, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
 }
 
-for (i in 3:7) {
+for (i in 3:8) {
   data <- data250_apisum_02
   filter <- "no_filter"
  
@@ -208,7 +208,7 @@ for (i in 3:7) {
     results <- rbind(results, data.frame(filter =filter, i = i, AIC = model_AIC, BIC = model_BIC, RMSE = RMSE, n_before = n_before, n_after = n_after, n_diff = n_diff, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
 }
 
-for (i in 3:7) {
+for (i in 3:8) {
  ###manual filter
   filter <-"manual_filter"
   
