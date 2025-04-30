@@ -1,12 +1,25 @@
 # Verify numbers of SNPs after each filter
 
+<!-- MarkdownTOC autolink="true" levels="1,2" -->
+
+- [Summary](#summary)
+- [Complete script check_numbers.sh](#complete-script-check_numberssh)
+- [Filter 0: raw file](#filter-0-raw-file)
+- [Filter 1: keep only biallelic SNPs \(remove indels and multiallelic SNPs\)](#filter-1-keep-only-biallelic-snps-remove-indels-and-multiallelic-snps)
+- [Filter 2: max MAF 1%](#filter-2-max-maf-1)
+- [Filter 3: max missing data max. 10%](#filter-3-max-missing-data-max-10)
+- [Filter 4: filter based on heterozygosity](#filter-4-filter-based-on-heterozygosity)
+
+<!-- /MarkdownTOC -->
+
+
 ## Summary 
 
 **Goal:** to recreate **PEAMUST_vfaba_F1b.vcf.gz** (SNPs + INDELS with heterozygosity<15%, MAF<1% and less than 10% missing data)
 
 The co
 Filters: 
-- filter 0: 6,425,454 SNPs in the raw `vfaba_hedin_peamust_SNP_GATK.vcf.gz` VCF.
+- filter 0: 6,425,454 SNPs and indels in the raw `vfaba_hedin_peamust_SNP_GATK.vcf.gz` VCF.
 - filter 1: 5,819,008 biallelic SNPs.
 - filter 2: 4,007,444 biallelic SNPs with a MAF higher or equal to 1%.
 - filter 3: 1,819,778 biallelic SNPs with a MAF higher than 1% and less than 10% missing data.  
@@ -56,6 +69,7 @@ echo "There are $after_filter3_snp_counts biallelic SNPs with a MAF higher than 
 echo "There are $after_filter4_snp_counts biallelic SNPs with a MAF higher than 1% and less than 10% missing data and less than 15% heterozygosity."
 
 ```
+
 ## Filter 0: raw file
 
 zcat vfaba_hedin_peamust_SNP_GATK.vcf.gz |grep -v "#" |wc -l
@@ -117,19 +131,4 @@ Select variants with less than 15% heterozygosity.
 bcftools view --targets-file sites_to_keep_less15pc_het.txt -Oz -o vcf_biallelic_maf001_miss_maxhet.vcf.gz --threads 5 vcf_biallelic_maf001_miss.vcf.gz
 ```
 
-## Complete script 
-
-```bash
-initial_snp_counts=$(zcat vfaba_hedin_peamust_SNP_GATK.vcf.gz           | grep -v "#" |wc -l)
-after_filter1_snp_counts=$(zcat vcf_biallelic.vcf.gz                    | grep -v "#" |wc -l)
-after_filter2_snp_counts=$(zcat vcf_biallelic_maf001.vcf.gz             | grep -v "#" |wc -l)
-after_filter3_snp_counts=$(zcat vcf_biallelic_maf001_miss.vcf.gz        | grep -v "#" |wc -l)
-after_filter4_snp_counts=$(zcat vcf_biallelic_maf001_miss_maxhet.vcf.gz | grep -v "#" |wc -l)
-
-echo "The raw $MY_VCF has $initial_snp_counts lines."
-echo "There are $after_filter1_snp_counts biallelic SNPs."
-echo "There are $after_filter2_snp_counts biallelic SNPs with a MAF higher or equal to 1%."
-echo "There are $after_filter3_snp_counts biallelic SNPs with a MAF higher than 1% and less than 10% missing data."
-echo "There are $after_filter4_snp_counts biallelic SNPs with a MAF higher than 1% and less than 10% missing data and less than 15% heterozygosity."
-```
 
