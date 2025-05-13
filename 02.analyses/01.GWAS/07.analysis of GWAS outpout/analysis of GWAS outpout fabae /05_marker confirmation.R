@@ -1,15 +1,9 @@
-library(data.table)
-library(vcfR)   
-library(tidyverse)
-library(dplyr)
-library(multcompView) 
-
 #extract marker ----
-myGD1 <-fread(file = "../../files_GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
+myGD1 <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
 myGD1 <- myGD1[, -1, with = FALSE]  # Removes the first column
-myGD2 <-fread(file = "../../files_GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.indv",header = FALSE,stringsAsFactors =  FALSE)
+myGD2 <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.indv",header = FALSE,stringsAsFactors =  FALSE)
 # Load datasets
-myGM <-fread(file = "../../files_GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
+myGM <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
   "chromosome" = "V1",
   "position" = "V2"
 )%>% mutate(snp_id=paste(chromosome,position, sep = "_")) %>% relocate(snp_id,.before = chromosome) 
@@ -71,6 +65,7 @@ median_xp007_xp009_marker_south_no1$chr3 <- droplevels(median_xp007_xp009_marker
 
 
 
+
 #data prep big screening ----
 data<-read.csv("01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = F)
 data <- data %>% filter(!is.na(larvae_total_number))
@@ -93,6 +88,13 @@ median_marker_south_no1 <- median_marker_south_no1 %>% filter(chr1L != "1")
 median_marker_south_no1$chr5 <- droplevels(median_marker_south_no1$chr5)
 median_marker_south_no1$chr3 <- droplevels(median_marker_south_no1$chr3)
 
+
+
+
+#
+
+
+data_filtered_marker_south <- subset(data_filtered_xp007_xp009_marker_geneticcluster, cluster_name %in% c("South", "South_America"))
 
 
 #analyse chr5 (South only) ----
@@ -124,7 +126,7 @@ median_xp007_xp009_marker_south %>%
 data_count <- median_marker_south %>%
   group_by(chr5) %>%
   summarise(n = n())
-print(data_count)
+
 median_marker_south %>% 
   mutate(chr5 = factor(chr5, levels = c(0, 1, 2))) %>%  
   ggplot(aes(x = chr5, y = Median_fecondity)) +  # Boxplot aesthetics
@@ -143,8 +145,6 @@ data_count <- median_xp007_xp009_marker_south %>%
   group_by(chr1L) %>%
   summarise(n = n())
 
-
-
 median_xp007_xp009_marker_south %>% 
   mutate(chr1L = factor(chr1L, levels = c(0, 1, 2))) %>%  
   ggplot(aes(x = chr1L, y = Median_fecondity)) +  # Boxplot aesthetics
@@ -160,7 +160,6 @@ median_xp007_xp009_marker_south %>%
 data_count <- median_marker_south %>%
   group_by(chr1L) %>%
   summarise(n = n())
-print(data_count)
 
 median_marker_south %>% 
   mutate(chr1L = factor(chr1L, levels = c(0, 1, 2))) %>%  
@@ -181,7 +180,6 @@ data_count <- xp007_xp009_median_marker %>%
   group_by(chr3) %>%
   summarise(n = n())
 
-
 xp007_xp009_median_marker %>% 
   mutate(chr3 = factor(chr3, levels = c(0, 1, 2))) %>%  
   ggplot(aes(x = chr3, y = Median_fecondity)) +  # Boxplot aesthetics
@@ -197,7 +195,6 @@ xp007_xp009_median_marker %>%
 data_count <- median_marker %>%
   group_by(chr3) %>%
   summarise(n = n())
-print(data_count)
 
 median_marker %>% 
   mutate(chr3 = factor(chr3, levels = c(0, 1, 2))) %>%  
@@ -210,9 +207,6 @@ median_marker %>%
     y = "Larvae Total Number"
   ) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))  # Rotate x-axis labels for better readability
-
-
-
 
 
 #analyse all QTL (South only) ----

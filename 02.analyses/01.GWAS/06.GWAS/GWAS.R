@@ -25,7 +25,7 @@ pheno<- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and
   distinct() %>%
   inner_join(., pheno, by = "ivip")
 
-pheno <- subset(pheno, cluster_name == "North")
+pheno <- subset(pheno, cluster_name %in% c("North", "Winter"))
 pheno <- subset(pheno, cluster_name %in% c("South", "South_America"))
 
 
