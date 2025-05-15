@@ -60,7 +60,7 @@ points_to_label <-
   res_pisum_and_afabae %>% 
   filter(ivip %in% all_genotypes) 
 
-additional_labels <- res_pisum_and_afabae %>% filter(A_pisum > 35) %>% filter(A_fabae > 40)
+additional_labels <- res_pisum_and_afabae %>% filter(A_pisum >= 35) %>% filter(A_fabae >= 40)
 
 points_to_label2 <- bind_rows(points_to_label, additional_labels)
 
@@ -81,10 +81,10 @@ p_scatterplot_continuous <-
            label.x.npc = "right", label.y.npc = "top", size = 4);p_scatterplot_continuous
 
 ggsave(plot = p_scatterplot_continuous, 
-       filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot01_scatterplot_apisum_vs_afabae.pdf", 
+       filename = "02.analyses/02.Discriminant_Genotypes/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot01_scatterplot_apisum_vs_afabae.pdf", 
        width = 7, height = 7)
 ggsave(plot = p_scatterplot_continuous, width = 10, height = 10, units = "cm",
-       filename = "02.analyses/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot01_scatterplot_apisum_vs_afabae.png")
+       filename = "02.analyses/02.Discriminant_Genotypes/2023_screen_specifics_251genotypes/03.comparison_apisum_vs_afabae/plot01_scatterplot_apisum_vs_afabae.png")
 
 ###########################################
 # Closer look at some interesting genotypes
