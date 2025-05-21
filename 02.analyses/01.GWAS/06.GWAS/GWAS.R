@@ -13,7 +13,7 @@ library(vcfR)
 library(tidyverse)
 library(dplyr)
 
-pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/emmeans_fabae.csv", sep = ",")        
+pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae.csv", sep = ",")        
 
 pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/emmeans_pisum.csv", sep = ",")        
 
@@ -73,6 +73,14 @@ myGAPIT_MLM <- GAPIT(
   Multiple_analysis=TRUE)
 
 
+myGAPIT_MLM <- GAPIT(
+  Y=myY[,c(1,2)], 
+  GD=myGD,
+  GM=myGM,
+  KI = myKI,
+  PCA.total=3,
+  model=c("Blink"),
+  cutOff = 1e-5)
 
  as.data.frame(test) <- myGD$chr5_1349197397
 test<-as.data.frame(myGD$chr5_1349197397)

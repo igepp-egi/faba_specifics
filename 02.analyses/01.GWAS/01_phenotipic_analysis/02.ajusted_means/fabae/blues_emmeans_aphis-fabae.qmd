@@ -29,7 +29,7 @@ data250fabae %>%
 ```
 
 ```{r}
-model <- lmer(larvae_total_number ~ ivip + (1 | session/block), data = data250fabae)
+model <- lmer(larvae_total_number ~ ivip + (1 |session/block), data = data250fabae)
 
 ```
 
@@ -71,15 +71,13 @@ shapiro_result <- shapiro.test(residuals_values)
 plot(residuals(model), type="o", col="blue", main="Residuals over Time", xlab="Index", ylab="Residuals")
 
 
-# Extract EMMeans for genotype
 emm_genotype <- emmeans(model, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
-hist(emm_df$emmean)
 
-emm_df <- emm_df[,c(1,2)]
+
 
 # Define the file path
-file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/emmeans_fabae.csv"
+file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae.csv"
 
 # Save the data frame to the specified location
   write.csv(emm_df, file = file_path, row.names = FALSE)

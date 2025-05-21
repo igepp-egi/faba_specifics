@@ -13,13 +13,19 @@ suppressPackageStartupMessages(library("Hmisc"))
 suppressPackageStartupMessages(library("corrplot"))
 suppressPackageStartupMessages(library("emmeans"))
 suppressPackageStartupMessages(library("performance"))
+suppressPackageStartupMessages(library("MASS"))
+
 
 ```
 
 preparation of the data based on the result from the filtering script :
 
 ```{r}
-data250fabae <- read.csv("../../01_phenotipic_analysis/aphis_fabae_data_filtered.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) 
+data250fabae <- read.csv("../../01.repetability_choice_Nrep/01_A.fabae/Final filters/aphis_fabae_data_filtered.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session))
+summary(data250fabae)
+data250fabae$ivip<-as.factor(data250fabae$ivip)
+data250fabae <- data250fabae %>% filter(!is.na(ivip))
+
 ```
 
 ```{r}
@@ -33,12 +39,11 @@ model0 <- lm(larvae_total_number ~ 1, data = data250fabae)
 model1 <- lm(larvae_total_number ~ ivip, data = data250fabae)
 model2 <- lmer(larvae_total_number ~ ivip + (1 | session), data = data250fabae)
 model3 <- lmer(larvae_total_number ~ ivip + (1 | session/block), data = data250fabae)
-model4 <- glm.nb(formula = larvae_total_number ~ ivip +session/block, data = data250fabae)
-model5 <- glm.nb(formula = larvae_total_number ~ ivip +session, data = data250fabae)
+
 ```
 
 ```{r}
-compare_performance(model0, model1, model2,model3,model4,model5, rank = FALSE, verbose = TRUE)
+compare_performance(model0, model1, model2,model3, rank = FALSE, verbose = TRUE)
 ```
 
 ```{r}
@@ -50,7 +55,7 @@ test_lrt(model1, model2)
 ```
 
 ```{r}
-test_lrt(model2, model3)
+test_lrt(model2, model3) 
 ```
 
 ```{r}
@@ -91,7 +96,12 @@ shapiro_result <- shapiro.test(residuals_values)
 plot(residuals(model3), type="o", col="blue", main="Residuals over Time", xlab="Index", ylab="Residuals")
 
 
-# Extract EMMeans for genotype
+blups <- ranef(model3)$ivip
+blup_df <- data.frame(ivip = rownames(blups), BLUP = blups[,1])
+hist(blup_df$BLUP)
+
+
+Extract EMMeans for genotype
 emm_genotype <- emmeans(model3, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
 hist(emm_df$emmean)
