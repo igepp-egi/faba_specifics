@@ -65,6 +65,7 @@ median_xp007_xp009_marker_south_no1$chr3 <- droplevels(median_xp007_xp009_marker
 
 
 
+
 #data prep big screening ----
 data<-read.csv("01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv", stringsAsFactors = F)
 data <- data %>% filter(!is.na(larvae_total_number))

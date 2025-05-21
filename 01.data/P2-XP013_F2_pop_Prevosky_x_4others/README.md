@@ -14,6 +14,16 @@ Study the segregation of the partial resistance to _A. pisum_ P123 and _A. fabae
 | IVIP101327	| 114  	 | JF2172  |  Sensitive to both aphids (S/S)                                                      |
 | IVIP101736	| 153  	 | JF2201  |  Sensitive to both aphids (S/S)                                                      |
 
+**Corrected table**
+
+| IVIP  		|  Geno# | Batch   | Phenotype (screen 2022-2024)                                                         |  
+|---------------|--------|---------|--------------------------------------------------------------------------------------|
+| IVIP100123  	| 7  	 | JF2094  |  Partially resistant to both aphids (PR/PR)                                          |
+| IVIP100872	| 77  	 | JF2142  |  Sensitive to both aphids (S/S)                                                      |
+| IVIP100285	| 34  	 | JF2109  |  Sensitive to both aphids (S/S)                                                      |
+| IVIP101327	| 114  	 | JF2172  |  Sensitive to both aphids (S/S)                                                      |
+| IVIP101736	| 153  	 | JF2201  |  Sensitive to both aphids (S/S)                                                      |
+
 
 ## To be done
 
@@ -29,7 +39,7 @@ Study the segregation of the partial resistance to _A. pisum_ P123 and _A. fabae
 |---------------|-----------|---------|------------------------------------- |------------------------------|
 | IVIP100123  	| 7  	    | JF2094  |  N = 4              			     |  N = 3                       |
 | IVIP100872	| 77  	    | JF2142  |  N = 2                 			     |  N = 0                       |
-| IVIP100874 >no	| 78  	    | JF2143  |  N = 2                               |  N = 0                       |
+| IVIP100874	| 78  	    | JF2143  |  N = 2                               |  N = 0                       |
 | IVIP101320	| 113  	    | JF2172  |  N = 3                               |  N = 0                       |
 | IVIP101736	| 153  	    | JF2201  |  N = 2                               |  N = 0                       |
 
