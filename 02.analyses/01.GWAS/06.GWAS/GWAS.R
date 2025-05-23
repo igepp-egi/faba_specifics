@@ -34,18 +34,18 @@ pheno <- pheno[,c(1,3)]
 
 nrow(pheno)
 
-myGD1 <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
+myGD1 <-fread(file = "../../files_GWAS/GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
 myGD1 <- myGD1[, -1, with = FALSE]  # Removes the first column
 
 
-myGD2 <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.indv",header = FALSE,stringsAsFactors =  FALSE)
+myGD2 <-fread(file = "../../files_GWAS/GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.indv",header = FALSE,stringsAsFactors =  FALSE)
 
-myKI <- fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5_kinship.cXX.txt")
+myKI <- fread(file = "../../files_GWAS/GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5_kinship.cXX.txt")
 # Load datasets
 
 
 
-myGM <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
+myGM <-fread(file = "../../files GWAS/GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
     "chromosome" = "V1",
     "position" = "V2"
   )%>% mutate(snp_id=paste(chromosome,position, sep = "_")) %>% relocate(snp_id,.before = chromosome) 
@@ -85,3 +85,18 @@ myGAPIT_MLM <- GAPIT(
  as.data.frame(test) <- myGD$chr5_1349197397
 test<-as.data.frame(myGD$chr5_1349197397)
 test2 <-cbind(test,myY)
+
+
+GAPIT.Power.compare(  
+  GD=myGD,  
+  GM=myGM,  
+  nrep=100,  
+  h2=0.586,  
+  
+  model=c("GLM",
+          "MLM",
+          "MLMM",
+          "FarmCPU",
+          "Blink"),
+  NQTN=1
+) 
