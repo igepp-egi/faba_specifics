@@ -1,9 +1,11 @@
 ---
 title: "choosing filters"
-format: pdf
-editor: visual
+format: 
+  pdf: 
+    toc: true
+    toc-depth: 2
 ---
-
+##packages required
 ```{r library}
 #| echo: false
 #| warning: false
@@ -16,10 +18,6 @@ suppressPackageStartupMessages(library("emmeans"))
 suppressPackageStartupMessages(library("patchwork"))
 suppressPackageStartupMessages(library("ggplot2"))
 suppressPackageStartupMessages(library("dplyr"))
-suppressPackageStartupMessages(library("vcfR"))
-suppressPackageStartupMessages(library("VariantAnnotation"))
-
-
 
 ```
 
@@ -34,8 +32,6 @@ data250_afabae_00 <- read.csv("../../../../../../01.data/2023_screen_specifics_2
   mutate(ivip = as.factor(ivip)) %>% 
   mutate(session = as.factor(session)) 
 
-
-
 data250_afabae_01 <- data250_afabae_00 %>% filter(!is.na(larvae_total_number))
 data250_afabae_01$ivip <- droplevels(data250_afabae_01$ivip)
 
@@ -44,27 +40,24 @@ data250_afabae_02$ivip <- droplevels(data250_afabae_02$ivip)
 
 data250_afabae_02$ivip <-as.factor(data250_afabae_02$ivip)
 
-
-
-
 ```
 
 Once we have removed the NAs and all rows for which we don't have an adult, we can still make adjustments to the dataset. We can remove outliers to ensure that our distribution approaches a normal distribution, and we can also filter out genotypes based on a threshold for the minimum number of repetitions required to keep a genotype.
+We have 3 methods to handle outliers: 1)keep the outliers; 2)remove manually the outliers based on biological reasons; 3) use the interquartile range method (IQR) to remove all data outside a specific range.
 
-The goal of this script is to study how our model reacts to changes in the outlier removal rate and the minimum number of repetitions required to retain a genotype.
+The goal of this script is to study how our model reacts to changes in the outlier removal method and the minimum number of repetitions required to retain a genotype.
 
-in the folowing loop we varry two parameters, i and x the coef of stringensy for the outliers removal and the minimal number of reps for the genotypes respectively.
+in the folowing loop we varry two parameters, i the minimal number of reps for the genotypes and the outlier filtering method.
 
-when x = 1 we remove a lot of outlier and when x = 2 almost no outliers are removed
 
 ```{r}
 
 # Initialize an empty data frame to store results
 results <- data.frame(x = numeric(0), i = numeric(0), RMSE = numeric(0), 
-                      n_before = numeric(0), n_after = numeric(0), n_diff = numeric(0), H2=numeric(0),shapiro=numeric(0),shapiro_res=numeric(0),NGEN=numeric(0), stringsAsFactors = FALSE)
+                       n_after = numeric(0),  H2=numeric(0),shapiro=numeric(0),shapiro_res=numeric(0),NGEN=numeric(0), stringsAsFactors = FALSE)
 
 # Loop through different values of x
-for (i in 3:7) {
+for (i in 2:9) {
   ###filter based on IQR
     # Calculate IQR and bounds for outlier removal
     IQR_value <- IQR(data250_afabae_02$larvae_total_number)
@@ -86,15 +79,13 @@ for (i in 3:7) {
     NGEN<-nlevels(data$ivip)
     
    
-    # Number of rows before removing outliers
-    n_before <- nrow(data250_afabae_02)
+    
     
     
     # Number of rows after removing outliers
     n_after <- nrow(data)
     
-    # Calculate the difference in number of observations
-    n_diff <- n_before - n_after
+
     
     # Fit the model
     mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
@@ -136,7 +127,7 @@ for (i in 3:7) {
     
     
     # Store the results in the data frame
-    results <- rbind(results, data.frame(filter = filter, i = i, RMSE = RMSE, n_before = n_before, n_after = n_after, n_diff = n_diff, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
+    results <- rbind(results, data.frame(filter = filter, i = i, RMSE = RMSE, n_after = n_after,  H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
 }
 
 for (i in 3:7) {
@@ -155,15 +146,11 @@ for (i in 3:7) {
     NGEN<-nlevels(data$ivip)
     
    
-    # Number of rows before removing outliers
-    n_before <- nrow(data250_afabae_02)
-    
     
     # Number of rows after removing outliers
     n_after <- nrow(data)
     
-    # Calculate the difference in number of observations
-    n_diff <- n_before - n_after
+    
     
     # Fit the model
     mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
@@ -205,7 +192,7 @@ for (i in 3:7) {
     
     
     # Store the results in the data frame
-    results <- rbind(results, data.frame(filter =filter, i = i, RMSE = RMSE, n_before = n_before, n_after = n_after, n_diff = n_diff, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
+    results <- rbind(results, data.frame(filter =filter, i = i, RMSE = RMSE, n_after = n_after, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
 }
 
 for (i in 3:7) {
@@ -232,16 +219,11 @@ data <- data250_afabae_03
     
     NGEN<-nlevels(data$ivip)
     
-   
-    # Number of rows before removing outliers
-    n_before <- nrow(data250_afabae_02)
-    
     
     # Number of rows after removing outliers
     n_after <- nrow(data)
     
-    # Calculate the difference in number of observations
-    n_diff <- n_before - n_after
+  
     
     # Fit the model
     mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
@@ -285,26 +267,28 @@ data <- data250_afabae_03
     
     
     # Store the results in the data frame
-    results <- rbind(results, data.frame(filter = filter, i = i, RMSE = RMSE, n_before = n_before, n_after = n_after, n_diff = n_diff, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
+    results <- rbind(results, data.frame(filter = filter, i = i, RMSE = RMSE, n_after = n_after,  H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
 }
-
+print(results)
 
 
 ```
 
 ```{r}
+#| echo: false
+#| warning: false
 write.csv(x = results, 
           file = "filter_annalysis.csv", 
           quote = F, row.names = F)
 
 ```
 
-Based on these first results it appears that IQR is the best filtering option. We still need to detremine the best value for i. For that we will use a similar loop with more repetitions to which we will add the nucleotid diversity.
+Based on these first results it appears that IQR is the best filtering option. We still need to detremine the best value for i. For that we will use a similar loop to which we will add the nucleotid diversity.
 
 ```{r}
 # Initialize an empty data frame to store results
 results <- data.frame(x = numeric(0), i = numeric(0), RMSE = numeric(0), 
-                      n_before = numeric(0), n_after = numeric(0), n_diff = numeric(0), H2=numeric(0),shapiro=numeric(0),shapiro_res=numeric(0),NGEN=numeric(0), pi_value=numeric(0), stringsAsFactors = FALSE)
+                       n_after = numeric(0), H2=numeric(0),shapiro=numeric(0),shapiro_res=numeric(0),NGEN=numeric(0), stringsAsFactors = FALSE)
 
 
 for (i in 2:9) {
@@ -329,15 +313,13 @@ for (i in 2:9) {
     NGEN<-nlevels(data$ivip)
     
    
-    # Number of rows before removing outliers
-    n_before <- nrow(data250_afabae_02)
+ 
     
     
     # Number of rows after removing outliers
     n_after <- nrow(data)
     
-    # Calculate the difference in number of observations
-    n_diff <- n_before - n_after
+
     
     # Fit the model
     mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
@@ -377,37 +359,15 @@ for (i in 2:9) {
     # Calculate heritability (h2)
     H2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
     
-    vcf_samples <- colnames(vcf@gt)[-1]  # Exclude "FORMAT"
-pheno_samples <- data$ivip  # Replace SampleID with your actual column name
-samples_to_keep <- vcf_samples[vcf_samples %in% pheno_samples]
-vcf@gt <- vcf@gt[, c("FORMAT", samples_to_keep)]  # Always keep the FORMAT column
 
-
-# Convert to genlight (adegenet)
-genlight_obj <- vcfR2genlight(vcf)
-
-
-# Custom nucleotide diversity function:
-nuc_div <- function(x) {
-  x <- as.matrix(x)
-  n <- nrow(x)
-  p <- colMeans(x, na.rm = TRUE) / 2  # allele frequency (assuming 0/1/2 coding)
-  pi <- 2 * p * (1 - p)
-  mean(pi, na.rm = TRUE)
-}
-
-# Apply to your data:
-pi_value <- nuc_div(genlight_obj)
-    
     # Store the results in the data frame
-    results <- rbind(results, data.frame(filter = filter, i = i, RMSE = RMSE, n_before = n_before, n_after = n_after, n_diff = n_diff, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN, pi_value=pi_value))
+    results <- rbind(results, data.frame(filter = filter, i = i, RMSE = RMSE, n_after = n_after, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
 }
-
-
 
 
 ```
 
+We now need to visualize the data we generated to choose the best filter
 ```{r}
 
 ggplot(results, aes(x = i, y = NGEN)) +
@@ -437,7 +397,7 @@ abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 ```
 
-It can be hard to read the relation between Genotype number and i. Therefore it is helpfull to plot the slop (the value is the difference between number of genotype beforre and after) based on the decrease in genotypes number we can choose 5 or 7 as the best i value.
+It can be hard to read the relation between Genotype number and i. Therefore it is helpfull to plot the slop (the value is the difference between number of genotype with i and i + 1) based on the decrease in genotypes number we can choose 5 or 7 as the best i value.
 
 ```{r}
 
@@ -448,7 +408,7 @@ ggplot(results, aes(x = i, y = RMSE)) +
   theme_bw() +
   ggrepel::geom_text_repel(aes(label = NGEN), arrow = T) +
   labs(x = "i", y = "RMSE") +
-  ggtitle("variation of RMSE depending on i")
+  ggtitle("variation of RMSE depending on the minimal number of rep")
 
 y<-as.vector(results$RMSE)
 x<-as.vector(results$i)
@@ -467,7 +427,7 @@ abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 ```
 
-the lowest value for RMSE is with i=4. However base on the curve we could also be tempted to chosse a value of 7 for i.
+the lowest value for RMSE is with i=4. However base on the curve we could be tempted to choose a value of 5 or 7 for i.
 
 ```{r}
 ggplot(results, aes(x = i, y = n_after)) +
@@ -476,8 +436,8 @@ ggplot(results, aes(x = i, y = n_after)) +
   scale_y_continuous(limits = c(0,1800)) +
   theme_bw() +
   ggrepel::geom_text_repel(aes(label = n_after), arrow = T) +
-  labs(x = "N biological replicates", y = "N genotypes") +
-  ggtitle("N genotypes = f(N biological replicates)")
+  labs(x = "N biological replicates", y = "total number of rep") +
+  ggtitle("total number of observation depending on the number of repetitions")
 
 y<-as.vector(results$n_after)
 x<-as.vector(results$i)
@@ -493,19 +453,37 @@ plot(x_mid, slope, type = "b", col = "red", main = "Numerical Derivative (Slope)
      ylab = "Slope", xlab = "x")
 abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
-
-
 ```
 
 based on overall number of notation we could choose 5 or 7.
 
+
 ```{r}
-ggplot(results, aes(x = i, y = pi_value)) +
+ggplot(results, aes(x = i, y = H2)) +
   geom_point() +
-  scale_x_continuous(breaks=seq(1,13,1)) +
-  scale_y_continuous(limits = c(0.2553,0.2562)) +
+  scale_x_continuous(breaks = seq(1, 13, 1)) +
+  scale_y_continuous(limits = c(0, 0.5)) +
   theme_bw() +
-  ggrepel::geom_text_repel(aes(label = i)) +
-  labs(x = "N biological replicates", y = "N genotypes") +
-  ggtitle("N genotypes = f(N biological replicates)")
+  labs(
+    x = "N biological replicates",
+    y = "Total number of rep"
+  ) +
+  ggtitle("H2 depending on the number of repetitions")
+
+
+y<-as.vector(results$H2)
+x<-as.vector(results$i)
+
+# Compute slope (finite differences)
+slope <- diff(y) / diff(x)
+
+# To align slopes with x-values, use midpoints
+x_mid <- (x[-1] + x[-length(x)]) / 2
+
+# Plot slope (derivative)
+plot(x_mid, slope, type = "b", col = "red", main = "Numerical Derivative (Slope)",
+     ylab = "Slope", xlab = "x")
+abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
+
 ```
+based on H2 the best option are 5 or 7

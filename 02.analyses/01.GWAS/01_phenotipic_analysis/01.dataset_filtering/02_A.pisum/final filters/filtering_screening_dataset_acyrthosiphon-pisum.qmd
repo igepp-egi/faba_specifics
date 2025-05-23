@@ -16,6 +16,8 @@ suppressPackageStartupMessages(library("lme4"))
 suppressPackageStartupMessages(library("Hmisc"))
 suppressPackageStartupMessages(library("corrplot"))
 suppressPackageStartupMessages(library("ggrepel"))
+suppressPackageStartupMessages(library("patchwork"))
+
 ```
 ``
 
@@ -46,9 +48,10 @@ Conclusions:\
 - There are `r res$number_of_genotypes` genotypes in total.\
 - There are `r res$number_of_notation` measurements in total.
 :::
+we can't use our dataset like this, we need to clean it first.
 
 ## Missing data removed
-
+First we remove the missing data
 ```{r}
 data250pisum_01 <- data250pisum_00 %>% filter(!is.na(larvae_total_number))
 data250pisum_01$ivip <- droplevels(data250pisum_01$ivip)
@@ -79,7 +82,7 @@ create_correlation_plot(data = data250pisum_01,
 
 We chose to remove all data from plants on which no adult aphid was found. This decision was made to get rid of larvae installation bias and only assess the reproduction ability of the aphid.
 
-When the adult aphid dies, the number of larvae will drop but only because the adult stayed less longer on the plant and not because the plant was not suitable for the reproduction.
+When the adult aphid dies, the number of larvae will drop but only because the adult did not stay much time on the plant and not because the plant was not suitable for the reproduction.
 
 ```{r remove observations with adult not alive}
 
@@ -96,7 +99,7 @@ Conclusions:\
 - There are `r res3$number_of_notation` measurements in total.
 :::
 
-This filtering led to the loss of 1 genotype but increased broad sense heritability up to 0.36
+This filtering led to the loss of 1 genotype but increased broad sense heritability up to 0.37
 
 ```{r}
 #| eval: false
@@ -117,17 +120,18 @@ p_with <- data250pisum_02 %>%
   stat_qq() +
   stat_qq_line() +
   labs(y = "Observed quantiles", x = "Theoretical quantiles") +
-  ggtitle("Without NA values") +
+  ggtitle("With outliers") +
   theme_bw()
 p_with
 ```
+## Filter outliers 
+Our data are still not normally distributed. We need to apply a new filter. To remove outliers we choose to use the interquartile range method (IQR) removing data that are considered too high or too low. Both case can be explained biologically, low larvae count may be explain by an adult that was hurt during the installation and a larvae count too high may be explained by 2 adult beeing installed on the plant instead of only one.
 
 ```{r comparison of qqplots with and without outliers}
 
-x<-1.5
 IQR_value <- IQR(data250pisum_02$larvae_total_number)
-lower_bound <- quantile(data250pisum_02$larvae_total_number, 0.25) - x * IQR_value
-upper_bound <- quantile(data250pisum_02$larvae_total_number, 0.75) + x * IQR_value
+lower_bound <- quantile(data250pisum_02$larvae_total_number, 0.25) - 1.5 * IQR_value
+upper_bound <- quantile(data250pisum_02$larvae_total_number, 0.75) + 1.5 * IQR_value
 
 # Filter out outliers
 data250pisum_03 <- data250pisum_02[data250pisum_02$larvae_total_number >= lower_bound & data250pisum_02$larvae_total_number <= upper_bound, ]
@@ -152,7 +156,14 @@ p_without <- data250pisum_03 %>%
 p_with + p_without
 
 ```
-
+::: callout-tip
+Conclusions:\
+- Heritability is equal to `r round(res4$heritability, digits=3)`.\
+- There are `r res4$number_of_genotypes` genotypes in total.\
+- There are `r res4$number_of_notation` measurements in total.
+:::
+ Both the normality of the data and the heritability benefits from this filter.
+ 
 \newpage
 
 
@@ -169,9 +180,9 @@ res5 <- calculate_broad_heritability(data = data250pisum_04)
 
 ::: callout-important
 Conclusions:\
-- Heritability is equal to `r round(res4$heritability, digits=3)`.\
-- There are `r res4$number_of_genotypes` genotypes in total.\
-- There are `r res4$number_of_notation` measurements in total.
+- Heritability is equal to `r round(res5$heritability, digits=3)`.\
+- There are `r res5$number_of_genotypes` genotypes in total.\
+- There are `r res5$number_of_notation` measurements in total.
 :::
 
 ```{r}
@@ -202,8 +213,10 @@ p
 **Write final dataset to .csv**
 
 ```{r}
+#| eval: false
+#| echo: true
 write.csv(x = data250pisum_04, 
-          file = "../../../01.repetability_choice_Nrep/02_A.pisum/final filters/acyrthosiphon_pisum_filtered.csv", 
+          file = "../../../../01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered.csv", 
           quote = F, row.names = F)
 ```
 
