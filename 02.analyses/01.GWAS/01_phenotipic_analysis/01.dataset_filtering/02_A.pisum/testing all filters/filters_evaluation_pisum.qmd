@@ -5,7 +5,9 @@ format:
     toc: true
     toc-depth: 2
 ---
-##packages required 
+## packages required 
+
+This analysis depends on the following packages:
 ```{r library}
 #| echo: false
 #| warning: false
@@ -50,320 +52,102 @@ The goal of this script is to study how our model reacts to changes in the outli
 
 in the folowing loop we varry two parameters, i the minimal number of reps for the genotypes and the outlier filtering method.
 
+function to calculate all metric used to compare filters
+```{r}
+analyze_filtered_data <- function(data, i, filter_name) {
+  data <- data %>%
+    group_by(ivip) %>%
+    filter(n() >= i) %>%
+    ungroup() %>%
+    droplevels()
+
+  if (nrow(data) < 5 || nlevels(data$ivip) < 2) {
+    return(NULL)  # skip iterations with too little data
+  }
+
+  NGEN <- nlevels(data$ivip)
+  n_after <- nrow(data)
+
+  # Fit the model
+  mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
+  residuals_values <- residuals(mod)
+  RMSE <- sqrt(mean(residuals_values^2))
+  shapiro_res <- shapiro.test(residuals_values)$p.value
+  shapiro <- shapiro.test(data$larvae_total_number)$p.value
+
+  # Heritability model
+  mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data)
+  estimates <- as.data.frame(VarCorr(mod_h2))
+  genetic_variance <- estimates$vcov[1]
+  residual_variance <- estimates$vcov[3]
+  nbE <- nlevels(data$session)
+  H2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
+
+  return(data.frame(
+    filter = filter_name, i = i, RMSE = RMSE, n_after = n_after,
+    H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN = NGEN
+  ))
+}
+```
+
+## analyse of the filtered datasets
 ```{r}
 
 # Initialize an empty data frame to store results
 results <- data.frame(x = numeric(0), i = numeric(0), RMSE = numeric(0), 
                        n_after = numeric(0), H2=numeric(0),shapiro=numeric(0),shapiro_res=numeric(0),NGEN=numeric(0), stringsAsFactors = FALSE)
 
-# Loop through different values of x
-for (i in 2:9) {
-  ###filter based on IQR
+
+###filter based on IQR
     # Calculate IQR and bounds for outlier removal
     IQR_value <- IQR(data250_apisum_02$larvae_total_number)
     lower_bound <- quantile(data250_apisum_02$larvae_total_number, 0.25) - 1.5 * IQR_value
     upper_bound <- quantile(data250_apisum_02$larvae_total_number, 0.75) + 1.5 * IQR_value
     filter ="IQR"
     # Filter out outliers
-    data <- data250_apisum_02[data250_apisum_02$larvae_total_number >= lower_bound & data250_apisum_02$larvae_total_number <= upper_bound, ]
+    data_iqr <- data250_apisum_02[data250_apisum_02$larvae_total_number >= lower_bound & data250_apisum_02$larvae_total_number <= upper_bound, ]
     
-    
-    data <- data %>%
-      group_by(ivip) %>%           # Group by genotype
-      filter(n() >= i) %>%             # Keep only groups with i or more repetitions
-      ungroup() 
-    
-    
-    data$ivip <- droplevels(data$ivip)
-    
-    NGEN<-nlevels(data$ivip)
-    
-    
-    # Number of rows after removing outliers
-    n_after <- nrow(data)
-    
-    
-    # Fit the model
-    mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
-    
-    # Extract fitted values and residuals
-    fitted_values <- fitted(mod)
-    residuals_values <- residuals(mod)
-    
-    # Perform the Shapiro-Wilk test
-    shapiro_result <- shapiro.test(residuals_values)
-    
-    # Print the p-value (this is your quantification of normality)
-    shapiro_res <- shapiro_result$p.value
-    
-    # Perform the Shapiro-Wilk test
-    shapiro_result <- shapiro.test(data$larvae_total_number)
-    
-    # Print the p-value (this is your quantification of normality)
-    shapiro <- shapiro_result$p.value
-    
-    
-    # Calculate RMSE (Root Mean Squared Error)
-    RMSE <- sqrt(mean(residuals_values^2))
-    
-    # Fit the model with a fixed formula
-    mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data)
-    
-    # Get the variance components
-    estimates <- as.data.frame(VarCorr(mod_h2))
-    
-    # Extract the relevant variance components
-    genetic_variance <- estimates$vcov[1]
-    residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
-    
-    nbE <-nlevels(data$session)
-    
-    # Calculate heritability (h2)
-    H2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
-    
-    
-    
-    # Store the results in the data frame
-    results <- rbind(results, data.frame(filter = filter, i = i, RMSE = RMSE, n_after = n_after, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
+
+for (i in 2:9) {
+  res <- analyze_filtered_data(data_iqr, i, filter_name = "IQR")
+  if (!is.null(res)) results <- rbind(results, res)
 }
 
-for (i in 3:8) {
-  data <- data250_apisum_02
-  filter <- "no_filter"
- 
+for (i in 2:9) {
+  res <- analyze_filtered_data(data250_apisum_02, i, filter_name = "no_filter")
+  if (!is.null(res)) results <- rbind(results, res)
+    }
+    
+data_manual<- data250_apisum_02 %>% filter(larvae_total_number != "0") 
 
-    data <- data %>%
-      group_by(ivip) %>%           # Group by genotype
-      filter(n() >= i) %>%             # Keep only groups with i or more repetitions
-      ungroup() 
-    
-    
-    data$ivip <- droplevels(data$ivip)
-    
-    NGEN<-nlevels(data$ivip)
-    
-   
-    # Number of rows before removing outliers
-    n_before <- nrow(data250_apisum_02)
-    
-    
-    # Number of rows after removing outliers
-    n_after <- nrow(data)
-    
-    # Calculate the difference in number of observations
-    n_diff <- n_before - n_after
-    
-    # Fit the model
-    mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
-    
-    # Extract fitted values and residuals
-    fitted_values <- fitted(mod)
-    residuals_values <- residuals(mod)
-    
-    # Perform the Shapiro-Wilk test
-    shapiro_result <- shapiro.test(residuals_values)
-    
-    # Print the p-value (this is your quantification of normality)
-    shapiro_res <- shapiro_result$p.value
-    
-    # Perform the Shapiro-Wilk test
-    shapiro_result <- shapiro.test(data$larvae_total_number)
-    
-    # Print the p-value (this is your quantification of normality)
-    shapiro <- shapiro_result$p.value
-    
-    # Calculate RMSE (Root Mean Squared Error)
-    RMSE <- sqrt(mean(residuals_values^2))
-    
-    # Fit the model with a fixed formula
-    mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data)
-    
-    # Get the variance components
-    estimates <- as.data.frame(VarCorr(mod_h2))
-    
-    # Extract the relevant variance components
-    genetic_variance <- estimates$vcov[1]
-    residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
-    
-    nbE <-nlevels(data$session)
-    
-    # Calculate heritability (h2)
-    H2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
-    
-    
-    
-    # Store the results in the data frame
-    results <- rbind(results, data.frame(filter =filter, i = i, RMSE = RMSE, n_after = n_after, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
-}
-
-for (i in 3:8) {
- ###manual filter
-  filter <-"manual_filter"
-  
-
-
-data250_apisum_03<- data250_apisum_02 %>% filter(larvae_total_number != "0") 
-
-data250_apisum_03$ivip <- droplevels(data250_apisum_03$ivip)
-data <- data250_apisum_03
-    data <- data %>%
-      group_by(ivip) %>%           # Group by genotype
-      filter(n() >= i) %>%             # Keep only groups with i or more repetitions
-      ungroup() 
-    
-    data$ivip <- droplevels(data$ivip)
-    
-    NGEN<-nlevels(data$ivip)
-    
-   
-    # Number of rows before removing outliers
-    n_before <- nrow(data250_apisum_02)
-    
-    
-    # Number of rows after removing outliers
-    n_after <- nrow(data)
-    
-    # Calculate the difference in number of observations
-    n_diff <- n_before - n_after
-    
-    # Fit the model
-    mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
-    
-    # Extract fitted values and residuals
-    fitted_values <- fitted(mod)
-    residuals_values <- residuals(mod)
-    
-    # Perform the Shapiro-Wilk test
-    shapiro_result <- shapiro.test(residuals_values)
-    
-    # Print the p-value (this is your quantification of normality)
-    shapiro_res <- shapiro_result$p.value
-    
-    
-    # Perform the Shapiro-Wilk test
-    shapiro_result <- shapiro.test(data$larvae_total_number)
-    
-    # Print the p-value (this is your quantification of normality)
-    shapiro <- shapiro_result$p.value
-    
-    # Calculate RMSE (Root Mean Squared Error)
-    RMSE <- sqrt(mean(residuals_values^2))
-    
-    # Fit the model with a fixed formula
-    mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data)
-    
-    # Get the variance components
-    estimates <- as.data.frame(VarCorr(mod_h2))
-    
-    # Extract the relevant variance components
-    genetic_variance <- estimates$vcov[1]
-    residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
-    
-    nbE <-nlevels(data$session)
-    
-    # Calculate heritability (h2)
-    H2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
-    
-    
-    
-    # Store the results in the data frame
-    results <- rbind(results, data.frame(filter = filter, i = i, RMSE = RMSE, n_after = n_after, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
+for (i in 2:9) {
+  res <- analyze_filtered_data(data_manual, i, filter_name = "Manual_filter")
+  if (!is.null(res)) results <- rbind(results, res)
 }
 
 print(results)
-
 ```
+Based on these results it seems appropriate to select the IQR filter as it yield best heritability, lower RMSE and more normal data.
 
 ```{r}
+#| eval: false
+#| echo: true
 write.csv(x = results, 
           file = "filter_annalysis.csv", 
           quote = F, row.names = F)
 
 ```
 
-
 ```{r}
-
-# Initialize an empty data frame to store results
-results <- data.frame(x = numeric(0), i = numeric(0), RMSE = numeric(0), 
-                       n_after = numeric(0), H2=numeric(0),shapiro=numeric(0),shapiro_res=numeric(0),NGEN=numeric(0), stringsAsFactors = FALSE)
-
-# Loop through different values of x
-for (i in 2:9) {
-  ###filter based on IQR
-    # Calculate IQR and bounds for outlier removal
-    IQR_value <- IQR(data250_apisum_02$larvae_total_number)
-    lower_bound <- quantile(data250_apisum_02$larvae_total_number, 0.25) - 1.5 * IQR_value
-    upper_bound <- quantile(data250_apisum_02$larvae_total_number, 0.75) + 1.5 * IQR_value
-    filter ="IQR"
-    # Filter out outliers
-    data <- data250_apisum_02[data250_apisum_02$larvae_total_number >= lower_bound & data250_apisum_02$larvae_total_number <= upper_bound, ]
-    
-    
-    data <- data %>%
-      group_by(ivip) %>%           # Group by genotype
-      filter(n() >= i) %>%             # Keep only groups with i or more repetitions
-      ungroup() 
-    
-    
-    data$ivip <- droplevels(data$ivip)
-    
-    NGEN<-nlevels(data$ivip)
-    
-    
-    # Number of rows after removing outliers
-    n_after <- nrow(data)
-    
-    
-    # Fit the model
-    mod <- lmer(larvae_total_number ~ ivip + (1|session/block), data = data)
-    
-    # Extract fitted values and residuals
-    fitted_values <- fitted(mod)
-    residuals_values <- residuals(mod)
-    
-    # Perform the Shapiro-Wilk test
-    shapiro_result <- shapiro.test(residuals_values)
-    
-    # Print the p-value (this is your quantification of normality)
-    shapiro_res <- shapiro_result$p.value
-    
-    # Perform the Shapiro-Wilk test
-    shapiro_result <- shapiro.test(data$larvae_total_number)
-    
-    # Print the p-value (this is your quantification of normality)
-    shapiro <- shapiro_result$p.value
-    
-    
-    # Calculate RMSE (Root Mean Squared Error)
-    RMSE <- sqrt(mean(residuals_values^2))
-    
-    # Fit the model with a fixed formula
-    mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data)
-    
-    # Get the variance components
-    estimates <- as.data.frame(VarCorr(mod_h2))
-    
-    # Extract the relevant variance components
-    genetic_variance <- estimates$vcov[1]
-    residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
-    
-    nbE <-nlevels(data$session)
-    
-    # Calculate heritability (h2)
-    H2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
-    
-    
-    
-    # Store the results in the data frame
-    results <- rbind(results, data.frame(filter = filter, i = i, RMSE = RMSE, n_after = n_after, H2 = H2, shapiro = shapiro, shapiro_res = shapiro_res, NGEN=NGEN))
-}
-
+iqr_results <- results %>% filter(filter == "IQR")
 ```
-We now need to visualize the data we generated to choose the best filter
+
+We now need to visualize the data we generated from the IQR filter to choose the best value for i (minimal number of repetitions to keep a genotype)
+
+## Advanced visualisation of the data generated
 ```{r}
 
-ggplot(results, aes(x = i, y = NGEN)) +
+ggplot(iqr_results, aes(x = i, y = NGEN)) +
   geom_point() +
   scale_x_continuous(breaks=seq(1,13,1)) +
   scale_y_continuous(limits = c(0,250)) +
@@ -372,8 +156,8 @@ ggplot(results, aes(x = i, y = NGEN)) +
   labs(x = "N biological replicates", y = "N genotypes") +
   ggtitle("N genotypes = f(N biological replicates)")
 
-y<-as.vector(results$NGEN)
-x<-as.vector(results$i)
+y<-as.vector(iqr_results$NGEN)
+x<-as.vector(iqr_results$i)
 
 # Compute slope (finite differences)
 slope <- diff(y) / diff(x)
@@ -390,11 +174,12 @@ abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 ```
 
-best is 6
+
+Based on the variation in genotype number the best i value seems to be 6
 
 ```{r}
 
-away <- ggplot(results, aes(x = i, y = RMSE)) +
+away <- ggplot(iqr_results, aes(x = i, y = RMSE)) +
   geom_point() +
   scale_x_continuous(breaks=seq(1,13,1)) +
   scale_y_continuous(limits = c(0,7)) +
@@ -403,7 +188,7 @@ away <- ggplot(results, aes(x = i, y = RMSE)) +
   labs(x = "i", y = "RMSE") +
   ggtitle("variation of RMSE depending on the minimal number of rep")
 
-close<- ggplot(results, aes(x = i, y = RMSE)) +
+close<- ggplot(iqr_results, aes(x = i, y = RMSE)) +
   geom_point() +
   scale_x_continuous(breaks=seq(1,13,1)) +
   scale_y_continuous(limits = c(6.6,6.75)) +
@@ -414,8 +199,8 @@ close<- ggplot(results, aes(x = i, y = RMSE)) +
 
 away+close
 
-y<-as.vector(results$RMSE)
-x<-as.vector(results$i)
+y<-as.vector(iqr_results$RMSE)
+x<-as.vector(iqr_results$i)
 
 # Compute slope (finite differences)
 slope <- diff(y) / diff(x)
@@ -430,11 +215,11 @@ abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 
 ```
-not clear which filter is the best
+it is complicated to select a value for i using RMSE as the value don't vary much
 
 
 ```{r}
-ggplot(results, aes(x = i, y = n_after)) +
+ggplot(iqr_results, aes(x = i, y = n_after)) +
   geom_point() +
   scale_x_continuous(breaks=seq(1,13,1)) +
   scale_y_continuous(limits = c(0,2500)) +
@@ -443,8 +228,8 @@ ggplot(results, aes(x = i, y = n_after)) +
   labs(x = "N biological replicates", y = "total number of rep") +
   ggtitle("total number of observation depending on the number of repetitions")
 
-y<-as.vector(results$n_after)
-x<-as.vector(results$i)
+y<-as.vector(iqr_results$n_after)
+x<-as.vector(iqr_results$i)
 
 # Compute slope (finite differences)
 slope <- diff(y) / diff(x)
@@ -458,10 +243,10 @@ plot(x_mid, slope, type = "b", col = "red", main = "Numerical Derivative (Slope)
 abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 ```
-best is 6
+To maximise the overall number of data the best i value seems to be 6
 
 ```{r}
-close<-ggplot(results, aes(x = i, y = H2)) +
+close<-ggplot(iqr_results, aes(x = i, y = H2)) +
   geom_point() +
   scale_x_continuous(breaks = seq(1, 13, 1)) +
   scale_y_continuous(limits = c(0.4, 0.42)) +
@@ -472,7 +257,7 @@ close<-ggplot(results, aes(x = i, y = H2)) +
   ) +
   ggtitle("H2 depending on the number of repetitions")
 
-away<-ggplot(results, aes(x = i, y = H2)) +
+away<-ggplot(iqr_results, aes(x = i, y = H2)) +
   geom_point() +
   scale_x_continuous(breaks = seq(1, 13, 1)) +
   scale_y_continuous(limits = c(0, 0.5)) +
@@ -483,8 +268,8 @@ away<-ggplot(results, aes(x = i, y = H2)) +
   ) +
   ggtitle("H2 depending on the number of repetitions")
 
-y<-as.vector(results$H2)
-x<-as.vector(results$i)
+y<-as.vector(iqr_results$H2)
+x<-as.vector(iqr_results$i)
 
 # Compute slope (finite differences)
 slope <- diff(y) / diff(x)
@@ -499,4 +284,4 @@ abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 close + away
 ```
-best is 7, second best is 6
+to maximise heritability the best value for i is 7, and the second best value is 6

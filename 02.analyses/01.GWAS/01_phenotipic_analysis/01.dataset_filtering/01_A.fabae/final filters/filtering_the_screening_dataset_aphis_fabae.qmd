@@ -8,11 +8,8 @@ format:
 
 # Summary
 
-Calculation of key metrics based on the 2023-2024 Aphis fabae phenotyping of the PEAMust collection.
+Progressive filtering of the dataset. After each filtering steps different metrics are measured to asses the dataset refinement. These key metrics include broad sence heritability and normality of the data.
 
-1)  Calculation of the broad-sense heritability ("repeatability") as a function of the number of biological replicates.
-2)  Calculation of the correlation between sessions.
-3)  Decision to keep N biological replicates: compromise between repeatability and number of genotypes/observations.
 
 # Setup
 
@@ -56,6 +53,7 @@ data250_afabae_00 <- read.csv("../../../../../../01.data/2023_screen_specifics_2
 
 res <- calculate_broad_heritability(data = data250_afabae_00)
 ```
+we can't use our dataset like this, we need to clean it first.
 
 ::: callout-tip
 Conclusions:\
@@ -66,7 +64,7 @@ Conclusions:\
 
 ## Missing data
 
-Remove NA values.
+First step we remove all line with a NA for larvae count. 
 
 ```{r}
 data250_afabae_01 <- data250_afabae_00 %>% filter(!is.na(larvae_total_number))
@@ -136,6 +134,8 @@ p_with
 ```
 We observ few outlier data on both side of the distribution. To remove these data we use the Interquartile range method (IQR). This will help inproving normality of the data. 
 
+## Outliers removal
+
 ```{r comparison of qqplots with and without outliers}
 
 x<-1.5
@@ -168,8 +168,9 @@ p_with + p_without
 
 \newpage
 
-# Final filtering: keep genotypes with at least 5 repetitions
+# Final filtering: keep genotypes with at least 4 repetitions
 
+To make sure the data we use for the GWAS are reliable we set a threshold for the minimal number of repetition to keep a genotype.
 ```{r broad sense heritability }
 #| echo: true
 #| eval: true
@@ -214,7 +215,9 @@ p
 
 **Write final results to .csv**
 
-```{r write final filtered data to .csv}
+```{r}
+#| eval: false
+#| echo: true
 write.csv(x = data250_afabae_04, 
           file = "../../../01.repetability_choice_Nrep/01_A.fabae/final filters/aphis_fabae_data_filtered.csv", 
           quote = F, row.names = F)
