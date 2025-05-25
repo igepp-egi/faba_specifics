@@ -2,7 +2,10 @@
 
 ## SNP parsed files
 
-- **vfaba_hedin_peamust_SNP_GATK.vcf.gz** est le fichier non trié qui contient l'ensemble des SNPs détectés (pas de filtre, 5 819 008 SNPs).
+- **vfaba_hedin_peamust_SNP_GATK.vcf.gz** est le fichier non trié qui contient l'ensemble des SNPs détectés (pas de filtre, 5 819 008 SNPs). 
+    - 248 génotypes, 
+    - 6,425,454 SNPs and InDels
+    - md5sum: `645c8d1fa683938b5147ea6be281db70`
 
 - **PEAMUST_vfaba_F1b.vcf.gz** contient les SNPs et les INDELS avec - de 15% d'Htz, une MAF à 1% et - de 10% de missing data
 
@@ -18,6 +21,6 @@ Pour ce qui est des groupes génétiques, il ont été réalisé par DAPC (packa
 
 ## SNP filtering
 
-Il y a également un tableau "snp_different_filters.png" avec les différents nombres de SNPs et les filtres appliqués.   
-
+Table with numbers of SNPs (numbers do not match):
+   
 <img src="./snp_different_filters.png" alt="number of SNPs">
