@@ -45,7 +45,7 @@ myKI <- fread(file = "../../files_GWAS/GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5_ki
 
 
 
-myGM <-fread(file = "../../files GWAS/GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
+myGM <-fread(file = "../../files_GWAS/GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
     "chromosome" = "V1",
     "position" = "V2"
   )%>% mutate(snp_id=paste(chromosome,position, sep = "_")) %>% relocate(snp_id,.before = chromosome) 
@@ -100,3 +100,13 @@ GAPIT.Power.compare(
           "Blink"),
   NQTN=1
 ) 
+
+
+
+FarmCPU.P.Threshold(
+  Y=myY[,c(1,2)], #only two columns allowed, the first column is taxa name and the second is phenotype value
+  GD=myGD,
+  GM=myGM,
+  trait="trait_name", #name of the trait, only used for the output file name
+  theRep=30 #number of permutation times
+)

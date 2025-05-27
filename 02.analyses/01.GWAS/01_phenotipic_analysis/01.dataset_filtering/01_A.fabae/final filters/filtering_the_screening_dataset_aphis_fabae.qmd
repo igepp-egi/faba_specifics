@@ -177,7 +177,7 @@ To make sure the data we use for the GWAS are reliable we set a threshold for th
 
 data250_afabae_04 <- data250_afabae_03 %>%
   group_by(ivip) %>%           # Group by genotype
-  filter(n() >= 4) %>%             # Keep only groups with 6 or more repetitions
+  filter(n() >= 5) %>%             # Keep only groups with 6 or more repetitions
   ungroup()  
 data250_afabae_04$ivip <- droplevels(data250_afabae_04$ivip)
 
@@ -219,6 +219,6 @@ p
 #| eval: false
 #| echo: true
 write.csv(x = data250_afabae_04, 
-          file = "../../../01.repetability_choice_Nrep/01_A.fabae/final filters/aphis_fabae_data_filtered.csv", 
+          file = "../../../01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered.csv", 
           quote = F, row.names = F)
 ```
