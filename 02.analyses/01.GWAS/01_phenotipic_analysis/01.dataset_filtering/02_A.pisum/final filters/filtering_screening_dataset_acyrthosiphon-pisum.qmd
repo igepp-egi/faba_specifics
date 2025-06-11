@@ -167,15 +167,34 @@ Conclusions:\
 \newpage
 
 
-# Final filtering: keep genotypes with at least 6 biological repetitions
+# Final filtering: keep genotypes with at least 4/5/6 biological repetitions
 
 ```{r}
-data250pisum_04 <- data250pisum_03 %>%
+data250pisum_04_4 <- data250pisum_03 %>%
   group_by(ivip) %>%           # Group by genotype
-  filter(n() >= 5) %>%             # Keep only groups with 7 or more repetitions
+  filter(n() >= 4) %>%             # Keep only groups with 4 or more repetitions
   ungroup()  
-data250pisum_04$ivip <- droplevels(data250pisum_04$ivip)
-res5 <- calculate_broad_heritability(data = data250pisum_04)
+data250pisum_04_4$ivip <- droplevels(data250pisum_04_4$ivip)
+res5 <- calculate_broad_heritability(data = data250pisum_04_4)
+```
+
+
+```{r}
+data250pisum_04_5 <- data250pisum_03 %>%
+  group_by(ivip) %>%           # Group by genotype
+  filter(n() >= 5) %>%             # Keep only groups with 5 or more repetitions
+  ungroup()  
+data250pisum_04_5$ivip_5 <- droplevels(data250pisum_04_5$ivip)
+res5 <- calculate_broad_heritability(data = data250pisum_04_5)
+```
+
+```{r}
+data250pisum_04_6 <- data250pisum_03 %>%
+  group_by(ivip) %>%           # Group by genotype
+  filter(n() >= 6) %>%             # Keep only groups with 6 or more repetitions
+  ungroup()  
+data250pisum_04_6$ivip <- droplevels(data250pisum_04_6$ivip)
+res5 <- calculate_broad_heritability(data = data250pisum_04_6)
 ```
 
 ::: callout-important
@@ -200,7 +219,35 @@ Distribution normality check.
 #| echo: true
 #| fig-width: 8
 
-p <- data250pisum_04 %>% 
+p <- data250pisum_04_4 %>% 
+  ggplot(mapping = aes(sample=larvae_total_number)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(y = "Observed quantiles", x = "Theoretical quantiles") +
+  ggtitle("Dataset filtered with N >= 6") +
+  theme_bw()
+p
+```
+
+```{r}
+#| echo: true
+#| fig-width: 8
+
+p <- data250pisum_04_5 %>% 
+  ggplot(mapping = aes(sample=larvae_total_number)) +
+  stat_qq() +
+  stat_qq_line() +
+  labs(y = "Observed quantiles", x = "Theoretical quantiles") +
+  ggtitle("Dataset filtered with N >= 6") +
+  theme_bw()
+p
+```
+
+```{r}
+#| echo: true
+#| fig-width: 8
+
+p <- data250pisum_04_6 %>% 
   ggplot(mapping = aes(sample=larvae_total_number)) +
   stat_qq() +
   stat_qq_line() +
@@ -212,11 +259,29 @@ p
 
 **Write final dataset to .csv**
 
+
 ```{r}
 #| eval: false
 #| echo: true
-write.csv(x = data250pisum_04, 
-          file = "../../../../01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered.csv", 
+write.csv(x = data250pisum_04_4, 
+          file = "../../../../01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_4.csv", 
+          quote = F, row.names = F)
+```
+
+```{r}
+#| eval: false
+#| echo: true
+write.csv(x = data250pisum_04_5, 
+          file = "../../../../01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_5.csv", 
+          quote = F, row.names = F)
+```
+
+
+```{r}
+#| eval: false
+#| echo: true
+write.csv(x = data250pisum_04_6, 
+          file = "../../../../01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv", 
           quote = F, row.names = F)
 ```
 
