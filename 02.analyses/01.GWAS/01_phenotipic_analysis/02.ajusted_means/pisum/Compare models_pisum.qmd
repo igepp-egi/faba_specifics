@@ -24,9 +24,11 @@ suppressPackageStartupMessages(library("MASS"))
 ## Filtered data import
 
 ```{r}
-data250pisum <- read.csv("../../01_phenotipic_analysis/acyrthosiphon_pisum_filtered.csv", stringsAsFactors = F)
+data250pisum <- read.csv("../../01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_5.csv", stringsAsFactors = F)
 data250pisum$genotype <- as.factor(data250pisum$ivip)
 ```
+
+analysis are done on only one dataset with minimal number of rep equal to 5 but the same finding are observed on dataset with other nimimal number of rep
 
 ## Data distribution
 

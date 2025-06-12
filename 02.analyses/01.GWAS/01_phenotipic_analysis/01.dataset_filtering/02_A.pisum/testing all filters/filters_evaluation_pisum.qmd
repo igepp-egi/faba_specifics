@@ -252,8 +252,8 @@ close<-ggplot(iqr_results, aes(x = i, y = H2)) +
   scale_y_continuous(limits = c(0.4, 0.42)) +
   theme_bw() +
   labs(
-    x = "N biological replicates",
-    y = "Total number of rep"
+    x = "Minimal number of rep",
+    y = "Heritability"
   ) +
   ggtitle("H2 depending on the number of repetitions")
 
@@ -263,8 +263,8 @@ away<-ggplot(iqr_results, aes(x = i, y = H2)) +
   scale_y_continuous(limits = c(0, 0.5)) +
   theme_bw() +
   labs(
-    x = "N biological replicates",
-    y = "Total number of rep"
+    x = "Minimal number of rep",
+    y = "Heritability"
   ) +
   ggtitle("H2 depending on the number of repetitions")
 
