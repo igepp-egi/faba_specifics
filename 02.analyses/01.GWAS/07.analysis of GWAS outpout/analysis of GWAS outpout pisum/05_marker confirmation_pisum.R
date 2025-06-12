@@ -5,21 +5,22 @@ library(multcompView)
 
 
 #extract marker ----
-myGD1 <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
+myGD1 <-fread(file = "../../files_GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
 myGD1 <- myGD1[, -1, with = FALSE]  # Removes the first column
-myGD2 <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.indv",header = FALSE,stringsAsFactors =  FALSE)
+myGD2 <-fread(file = "../../files_GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.indv",header = FALSE,stringsAsFactors =  FALSE)
 # Load datasets
-myGM <-fread(file = "../../files GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
+myGM <-fread(file = "../../files_GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012.pos") %>% rename(
   "chromosome" = "V1",
   "position" = "V2"
 )%>% mutate(snp_id=paste(chromosome,position, sep = "_")) %>% relocate(snp_id,.before = chromosome) 
 colnames(myGD2)[1]<-"ivip"
 colnames(myGD1)<- myGM$snp_id
 myGD <-bind_cols(myGD2,myGD1)
-extract_marker <- data.frame(myGD$ivip, myGD$chr2_1461736473, myGD$chr2_35683372, myGD$chr2_920208494)
+extract_marker <- data.frame(myGD$ivip, myGD$chr2_1461736473, myGD$chr2_35683372, myGD$chr2_920208494, myGD$chr1S_1240520268)
 colnames(extract_marker)[colnames(extract_marker) == "myGD.chr2_1461736473"] <- "chr2_1461736473"
 colnames(extract_marker)[colnames(extract_marker) == "myGD.chr2_35683372"] <- "chr2_35683372"
 colnames(extract_marker)[colnames(extract_marker) == "myGD.chr2_920208494"] <- "chr2_920208494"
+colnames(extract_marker)[colnames(extract_marker) == "myGD.chr1S_1240520268"] <- "chr1S_1240520268"
 colnames(extract_marker)[colnames(extract_marker) == "myGD.ivip"] <- "ivip"
 extract_marker$chr2_1461736473<-as.factor(extract_marker$chr2_1461736473)
 extract_marker$chr2_35683372<-as.factor(extract_marker$chr2_35683372)
@@ -61,10 +62,13 @@ combined_median_marker <- merge(combined_median, extract_marker, by = "ivip")
 combined_median_marker_no1 <- combined_median_marker %>% filter(chr2_920208494 != "1")
 combined_median_marker_no1 <- combined_median_marker_no1 %>% filter(chr2_35683372 != "1")
 combined_median_marker_no1 <- combined_median_marker_no1 %>% filter(chr2_1461736473 != "1")
+combined_median_marker_no1 <- combined_median_marker_no1 %>% filter(chr1S_1240520268 != "1")
+
 
 combined_median_marker_no1$chr2_920208494 <- droplevels(combined_median_marker_no1$chr2_920208494)
 combined_median_marker_no1$chr2_35683372 <- droplevels(combined_median_marker_no1$chr2_35683372)
 combined_median_marker_no1$chr2_1461736473 <- droplevels(combined_median_marker_no1$chr2_1461736473)
+combined_median_marker_no1$chr2_1461736473 <- droplevels(combined_median_marker_no1$chr1S_1240520268)
 
 #data prep big screening ----
 data<-read.csv("01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", stringsAsFactors = F)
