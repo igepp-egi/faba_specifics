@@ -15,7 +15,7 @@ library(dplyr)
 
 pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae.csv", sep = ",")        
 
-pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/emmeans_pisum.csv", sep = ",")        
+pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum.csv", sep = ",")        
 
 
 pheno<- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", 
@@ -69,7 +69,7 @@ myGAPIT_MLM <- GAPIT(
   GM=myGM,
   KI = myKI,
   PCA.total=3,
-  model=c("MLM", "FarmCPU", "Blink"),
+  model=c("GLM","MLM", "MLMM", "FarmCPU", "Blink"),
   Multiple_analysis=TRUE)
 
 
@@ -109,4 +109,12 @@ FarmCPU.P.Threshold(
   GM=myGM,
   trait="trait_name", #name of the trait, only used for the output file name
   theRep=30 #number of permutation times
+)
+
+
+myFarmCPU <- FarmCPU(
+  Y=myY[,c(1,2)],
+  GD=myGD,
+  GM=myGM,
+  p.threshold=0.5/nrow(myGM)
 )
