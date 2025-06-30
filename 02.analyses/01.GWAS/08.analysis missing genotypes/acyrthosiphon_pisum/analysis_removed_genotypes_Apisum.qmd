@@ -1,0 +1,219 @@
+---
+title: "Analysis of removed genotypes (A. pisum dataset)"
+format: 
+  pdf:
+    toc: true
+    toc-depth: 2
+    fig_caption: true
+    fig-width: 8
+    fig-height: 6
+editor: visual
+---
+
+# Datasets
+
+## Libraries
+
+```{r}
+library("tidyverse")
+library("patchwork")
+```
+
+## Import of genetic cluster information
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+ivip_to_genetic_clusters <- read.csv(file = "../../../../00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", 
+                          header = TRUE, stringsAsFactors = FALSE, sep =",") 
+
+```
+
+## Import of A. pisum phenotyping screen data
+
+Two data files:\
+- The first is the complete dataset *unfiltered*.\
+- The second is the filtered dataset, where filters have been applied:\
+\* If no surviving adult was found, then observation was removed.\
+\* If one adult was present but without any larvae, then the observation was removed.
+
+Analysis was done for N>=6 biol. replicates (plants).
+
+```{r}
+#| echo: false
+#| warning: false
+
+pisum_raw <- read.csv(file = "../../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", 
+                   header = TRUE, 
+                   stringsAsFactors = FALSE)
+
+pisum_filtered <- read.csv(file = "../../../01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv", 
+                   header = TRUE, stringsAsFactors = FALSE, sep =",")
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+
+pisum_raw_nrows <- nrow(pisum_raw)
+pisum_raw_ngenotypes <- length(unique(pisum_raw$ivip))
+
+pisum_filtered_nrows <- nrow(pisum_filtered)
+pisum_filtered_ngenotypes <- length(unique(pisum_filtered$ivip))
+```
+
+::: callout-important
+The complete data set contains `r pisum_raw_nrows` rows and `r pisum_raw_ngenotypes` genotypes.\
+The filtered data set contains `r pisum_filtered_nrows` rows and `r pisum_filtered_ngenotypes` genotypes.
+:::
+
+# Comparison of proportions of genetic clusters in the raw and filtered dataset
+
+## List of IVIPs in original panel and raw/filtered A. pisum dataset
+
+```{r}
+ivips_in_clusters <- unique(ivip_to_genetic_clusters$ivip)
+ivips_in_raw_pisum_dataset <- unique(pisum_raw$ivip)
+ivips_in_filtered_dataset <- unique(pisum_filtered$ivip)
+```
+
+## Data extraction
+
+```{r}
+#| echo: false
+#| warning: false
+
+counts_per_genetic_cluster_total <- 
+  ivip_to_genetic_clusters %>% 
+  select(ivip, cluster_name) %>%
+  group_by(cluster_name) %>%
+  summarise(n_total = n()) 
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+
+counts_per_genetic_cluster_raw <- 
+  pisum_raw %>%
+  inner_join(ivip_to_genetic_clusters, by = "ivip") %>%
+  select(ivip, cluster_name) %>%
+  distinct() %>% 
+  group_by(cluster_name) %>%
+  summarise(n_raw = n()) 
+```
+
+```{r}
+#| echo: false
+#| warning: false
+
+counts_per_genetic_cluster_filtered <-
+  pisum_filtered %>%
+  inner_join(., ivip_to_genetic_clusters, by = "ivip") %>%
+  select(ivip, cluster_name) %>%
+  distinct() %>%
+  group_by(cluster_name) %>%
+  summarise(n_filtered = n())
+
+```
+
+```{r}
+combined_counts_per_cluster <- inner_join(counts_per_genetic_cluster_total, 
+                                         counts_per_genetic_cluster_raw, 
+                                         by = "cluster_name") %>%
+  inner_join(counts_per_genetic_cluster_filtered, by = "cluster_name") %>% 
+  # remove row if cluster_name == NAs
+  filter(!is.na(cluster_name)) 
+  
+
+head(combined_counts_per_cluster, n = 10)
+```
+
+## Pie chart
+
+```{r}
+#| fig-width: 8
+#| fig-height: 8
+#| echo: false
+#| warning: false
+
+plot_order = c("n_total", "n_raw", "n_filtered")
+
+p_pie_charts <- combined_counts_per_cluster %>%
+  pivot_longer(cols = starts_with("n_"), 
+               names_to = "dataset", 
+               values_to = "n_total") %>%
+  mutate(dataset = factor(dataset, levels = plot_order)) %>%
+  ggplot(aes(x = "", y = n_total, fill = cluster_name)) +
+  geom_bar(stat = "identity", width = 1) +
+  # add numbers
+  geom_text(aes(label = n_total), position = position_stack(vjust = 0.5), size = 3) +
+  coord_polar("y") +
+  theme_void() +
+  theme(legend.position = "right") + 
+  facet_wrap(~ dataset, scales = "free_y") +
+  scale_fill_brewer(palette = "Set1"); p_pie_charts
+
+```
+
+## Barplot
+
+Often a barplot is much easier to compare.
+
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+#| echo: false
+#| warning: false
+
+p_barplot <- combined_counts_per_cluster %>%
+  pivot_longer(cols = starts_with("n_"), 
+               names_to = "dataset", 
+               values_to = "n_total") %>%
+  mutate(dataset = factor(dataset, levels = plot_order)) %>% 
+  # Make a stacked barplot per cluster
+  ggplot(aes(x = cluster_name, y = n_total, fill = dataset)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(x = "Genetic cluster", 
+       y = "Number of genotypes") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set2") +
+  facet_wrap( ~ dataset, scales = "free_y") +
+  # Add numbers at the tip of each  bar
+  geom_text(aes(label = n_total), 
+            position = position_stack(vjust = 0.5), 
+            size = 3, 
+            color = "black"); p_barplot
+```
+
+Combined plot (pie chart + barplots)
+
+```{r}
+#| fig-width: 8
+#| fig-height: 8
+#| echo: false
+
+p_pie_charts + p_barplot + 
+  plot_layout(ncol = 1) +
+  plot_annotation(title = "Distribution of genotypes in genetic clusters (A. pisum)")
+
+```
+
+::: callout-important
+We see that the proportions are not different between the complete set of genotypes (N=248), the set of genotypes from which observations of aphid fecundity were made and the final filtered dataset.
+:::
+
+## Save plots.
+
+```{r}
+#| echo: true
+
+
+ggsave("./acyrthosiphon_pisum_genetic_clusters_distribution.pdf", 
+       width = 8, height = 8)
+ggsave("./acyrthosiphon_pisum_genetic_clusters_distribution.png", 
+       width = 8, height = 8, dpi = 300)
+```
