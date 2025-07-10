@@ -21,10 +21,15 @@ colnames(extract_marker)[colnames(extract_marker) == "myGD.chr2_1461736473"] <- 
 colnames(extract_marker)[colnames(extract_marker) == "myGD.chr2_35683372"] <- "chr2_35683372"
 colnames(extract_marker)[colnames(extract_marker) == "myGD.chr2_920208494"] <- "chr2_920208494"
 colnames(extract_marker)[colnames(extract_marker) == "myGD.chr1S_1240520268"] <- "chr1S_1240520268"
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 colnames(extract_marker)[colnames(extract_marker) == "myGD.ivip"] <- "ivip"
 extract_marker$chr2_1461736473<-as.factor(extract_marker$chr2_1461736473)
 extract_marker$chr2_35683372<-as.factor(extract_marker$chr2_35683372)
 extract_marker$chr2_920208494<-as.factor(extract_marker$chr2_920208494)
+extract_marker$chr1S_1240520268<-as.factor(extract_marker$chr1S_1240520268)
 
 #data prep P2xp006 ----
 data_xp006<-read.csv("01.data/P2-XP006_faba_vs_pisum_P123_fecundity-test/P2-XP006_larvae_fecundity_results.csv", stringsAsFactors = F)
@@ -52,6 +57,9 @@ subdataset3 <- data_filtered_xp010[, columns_to_select]
 
 data_filtered_combined<-bind_rows(subdataset1,subdataset2,subdataset3)
 
+data_filtered_combined_marker <- merge(data_filtered_combined, extract_marker, by = "ivip")
+
+
 combined_median <- data_filtered_combined %>%
   group_by(ivip) %>%
   summarise(Median_fecondity = median(larvae_total_number))
@@ -64,11 +72,19 @@ combined_median_marker_no1 <- combined_median_marker_no1 %>% filter(chr2_3568337
 combined_median_marker_no1 <- combined_median_marker_no1 %>% filter(chr2_1461736473 != "1")
 combined_median_marker_no1 <- combined_median_marker_no1 %>% filter(chr1S_1240520268 != "1")
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 combined_median_marker_no1$chr2_920208494 <- droplevels(combined_median_marker_no1$chr2_920208494)
 combined_median_marker_no1$chr2_35683372 <- droplevels(combined_median_marker_no1$chr2_35683372)
 combined_median_marker_no1$chr2_1461736473 <- droplevels(combined_median_marker_no1$chr2_1461736473)
+<<<<<<< Updated upstream
 combined_median_marker_no1$chr2_1461736473 <- droplevels(combined_median_marker_no1$chr1S_1240520268)
+=======
+combined_median_marker_no1$chr1S_1240520268 <- droplevels(combined_median_marker_no1$chr1S_1240520268)
+>>>>>>> Stashed changes
 
 #data prep big screening ----
 data<-read.csv("01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", stringsAsFactors = F)
@@ -84,9 +100,12 @@ median_marker <- merge(median, extract_marker, by = "ivip")
 median_marker_no1 <- median_marker %>% filter(chr2_920208494 != "1")
 median_marker_no1 <- median_marker_no1 %>% filter(chr2_35683372 != "1")
 median_marker_no1 <- median_marker_no1 %>% filter(chr2_1461736473 != "1")
+median_marker_no1 <- median_marker_no1 %>% filter(chr1S_1240520268 != "1")
+
 median_marker_no1$chr2_920208494 <- droplevels(median_marker_no1$chr2_920208494)
 median_marker_no1$chr2_35683372 <- droplevels(median_marker_no1$chr2_35683372)
 median_marker_no1$chr2_1461736473 <- droplevels(median_marker_no1$chr2_1461736473)
+median_marker_no1$chr1S_1240520268 <- droplevels(median_marker_no1$chr1S_1240520268)
 
 
 #analyse chr2_920208494 ----
@@ -206,7 +225,8 @@ median_marker %>%
 # Create a new variable for the interaction of the three markers
 median_marker_no1$interaction <- interaction(median_marker_no1$chr2_920208494, 
                                                    median_marker_no1$chr2_35683372, 
-                                                   median_marker_no1$chr2_1461736473)
+                                                   median_marker_no1$chr2_1461736473,
+                                             median_marker_no1$chr1S_1240520268)
 
 # Calculate the mean larvae_total_number for each interaction level
 interaction_means <- median_marker_no1 %>%
@@ -261,10 +281,14 @@ print(group_letters)
 
 
 # confirmation----
+mod<-lm(larvae_total_number ~ chr2_35683372+ chr2_920208494 + chr2_1461736473+chr1S_1240520268,data=data_filtered_combined_marker)
+anova(mod)
+summary(data_filtered_combined_marker)
 # Create a new variable for the interaction of the three markers
 combined_median_marker_no1$interaction <- interaction(combined_median_marker_no1$chr2_920208494, 
                                                                combined_median_marker_no1$chr2_35683372, 
-                                                               combined_median_marker_no1$chr2_1461736473)
+                                                               combined_median_marker_no1$chr2_1461736473,
+                                                      combined_median_marker_no1$chr1S_1240520268)
 
 # Calculate the mean larvae_total_number for each interaction level
 interaction_means <- combined_median_marker_no1 %>%
