@@ -1,0 +1,9 @@
+tube_numero,condition,feeding_notfeeding_aphid,size_tissue_square_small_big,commentaire
+1,no aphid,na,na,none
+2,no aphid,na,na,none
+3,no aphid,na,na,none
+4,no aphid,na,na,none
+5,no aphid,na,na,none
+6,adult aphid A. pisum P123,not_feeding,na,mobile aphid ; not sure where it has been feeding
+7,adult aphid A. pisum P123,feeding,na,aphid feeding and immobile but big tissue zone  
+8,adult aphid A. pisum P123,feeding,na,very small square of tissue 

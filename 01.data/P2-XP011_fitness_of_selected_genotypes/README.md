@@ -19,9 +19,9 @@ Investigation of potential trade-offs between resistance and tolerance.
 | P2F0823 | IVIP100390 | 20        |
 | PF0759  | IVIP100355 | 20        |
 
-## Cage setup 01-04-2025
+## Cage setup 01-04-2025 in experimental garden (Le Rheu, 66 route de la Motte, France)
 
-10 plants (or less) sown on 28-2-2025 were transplanted in 3x3x2m Width x width x height cage equiped with an insect-proof net.   
+10 plants (or less) sown on 28-2-2025 were transplanted in 3x3x2m Width x width x height cage equiped with an insect-proof net on April 1, 2025.   
 
 Cage 1: closest to INRAE main gate. > ... > cage 9: closest to garden wall.   
 Cage 10: side by side with cage 9. 
@@ -75,5 +75,6 @@ Individual faba plants in cages 2, 4, 6, 8 will be infested with:
 6. Before adding the mini bumble bee beehives(Koppert, Natupol), place a few companion plants (Hypericum calycinum)
 7. Tuteurs de tomates: RELAX4LIFE 3 Treillis de Jardin Réglables 154 cm 2-en-1, Tuteur de Tomates de Jardin, Support de Plante pour la Cage à Tomatespour Les Plantes Grimpantes,Vignes,Fleurs, Légumes(φ50x154cm)
 
+## Materials 
 
-Pour les différents accessoires de montures  des cages de différentes dimension je m’approvisionne  de la marque FITCLAMP chez ULTAMIS, tu trouveras plein chose et pour les cages actuelles il faut la catégorie T21 (pour les "noix" en métal) 
+Pour les différents accessoires de montures des cages de différentes dimension je m’approvisionne  de la marque FITCLAMP chez ULTAMIS, tu trouveras plein chose et pour les cages actuelles il faut la catégorie T21 (pour les "noix" en métal). 
