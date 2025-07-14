@@ -6,18 +6,21 @@ Protocol to get total RNA from aerial parts of seedlings infested or not with ap
 
 - Liquid nitrogen   
 - [Ladle ("louche")](https://fr.vwr.com/store/product/7596968/louches-manche-rond)    
-- Steel funnel (ext. diameter > 300 mm; internal diameter 20 mm).   
 - Lab scissors  
-- Bottle brush ("goupillon")   
-- Falcon 50ml RNase-free  **(?)**  
+- Falcon 15ml RNase-free 
 - Permanent labgrade markers    
-- Stainless steel beads (3 mm diameter)  
-- Cryobox cardboard [(Sarstedt 4 x 4 for 16 Falcon tubes)](https://www.sarstedt.com/fr/produits/laboratoire/portoirs-boites-de-stockage/boites-de-stockage/produit/95.64.916/)  
+- Cryobox cardboard
 - Labor aluminium foil of thickness 0.030mm x width 50cm x 100m (KORFF, Nr 60140)
+- Flat polystyrene box
+- Squared polystyrene box 
+- Paint brush
+- Mortar and pestle
+
+
+
 
 ## Equipment   
 
-- Paint shaker  
 - Freeze-dryer [Labconco LB7948030](https://www.serlabo.fr/stoppering-tray-dryer-labconco.html)   
 
 ## Plant material
@@ -30,26 +33,19 @@ _Vicia faba_ plants of two weeks [2 to 3-leaf stage (LP.02 to LP.03)](https://ww
 
 - Turn on the vacuum pump, cold trap and the cooling equipment. 
 
-### Falcon tube and beads weight (before)
-
-- Number Falcon tubes (1 to N)
-- Place 6 stainless steel beads in each 50ml falcon tube.  
-- Weight tube + beads (tare).
-- Write Falcon + beads total weight. 
-
 ### Sample collection
 
 1. After 2 weeks of growth, above-ground parts of the plant seedlings are harvested above first leaf node.    
 2. The plant is placed onto an aluminium foil (in a polystyrene tray) and liquid nitrogen is quickly poured on the plant.   
-3. Aphids are removed gently with a brush and pushed on the aluminium foil. 
-4. The plant is passed through a large funnel inside the falcon tube. 
-5. Place the falcon in liquid nitrogen in the Dewar jar.   
- 
-Clean funnel between each sample. 
+3. Aphids are removed gently with a brush and pushed off of the aluminium foil. 
+4. The aluminium foil is foiled with the plant inside
+5. all extract are stored into the squared polystyrene box before going to the freezer -40 C°
+   
 
-### Sample grinding
+### Sample grinding (on an other day)
 
-6. Grind the frozen plant material into a fine homogenized powder by vigorously shaking for 5 x 2 min using a paint shaker [FIXME: ref]. Keep the tubes in the cryobox.
+6. Grind the frozen plant material into a fine homogenized powder with the mortar and pestle and store in 15 ml tubes 
+
 
 ### Sample lyophilization and grinding
 
