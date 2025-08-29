@@ -64,6 +64,8 @@ Individual faba plants in cages 2, 4, 6, 8 will be infested with:
 
 ## Ameliorations for next year 
 
+**TODO** ask Anne Le Ralec for "use" of Frank. 
+
 1. Two cages per modality (e.g. 2 x control + 2 x aphid condition). Place in cross design (2 x 2 design).
 2. Divide the cage setup in 3 steps: 
   - First, prepare the soil.  
@@ -74,6 +76,8 @@ Individual faba plants in cages 2, 4, 6, 8 will be infested with:
 5. Add aphids just before flowering. Add 3 adult aphids per plant.  
 6. Before adding the mini bumble bee beehives(Koppert, Natupol), place a few companion plants (Hypericum calycinum)
 7. Tuteurs de tomates: RELAX4LIFE 3 Treillis de Jardin Réglables 154 cm 2-en-1, Tuteur de Tomates de Jardin, Support de Plante pour la Cage à Tomatespour Les Plantes Grimpantes,Vignes,Fleurs, Légumes(φ50x154cm)
+8. **Weight the aphids** and take pictures of aphids on plant to estimate their performance.   
+
 
 ## Materials 
 
