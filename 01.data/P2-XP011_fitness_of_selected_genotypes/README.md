@@ -64,16 +64,20 @@ Individual faba plants in cages 2, 4, 6, 8 will be infested with:
 
 ## Ameliorations for next year 
 
-1. Two cages per modality (e.g. 2 x control + 2 x aphid condition). Place in cross design (2 x 2 design).
-2. Divide the cage setup in 3 steps: 
-  - First, prepare the soil.  
-  - Then build the cages.
+**TODO** ask Anne Le Ralec about Frank planning. 
+
+1. Two cages per modality (e.g. 2 x control + 2 x aphid condition). Place in cross design (2 x 2 design).  
+2. Divide the cage setup in 3 steps:   
+  - First, prepare the soil.    
+  - Then build the cages.  
   - transplant transplant faba plantlets: 3 rows of 10 plants.   
 4. Add straw ("paillis") around the plants to limit the growth of weeds.  
-5. Weed the weeds
-5. Add aphids just before flowering. Add 3 adult aphids per plant.  
-6. Before adding the mini bumble bee beehives(Koppert, Natupol), place a few companion plants (Hypericum calycinum)
-7. Tuteurs de tomates: RELAX4LIFE 3 Treillis de Jardin Réglables 154 cm 2-en-1, Tuteur de Tomates de Jardin, Support de Plante pour la Cage à Tomatespour Les Plantes Grimpantes,Vignes,Fleurs, Légumes(φ50x154cm)
+5. Weed the weeds regularly.  
+5. Add aphids just before flowering. Add at least 3 adult aphids per plant.  
+6. Before adding the mini bumble bee beehives(Koppert, Natupol), place a few companion plants (Hypericum calycinum, lavendula) to support feeding. 
+7. Buy stakes for tomatoes to support the faba plants.    
+8. **Weight the aphids** and take pictures of aphids on plant to estimate their performance.   
+
 
 ## Materials 
 

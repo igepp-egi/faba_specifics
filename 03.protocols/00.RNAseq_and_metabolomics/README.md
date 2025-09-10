@@ -56,7 +56,13 @@ _Vicia faba_ plants of two weeks [2 to 3-leaf stage (LP.02 to LP.03)](https://ww
 
 ### Total RNA isolation 
 
-[FIXME] Add RNA isolation protocol. 
+Three total RNA isolation protocols were tested:  
+-  QIAzol (QIAGEN)  
+- NucleoSpin (Macherey-Nagel)  
+- Plant Mini RNeasy (QIAGEN)  
+
+Results are available [here](./choice_extraction_method_mRNAseq_transcriptomics/bioanalyser_quantus.xlsx).
+
 
 ### Untargeted and targeted metabolomics 
 
