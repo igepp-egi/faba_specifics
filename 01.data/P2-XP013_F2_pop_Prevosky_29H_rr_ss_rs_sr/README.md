@@ -8,13 +8,13 @@ Two other genotypes (IVIP102516 and IVIP101240) were also added since they are r
 
 ## Genotypes to confirm for aphid resistance
 
-| IVIP  		|  Genotype | Name          | Phenotype (screen 022-2024)                                           |
+| IVIP  		    |  Genotype | Name          | Phenotype (screen 022-2024)                                           |
 |---------------|-----------|---------------|-----------------------------------------------------------------------|
-| IVIP100123  	| 7  	    | PREVOSKY      | Partially resistant to both aphids (PR/PR)                            |
-| IVIP101736	| 153  	    | TIANMENDOU    | Sensitive to both aphids (S/S)                                        |
-| IVIP100872	| 77  	    | VERDE DE LIMA | Sensitive to both aphids (S/S)                                        |
-| IVIP102516    | 222       | 29H           | Resistant to _A. fabae_ and sensitive to _A. pisum_ (PR/S)                |
-| IVIP101240    | 106       | SKALLA        | Sensitive to _A. fabae_ and resistant to _A. pisum_ (S/PR)                |
+| IVIP100123  	| 7  	      | PREROVSKY     | Partially resistant to both aphids (PR/PR)                            |
+| IVIP101736	  | 153  	    | TIANMENDOU    | Sensitive to both aphids (S/S)                                        |
+| IVIP100872	  | 77  	    | VERDE DE LIMA | Sensitive to both aphids (S/S)                                        |
+| IVIP102516    | 222       | 29H           | Resistant to _A. fabae_ and sensitive to _A. pisum_ (PR/S)            |
+| IVIP101240    | 106       | SKALLA        | Sensitive to _A. fabae_ and resistant to _A. pisum_ (S/PR)            |
 
 These genotypes should be confirmed using a fecundity test with one L1-G2 larvae for their sensitivity to _A. fabae_ and _A. pisum_. 
 
@@ -39,10 +39,10 @@ As a sensitive control:
 - IVIP101240: 20 plants x 2 aphids = 40 plants.     
 
 Only for A. fabae AF001:   
-- IVIP100355: 20 plants x 1 aphid. 
+- IVIP100355 (M10868): 20 plants x 1 aphid. 
 
 Only for A. pisum P123:  
-- IVIP103069: 20 plants x 1 aphid. 
+- IVIP101320 (IG 11734): 20 plants x 1 aphid. 
 
 **Aphids**: 
 - 120 L1-G2 for A. pisum P123  (5 x 20 + 20)  
