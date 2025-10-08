@@ -82,3 +82,10 @@ Individual faba plants in cages 2, 4, 6, 8 will be infested with:
 ## Materials 
 
 Pour les différents accessoires de montures des cages de différentes dimension je m’approvisionne  de la marque FITCLAMP chez ULTAMIS, tu trouveras plein chose et pour les cages actuelles il faut la catégorie T21 (pour les "noix" en métal). 
+
+## Germination tests
+
+At 20°C in the dark during 120h (5 days) in 15ml (or 25ml for Canakkale) tap water on two layers of filter paper.  
+
+For each genotype, 30 seeds were placed in 2 (3 for Canakkale) Petri dishes of 88mm diameter with two layers of germination filter paper (85mm diameter, ref 074141, Dominique Dutscher).
+
