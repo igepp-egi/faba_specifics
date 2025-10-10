@@ -37,7 +37,7 @@ Two data files:\
 \* If no surviving adult was found, then observation was removed.\
 \* If one adult was present but without any larvae, then the observation was removed.
 
-Analysis was done for N>=6 biol. replicates (plants).
+Analysis was done for N\>=6 biol. replicates (plants).
 
 ```{r}
 #| echo: false

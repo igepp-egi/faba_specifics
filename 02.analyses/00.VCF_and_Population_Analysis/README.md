@@ -1,70 +1,40 @@
-# SNP analysis 
+# VCF processing and faba bean population-related analyses 
 
 <!-- MarkdownTOC autolink="true" levels="1,2,3" -->
 
-- [Analysis 1: check numbers](#analysis-1-check-numbers)
-- [Analysis 2: descriptive stats](#analysis-2-descriptive-stats)
-- [Analysis 3: calculate LD decay](#analysis-3-calculate-ld-decay)
-- [Analysis 4: genetic diversity between and per genetic cluster](#analysis-4-genetic-diversity-between-and-per-genetic-cluster)
-- [VCF file description](#vcf-file-description)
-    - [INFO data](#info-data)
-    - [FORMAT data](#format-data)
-- [Complete header of PeaMUST Vicia faba VCF file](#complete-header-of-peamust-vicia-faba-vcf-file)
+- [00. Summary and objectives](#00-summary-and-objectives)
+- [1. VCF processing folder](#1-vcf-processing-folder)
+    - [1.1 Original VCF file description](#11-original-vcf-file-description)
+    - [1.2 INFO section](#12-info-section)
+    - [1.3 FORMAT section](#13-format-section)
+    - [1.4 Complete header of PeaMUST Vicia faba VCF file](#14-complete-header-of-peamust-vicia-faba-vcf-file)
+    - [1.5 QC metrics upon VCF processing](#15-qc-metrics-upon-vcf-processing)
+- [2. Population metrics](#2-population-metrics)
+    - [2.1 LD decay and distribution across the genome](#21-ld-decay-and-distribution-across-the-genome)
+    - [2.2](#22)
 
 <!-- /MarkdownTOC -->
 
+# 00. Summary and objectives
 
-# Analysis 1: check numbers
+This folder contains (i) VCF processing and (ii) population-related analyses. 
+The two main goals is to:
+1. produce a VCF file that can be used in GWAS analyses (see [01.GWAS/](../01.GWAS/)) folder.    
+2. extract relevant metrics and create plots related to the _Vicia faba_ PEAMUST panel (see Aubert et al. 2023 _PCI Genomics_. 
 
-Goal: to verify numbers after filtering going from the raw VCF file to the GWAS ready file.   
+# 1. VCF processing folder
 
-# Analysis 2: descriptive stats
+**The goal of this analysis is to:**  
+1. Verify the numbers of SNPs (bi- and multiallelic variants) and InDels in the 'raw' VCF file produced from GATK best practices (J. Kreplak, pers. comm.).  
+2. Filter this 'raw' VCF file using a custom [Snakemake pipeline](https://github.com/igepp-egi/snakemake_vcf) to produce a VCF file filtered for SNP quality, MAF, genotype missingness and that is imputed using Beagle v5 to recover missing SNPs.  
+3. Produce QC plots before/after filtering to check that no biases have been introduced.  
 
-Total Number of Variants:  
-    The total count of variants (SNPs and indels) identified in the dataset.  
- 
-Variant Types:  
-    The distribution of different types of variants, such as SNPs, insertions, deletions, and complex variants.  
+## 1.1 Original VCF file description 
 
-Variant Quality Scores:  
-    The distribution of quality scores (e.g., QUAL field in VCF) for the variants, which indicates the confidence in the variant calls.  
-
-Allele Frequency Spectrum:  
-    The distribution of allele frequencies across the samples, which can help identify common and rare variants.  
-
-Depth of Coverage:  
-    The average read depth at variant sites, which affects the confidence in variant calls.  
-
-Genotype Quality:
-    The distribution of genotype quality scores (e.g., GQ field in VCF) for the samples, indicating the confidence in the genotype calls.
-
-Heterozygosity Rate:
-    The proportion of heterozygous genotypes, which can vary depending on the population and the type of sample (e.g., inbred lines vs. outbred populations).
-
-Mendelian Errors:
-    The number of Mendelian inconsistencies in family-based studies, which can indicate errors in variant calling or sample relationships.
-
-Hardy-Weinberg Equilibrium (HWE):
-    Deviations from Hardy-Weinberg equilibrium, which can indicate genotyping errors or population stratification.
-
-Missingness Rate:
-    The proportion of missing genotype calls, which can affect downstream analyses.
-
-Functional Annotation:
-    The distribution of variants across different functional categories (e.g., exonic, intronic, intergenic) and their predicted effects (e.g., synonymous, nonsynonymous, stop-gain).
- 
-# Analysis 3: calculate LD decay 
-
-[FIXME]
-
-# Analysis 4: genetic diversity between and per genetic cluster
-
-Intra-cluster nucleotide diversity.   
-Comparison of Fst between clusters.  
-
-# VCF file description 
-
-A description of the raw `vfaba_hedin_peamust_SNP_GATK.vcf.gz`_Vicia faba_ VCF data containing 6,425,454 SNPs and InDels. 
+The 'raw' `vfaba_hedin_peamust_SNP_GATK.vcf.gz`_Vicia faba_ VCF file contains:   
+- 248 genotypes     
+- 6,425,454 SNPs and InDels  
+- md5sum: `645c8d1fa683938b5147ea6be281db70`  
 
 See [VCF v4.2 format](./VCFv4.2_format_specifications.pdf) for explanation of FILTER, FORMAT, etc. fields.
 
@@ -76,7 +46,7 @@ information lines describing the INFO, FILTER and FORMAT entries used in the bod
 in the meta-information section. Although they are optional, if these lines are present then they must be completely
 well-formed.
 
-## INFO data 
+## 1.2 INFO section 
 
 - AC=2;  
 - AF=0.333;  
@@ -109,7 +79,7 @@ well-formed.
 (1) Inbreeding coefficient as estimated from the genotype likelihoods per-sample when compared against the Hardy-Weinberg expectation.   
 (2) Maximum likelihood expectation (MLE) for the allele counts or frequency (not necessarily the same as the AC), for each ALT allele, in the same order as listed.   
 
-## FORMAT data
+## 1.3 FORMAT section
 
 GT:AD:DP:GQ:PL  
 
@@ -119,7 +89,7 @@ GT:AD:DP:GQ:PL
 - **GQ: Genotype Quality**.   
 - **PL: Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification**.   
 
-# Complete header of PeaMUST Vicia faba VCF file
+## 1.4 Complete header of PeaMUST Vicia faba VCF file
 
 See [VCF v4.2 format](./VCFv4.2_format_specifications.pdf) for explanation of FILTER, FORMAT, etc. fields.
 
@@ -172,4 +142,24 @@ INFO=<ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth
 INFO=<ID=RAW_MQandDP,Number=2,Type=Integer,Description="Raw data (sum of squared MQ and total depth) for improved RMS Mapping Quality calculation. Incompatible with deprecated RAW_MQ formulation.">
 INFO=<ID=ReadPosRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt vs. Ref read position bias">
 INFO=<ID=SOR,Number=1,Type=Float,Description="Symmetric Odds Ratio of 2x2 contingency table to detect strand bias">
-`` 
+``` 
+
+
+## 1.5 QC metrics upon VCF processing 
+
+
+VCF file metrics produced by the Snakemake [snakevcf](https://github.com/igepp-egi/snakemake_vcf):   
+- Total number of variants (SNPs and InDels) at each step.   
+- Total number of individuals (samples).
+
+VCF metrics to plot:  
+- SNP density across the genome (before/after filtering).  
+- Transitions/Transversions ratio across the genome.   
+
+# 2. Population metrics
+
+## 2.1 LD decay and distribution across the genome
+
+## 2.2 
+
+

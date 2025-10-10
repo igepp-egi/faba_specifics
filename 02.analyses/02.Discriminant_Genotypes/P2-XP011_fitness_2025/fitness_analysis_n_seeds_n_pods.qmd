@@ -1,0 +1,251 @@
+---
+title: "Fitness analysis"
+format: 
+  pdf:
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    fig-width: 6
+    fig-height: 4
+    citation-style: apa
+    code-fold: true
+editor: visual
+---
+
+# Setup
+
+Analysis of the fitness of selected *Vicia faba* genotypes infested or not with *A. fabae* AF001 or *A. pisum* P123amp aphids.
+
+See the [data source](../../../01.data/P2-XP011_fitness_of_selected_genotypes/README.md).
+
+## library
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(patchwork)
+library(glue)
+library(knitr)
+library(broom)
+```
+
+## Data
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+#| 
+data_fitness <- read.csv("../../../01.data/P2-XP011_fitness_of_selected_genotypes/harvest_data.csv", 
+                         stringsAsFactors = FALSE, na.strings = c("NA")) %>% 
+  mutate(treatment = factor(treatment, levels = c("control", "aphid")))  %>% 
+  mutate(name = factor(name, levels = c("IG 11734", "CANAKKALE", "M10868", "CS 20 DK")))
+```
+
+# Summaries for uninfested plants
+
+## Total of seeds per genotype in control conditions
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+n_seeds_per_genotype <- 
+  data_fitness %>%
+  filter(treatment == "control") %>%
+  group_by(name) %>%
+  summarise(total_n_seeds = sum(n_seeds, na.rm = TRUE))
+
+n_seeds_per_genotype %>% knitr::kable()
+```
+
+::: callout-note
+In control conditions, the total number of seeds for 7 to 9 plants per genotype ranges from 568 to 1403.
+:::
+
+## How many seeds per genotype taking the number of plants into account (only control)?
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+
+n_plants_per_genotype <- 
+  data_fitness %>%
+  # remove plant without pod count or seed count
+  filter(!is.na(n_pods)) %>%
+  filter(treatment == "control") %>%
+  select(name, aphid_species, plant_id) %>%
+  group_by(name, aphid_species) %>%
+  summarise(n_plants = n());
+
+# Add to n_seeds_per_genotype
+n_seeds_per_genotype_and_per_plant <- 
+  n_seeds_per_genotype %>%
+  left_join(n_plants_per_genotype, by = c("name")) %>% 
+  mutate(n_seeds_per_plant = round(total_n_seeds/n_plants, digits = 0));
+
+n_seeds_per_genotype_and_per_plant %>% knitr::kable()
+```
+
+::: callout-note
+In control conditions, the average number of seeds per plant ranges from 80 to 175.
+:::
+
+\break
+
+# Aphid effect on fitness
+
+## Aphid effect on number of pods and seeds
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+# create a function to plot the number of pods or seeds depending on the aphid species based on p1
+create_plot_per_aphid <- function(my_df, aphid = "A. fabae AF001", my_palette = c("#E69F00", "#56B4E9")) {
+  my_aphid_plot <- my_df %>%
+    # remove plant without pod count or seed count
+    filter(!is.na(n_pods)) %>%
+    filter(aphid_species == {{ aphid }}) %>%
+    select(name, treatment, aphid_species, n_pods, n_seeds) %>%
+    pivot_longer(cols = - c(name, treatment, aphid_species), 
+                 names_to = "n_type", 
+                 values_to = "nb") %>% 
+    ggplot(aes(x = name, y = nb, fill = treatment)) +
+    geom_boxplot() +
+    geom_point(position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.75), alpha = 0.5) +
+    facet_wrap(~ n_type, scales = "free_y") +
+    theme_bw() +
+    labs(x = "Genotype", y = "Number of pods or seeds") +
+    scale_fill_manual(values = my_palette) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1));
+  return(my_aphid_plot)
+}
+
+```
+
+### Plots of n_seeds = f(genotype, aphid treatment)
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+# A. pisum P123
+p1 <- create_plot_per_aphid(my_df = data_fitness, aphid = "A. pisum P123");p1 + ggtitle("A. pisum P123")
+
+# A. fabae AF001
+p2 <- create_plot_per_aphid(my_df = data_fitness, aphid = "A. fabae AF001", my_palette = c("orange3", "darkblue"));p2 + ggtitle("A. fabae AF001")
+
+```
+
+### Statistical tests n_seeds/pods = f(genotype, aphid treatment)
+
+ANOVA for the effect of A. pisum P123 on the number of pods.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+# P123
+data_fitness %>%
+  # remove plant without pod count or seed count
+  filter(!is.na(n_pods)) %>%
+  filter(aphid_species == "A. pisum P123") %>%
+  aov(n_pods ~ treatment + name + treatment:name, data = .) %>%
+  # use broom to convert results to df
+  broom::tidy() %>% 
+  # add significance
+  mutate(significance = case_when(p.value < 0.001 ~ "***",
+                                  p.value < 0.01 ~ "**",
+                                  p.value < 0.05 ~ "*",
+                                  TRUE ~ "ns")) %>% 
+  knitr::kable()
+```
+
+ANOVA for the effect of A. pisum P123 on the number of seeds.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+# P123 and n_seeds
+data_fitness %>%
+  # remove plant without pod count or seed count
+  filter(!is.na(n_pods)) %>%
+  filter(aphid_species == "A. pisum P123") %>%
+  aov(n_seeds ~ treatment + name + treatment:name, data = .) %>%
+  # use broom to convert results to df
+  broom::tidy() %>% 
+  # add significance
+  mutate(significance = case_when(p.value < 0.001 ~ "***",
+                                  p.value < 0.01 ~ "**",
+                                  p.value < 0.05 ~ "*",
+                                  TRUE ~ "ns")) %>% 
+  knitr::kable()
+```
+
+::: callout-important
+For *A. pisum* P123:\
+No effect on aphid treatment on the number of pods or number of seeds. Variability is high between plants. The number of pods is significantly different between genotypes, but not the number of seeds.
+:::
+
+ANOVA for the effect of A. fabae AF001 on the number of pods.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+# AF001
+data_fitness %>%
+  # remove plant without pod count or seed count
+  filter(!is.na(n_pods)) %>%
+  filter(aphid_species == "A. fabae AF001") %>%
+  aov(n_pods ~ treatment + name + treatment:name, data = .) %>%
+  # use broom to convert results to df
+  broom::tidy() %>% 
+  # add significance
+  mutate(significance = case_when(p.value < 0.001 ~ "***",
+                                  p.value < 0.01 ~ "**",
+                                  p.value < 0.05 ~ "*",
+                                  TRUE ~ "ns")) %>% 
+  knitr::kable()
+```
+
+ANOVA for the effect of A. fabae AF001 on the number of seeds.
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+
+# AF001 and n_seeds
+data_fitness %>%
+  # remove plant without pod count or seed count
+  filter(!is.na(n_pods)) %>%
+  filter(aphid_species == "A. fabae AF001") %>%
+  aov(n_seeds ~ treatment + name + treatment:name, data = .) %>%
+  # use broom to convert results to df
+  broom::tidy() %>% 
+  # add significance
+  mutate(significance = case_when(p.value < 0.001 ~ "***",
+                                  p.value < 0.01 ~ "**",
+                                  p.value < 0.05 ~ "*",
+                                  TRUE ~ "ns")) %>% 
+  knitr::kable()
+```
+
+::: callout-important
+For *A. fabae* AF001: Aphid treatment has no significant effect on the number of pods and number of seeds. The number of pods and seeds is significantly different between genotypes.
+:::
