@@ -1,0 +1,188 @@
+---
+title: "Aphid Screening Analysis"
+format: 
+  pdf: default
+editor: visual
+---
+
+# Setup 
+
+```{r, include=FALSE}
+suppressPackageStartupMessages(library("tidyverse"))
+library("gplots")
+library("ggvenn")
+library("gridExtra")
+```
+
+
+## All genotypes in the Vicia faba PeaMUST collection
+
+```{r all, include=FALSE}
+#| echo: false
+#| message: false
+#| warning: false
+
+passeport_info_peamust <- read.csv(file = "../../../00.info/00.passeport_data/2024-11_passeport_data_and_genetic_cluster_viciafaba_peamust.csv",
+                          header = TRUE, 
+                          stringsAsFactors = FALSE, sep =",")
+
+genotypes_all <- passeport_info_peamust$ivip  
+```
+
+## A. fabae datasets
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+fabae_no_filters <- read.csv(
+  file = "../../../01.data/2023_screen_specifics_251genotypes/02.aphis_fabae_on_faba_collection/aphis_fabae_fecundity_on_faba_collection_2024-04-02.csv",
+  header = TRUE, 
+  stringsAsFactors = FALSE, 
+  sep =",")
+
+fabae_filtered <- read.csv(
+  file = "../../../02.analyses/01.GWAS/01_phenotipic_analysis/01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered_6.csv",
+  header = TRUE, stringsAsFactors = FALSE, sep =",")
+
+n_genotypes_no_filters <- nrow(unique(fabae_no_filters$ivip))
+n_genotypes_filtered <- nrow(unique(fabae_filtered$ivip))
+```
+
+::: {.important}
+There are:  
+- `r n_genotypes_no_filters` genotypes in the raw _A. fabae_ dataset (no filters applied).  
+- `r n_genotypes_filtered` genotypes in the filtered _A. fabae_ dataset (after applying all filters).
+:::
+
+## A. pisum datasets
+
+```{r}
+#| echo: false
+#| message: false
+#| warning: false
+
+pisum_no_filters <- read.csv(file = "../../../01.data/2023_screen_specifics_251genotypes/01.acyrthosiphon_pisum_P123amp_on_faba_collection/acyrthospipon_pisum_fecundity_on_faba_collection.csv", header = TRUE, stringsAsFactors = FALSE, sep =",")
+
+pisum_filtered <- read.csv(file = "../../../02.analyses/01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv", header = TRUE, stringsAsFactors = FALSE, sep =",")
+
+```
+
+There are:  
+`r nrow(unique(pisum_no_filters$ivip))` genotypes in the raw A. pisum dataset (no filters applied).  
+`r nrow(unique(pisum_filtered$ivip))` genotypes in the filtered A. pisum dataset (after applying all filters).
+
+
+::: {.important}
+There are:  
+- `r nrow(unique(pisum_no_filters$ivip))` genotypes in the raw A. pisum dataset (no filters applied).  
+- `r nrow(unique(pisum_filtered$ivip))` genotypes in the filtered A. pisum dataset (after applying all filters).
+::: 
+
+
+# Venn diagrams
+
+## A. fabae
+
+Create lists of genotypes from raw A. fabae data and after filtering.  
+
+```{r lists_fabae}
+#| echo: false
+#| message: false
+#| warning: false
+
+# Create lists of genotypes from raw A. fabae data and after filtering 
+genotypes_fabae_no_filters <- unique(fabae_no_filters$ivip)
+genotypes_fabae_filtered <- unique(fabae_filtered$ivip)
+```
+
+Plot the Venn diagram to visualize the overlap between the three data sets.  
+
+```{r venn}
+#| message: false
+#| warning: false
+#| echo: false
+
+# Plot the Venn diagram
+venn_data_fabae <- list(
+  "All genotypes" = genotypes_all,
+  "In A. fabae screen (no filters)" = genotypes_fabae_no_filters,
+  "In A. fabae screen (filtered)" = genotypes_fabae_filtered
+)
+
+venn_plot_fabae <- ggvenn(
+  venn_data_fabae,
+  fill_color = c("#E69F00", "#56B4E9", "#009E73"),
+  stroke_size = 0.5,
+  set_name_size = 4,
+  text_size = 3,
+  show_percentage = FALSE);venn_plot_fabae
+```
+
+## A. pisum 
+
+```{r lists_pisum}
+#| echo: false
+#| message: false
+#| warning: false
+
+# Create lists of genotypes for each dataset
+genotypes_pisum_no_filters <- unique(pisum_no_filters$ivip)
+genotypes_pisum_filtered <- unique(pisum_filtered$ivip)
+```
+
+Plot the Venn diagram to visualize the overlap between the three datasets.  
+
+```{r venn_pisum}
+#| message: false
+#| warning: false
+#| echo: false
+
+# Plot the Venn diagram
+venn_data_pisum <- list(
+  "All genotypes" = genotypes_all,
+  "In A. pisum screen (no filters)" = genotypes_pisum_no_filters,
+  "In A. pisum screen (filtered)" = genotypes_pisum_filtered
+)
+venn_plot_pisum <- ggvenn(
+  venn_data_pisum,
+  fill_color = c("#E69F00", "#56B4E9", "#009E73"),
+  stroke_size = 0.5,
+  set_name_size = 4,
+  text_size = 3,
+  show_percentage = FALSE);venn_plot_pisum
+
+```
+
+# Final list of missing genotypes
+
+## A. fabae
+
+```{r final_lists_fabae}
+# List of missing genotypes
+Afabae_missing_genotypes <- 
+  setdiff(
+    genotypes_fabae_no_filters, 
+    genotypes_fabae_filtered) # A. fabae
+
+afabae_missing_genotypes_df <- as.data.frame(Afabae_missing_genotypes)
+afabae_missing_genotypes_df
+```
+
+## A. pisum
+
+```{r final_lists}
+
+# List of missing genotypes
+Apisum_missing_genotypes <- 
+  setdiff(
+    genotypes_pisum_no_filters, 
+    genotypes_pisum_filtered) # A. pisum
+
+apisum_missing_genotypes_df <- as.data.frame(Apisum_missing_genotypes)
+apisum_missing_genotypes_df
+```
+
+
+
