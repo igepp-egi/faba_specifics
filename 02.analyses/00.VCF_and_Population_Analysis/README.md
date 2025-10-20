@@ -11,7 +11,6 @@
     - [1.5 QC metrics upon VCF processing](#15-qc-metrics-upon-vcf-processing)
 - [2. Population metrics](#2-population-metrics)
     - [2.1 LD decay and distribution across the genome](#21-ld-decay-and-distribution-across-the-genome)
-    - [2.2](#22)
 
 <!-- /MarkdownTOC -->
 
@@ -160,6 +159,6 @@ VCF metrics to plot:
 
 ## 2.1 LD decay and distribution across the genome
 
-## 2.2 
+ 
 
 

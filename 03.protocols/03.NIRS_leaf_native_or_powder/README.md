@@ -22,17 +22,14 @@ There are two types of recipients:
 - The sample should not be mainly composed of water but rather be a mixture of organic compounds. For instance, two molecules diluted in water do not work  
 IN312-P
 
-# Is it possible to measure directly from a leaf section from faba bean or pea infested or not ? 
+# New XP measure: measure directly from a leaf section from faba bean or pea leaf  infested or not with aphids ? 
 
-##
-Ideas to measure absorbance from a leaf round section: 
+## Reflectance from a leaf disk
+Ideas to measure reflectance from a leaf round section:  
 - Use a 4cm sharp steel round disk (used for cookie pastry for instance) to obtain a leaf circle of _ca_ 4cm diameter.   
 - 4cm corresponds to the smallest cup size equipped with quartzite.  
 - There is a need for a 4cm round metal disk covered with inox in order to reflect the laser beam and record absorbance.   
 
-
-
-
-Il est possible d'extraire la matrice des absorbances x longeur d'onde (cm-1) en format .csv
+It is possible to extract a 2D-matrix "reflectance measurements x wavelengths (cm-1)" in .csv.
 
 
