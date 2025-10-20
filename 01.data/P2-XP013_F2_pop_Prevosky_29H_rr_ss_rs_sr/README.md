@@ -38,15 +38,17 @@ As a sensitive control:
 - IVIP102516: 20 plants x 2 aphids = 40 plants.     
 - IVIP101240: 20 plants x 2 aphids = 40 plants.     
 
-Only for A. fabae AF001:   
-- IVIP100355 (M10868): 20 plants x 1 aphid. 
+A. fabae AF001 sensitive control: IVIP100355 (M10868)
+- 20 plants x A. fabae AF001.   
+- 20 plants x A. pisum P123.     
 
-Only for A. pisum P123:  
-- IVIP101320 (IG 11734): 20 plants x 1 aphid. 
+A. pisum P123 sensitive control: IVIP101320 (IG 11734)
+- 20 plants x A. fabae AF001.  
+- 20 plants x A. pisum P123.  
 
 **Aphids**: 
-- 120 L1-G2 for A. pisum P123  (5 x 20 + 20)  
-- 120 L1-G2 for A. fabae AF001 (5 x 20 + 20)   
+- 140 L1-G2 for A. pisum P123  (7 x 20)  
+- 140 L1-G2 for A. fabae AF001 (7 x 20)   
 
 ## To be done
 
