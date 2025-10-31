@@ -20,6 +20,9 @@ preparation of the data based on the result from the filtering script :
 
 ```{r}
 data250fabae_4 <- read.csv("../../01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered_4.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) 
+
+data250fabae_4 <- data250fabae_4 %>%
+  mutate(ivip = ifelse(seed_batch == "KF2229", "hedin", ivip))
 ```
 
 ```{r}
@@ -87,7 +90,6 @@ write.csv(emm_df, file = file_path, row.names = FALSE)
 
 ```
 
-
 ```{r}
 data250fabae_5 <- read.csv("../../01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered_5.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) 
 ```
@@ -154,9 +156,6 @@ file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotip
 
 write.csv(emm_df, file = file_path, row.names = FALSE)
 ```
-
-
-
 
 ```{r}
 data250fabae_6 <- read.csv("../../01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered_6.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) 

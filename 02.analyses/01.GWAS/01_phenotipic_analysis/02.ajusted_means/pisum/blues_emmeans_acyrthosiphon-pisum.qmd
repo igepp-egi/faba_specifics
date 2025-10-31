@@ -28,6 +28,9 @@ suppressPackageStartupMessages(library("MASS"))
 ```{r}
 data250pisum_4 <- read.csv("../../../01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_4.csv", stringsAsFactors = F)
 data250pisum_4$genotype <- as.factor(data250pisum_4$ivip)
+
+data250pisum_4 <- data250pisum_4 %>%
+  mutate(ivip = ifelse(seed_batch == "KF2229", "hedin", ivip))
 ```
 
 ## Data distribution
