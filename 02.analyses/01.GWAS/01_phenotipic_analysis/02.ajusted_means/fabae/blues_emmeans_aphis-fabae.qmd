@@ -92,6 +92,9 @@ write.csv(emm_df, file = file_path, row.names = FALSE)
 
 ```{r}
 data250fabae_5 <- read.csv("../../01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered_5.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session)) 
+
+data250fabae_5 <- data250fabae_5 %>%
+  mutate(ivip = ifelse(seed_batch == "KF2229", "hedin", ivip))
 ```
 
 ```{r}
@@ -165,6 +168,9 @@ data250fabae_6 <- read.csv("../../01.dataset_filtering/01_A.fabae/final filters/
 data250fabae_6 %>% 
   ggplot(., aes(x = larvae_total_number)) + 
   geom_histogram(binwidth = 5, fill = "white", color = "black") 
+
+data250fabae_6 <- data250fabae_6 %>%
+  mutate(ivip = ifelse(seed_batch == "KF2229", "hedin", ivip))
 ```
 
 ```{r}

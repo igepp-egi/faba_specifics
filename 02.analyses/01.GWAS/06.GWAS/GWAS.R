@@ -14,35 +14,34 @@ library(tidyverse)
 library(dplyr)
 
 
+######
 
-pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae.csv", sep = ",")        
+pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum_6.csv", sep = ",")        
 
-pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum.csv", sep = ",")        
-
-
-pheno<- read.csv("00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv", 
-                                      sep =",", 
-                                      stringsAsFactors = F) %>% 
-  dplyr::select(ivip, cluster_name) %>% 
-  distinct() %>%
-  inner_join(., pheno, by = "ivip")
-
-pheno <- subset(pheno, cluster_name %in% c("North", "Winter"))
-pheno <- subset(pheno, cluster_name %in% c("South", "South_America"))
-
-
-pheno <- pheno[,c(1,3)]
-
-
-nrow(pheno)
-#new vcf:
-pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae_n6_genotypes_and_emmeans_minus_two_genotypes.csv", sep = ",")        
-
-myGD1 <-fread(file = "../../fichier_vcf_filtre/02.filtered_VCF_files_for_GWAS/results_afabae_n6/filtered/out_file.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
+myGD1 <-fread(file = "../../results_with_hedin/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin.vcf.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
 myGD1 <- myGD1[, -1, with = FALSE]  # Removes the first column
 
-myGD2 <-fread(file = "../../fichier_vcf_filtre/02.filtered_VCF_files_for_GWAS/results_afabae_n6/filtered/out_file.012.indv",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
-myGM <-fread(file = "../../fichier_vcf_filtre/02.filtered_VCF_files_for_GWAS/results_afabae_n6/filtered/out_file.012.pos") %>% rename(
+myGD2 <-fread(file = "../../results_with_hedin/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin.vcf.012.indv",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
+myGM <-fread(file = "../../results_with_hedin/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin.vcf.012.pos") %>% rename(
+  "chromosome" = "V1",
+  "position" = "V2"
+)%>% mutate(snp_id=paste(chromosome,position, sep = "_")) %>% relocate(snp_id,.before = chromosome) 
+
+colnames(myGD2)[1]<-"ivip"
+myY <- merge(myGD2, pheno, by = "ivip", all.x = TRUE)
+
+colnames(myGD1)<- myGM$snp_id
+myGD <-bind_cols(myGD2,myGD1)
+
+######
+
+pheno<-read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum_6.csv", sep = ",")        
+
+myGD1 <-fread(file = "../../results_with_hedin/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin.vcf.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
+myGD1 <- myGD1[, -1, with = FALSE]  # Removes the first column
+
+myGD2 <-fread(file = "../../results_with_hedin/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin.vcf.012.indv",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
+myGM <-fread(file = "../../results_with_hedin/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin.vcf.012.pos") %>% rename(
   "chromosome" = "V1",
   "position" = "V2"
 )%>% mutate(snp_id=paste(chromosome,position, sep = "_")) %>% relocate(snp_id,.before = chromosome) 
@@ -54,8 +53,7 @@ colnames(myGD1)<- myGM$snp_id
 myGD <-bind_cols(myGD2,myGD1)
 
 
-
-
+######
 myGD1 <-fread(file = "../../files_GWAS/GWAS/PEAMUST_vfaba_F1_SNP_imputed_MAF5.012",header = FALSE, stringsAsFactors =  FALSE) #%>% select(-1)
 myGD1 <- myGD1[, -1, with = FALSE]  # Removes the first column
 
@@ -92,6 +90,14 @@ myGAPIT_MLM <- GAPIT(
   KI = myKI,
   PCA.total=3,
   model=c("GLM","MLM", "MLMM", "FarmCPU", "Blink"),
+  Multiple_analysis=TRUE)
+
+myGAPIT_MLM <- GAPIT(
+  Y=myY[,c(1,2)], 
+  GD=myGD,
+  GM=myGM,
+  PCA.total=3,
+  model=c("FarmCPU", "Blink"),
   Multiple_analysis=TRUE)
 
 
