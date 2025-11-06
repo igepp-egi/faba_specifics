@@ -1,4 +1,4 @@
-﻿sample_number,genotype,ivip,hpi,treatment,tray,position,weight_mg,Comment
+﻿sample_number,genotype,ivip,hpi,treatment,tray,position,dry_weight_mg,Comment
 1,M10868,IVIP100355,3h,control,1,1-A1,10.52,
 2,M10868,IVIP100355,3h,control,1,1-A2,10.78,
 3,M10868,IVIP100355,3h,control,2,1-A3,11.88,
