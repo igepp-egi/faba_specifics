@@ -25,12 +25,12 @@ Sowing *Vicia faba* in 7x7x8 cm pots. Place in tray and in growth chamber at 20Â
 
 **Day 9 (04/11/2025)** : 
 
-Adults settling on plants. For each aphid, 3 modalities :
-- Installation of 1 adult on 10 plants
-- Installation for 2 adults on 10 plants
-- Installation for 3 adults on 10 plants
+Adults settling on plants. For each aphid, 3 modalities:  
+- Installation of 1 adult on 10 plants  
+- Installation for 2 adults on 10 plants  
+- Installation for 3 adults on 10 plants  
 
-Therefore, there are 30 plants per aphid and 10 plants per density modality. That makes a total of (10*3)*2 = 60 plants
+Therefore, there are 30 plants per aphid species and 10 plants per density modality. That makes a total of (10x3)x2 = 60 plants.  
 
 The plants are individually covered with a bag secured by an elastic band to the pot to prevent the dispersal of aphids or contamination between pots.
 

@@ -31,8 +31,8 @@ The two main goals is to:
 ## 1.1 Original VCF file description 
 
 The 'raw' `vfaba_hedin_peamust_SNP_GATK.vcf.gz`_Vicia faba_ VCF file contains:   
-- 248 genotypes     
-- 6,425,454 SNPs and InDels  
+- 248 genotypes.       
+- 6,425,454 SNPs (bi- and multiallelic SNPs).    
 - md5sum: `645c8d1fa683938b5147ea6be281db70`  
 
 See [VCF v4.2 format](./VCFv4.2_format_specifications.pdf) for explanation of FILTER, FORMAT, etc. fields.
