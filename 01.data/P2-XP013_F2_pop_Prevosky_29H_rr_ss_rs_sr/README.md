@@ -21,8 +21,8 @@ These genotypes should be confirmed using a fecundity test with one L1-G2 larvae
 Prevosky can be used as the internal control as this genotype has been extensively confirmed (see table below).
 
 As a sensitive control:
-- For _A. fabae_ AF001, IVIP100355 (KHASH) can be used (confirmed independently; N=41).  
-- For _A. pisum_ P123, IVIP103069 (ANATOLIEN) can be used (confirmed independently; N=56).  
+- For _A. fabae_ AF001, IVIP100355 (M10868) can be used (confirmed independently; N=41).  
+- For _A. pisum_ P123, IVIP101320 (IG 11734) can be used (confirmed independently; N=56).  
 
 ## Number of plants and aphids
 
