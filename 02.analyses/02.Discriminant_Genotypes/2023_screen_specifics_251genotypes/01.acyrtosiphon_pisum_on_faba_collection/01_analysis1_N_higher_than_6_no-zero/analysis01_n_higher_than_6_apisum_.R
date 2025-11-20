@@ -67,7 +67,7 @@ p1 <- median_larvae_counts_apisum %>%
   theme(axis.text.x = element_blank(), 
         axis.title.x = element_text(size = 12), 
         axis.title.y = element_text(size = 12)) + 
-  labs(x = "Vicia faba genotype", y = "Total number of larvae\n(from one single N1 larvae)") + 
+  labs(x = "Vicia faba genotype", y = "Median number of larvae\nfrom one single L1 larvae") + 
   ggtitle("A. pisum fecundity on Vicia faba collection");p1
 
 ggsave(plot = p1, width = 12, height = 8, 

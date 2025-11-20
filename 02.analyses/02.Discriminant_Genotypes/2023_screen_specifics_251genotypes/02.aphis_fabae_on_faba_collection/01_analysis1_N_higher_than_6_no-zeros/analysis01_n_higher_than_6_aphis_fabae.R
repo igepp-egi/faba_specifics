@@ -81,7 +81,7 @@ p1_afabae <- median_larvae_counts_afabae %>%
   theme(axis.text.x = element_blank(), 
         axis.title.x = element_text(size = 12), 
         axis.title.y = element_text(size = 12)) + 
-  labs(x = "Vicia faba genotype", y = "Total number of larvae\n(from one single N1 larvae)") + 
+  labs(x = "Vicia faba genotype", y = "Total number of larvae\n(from one single L1 larvae)") + 
   ggtitle("A. fabae fecundity on Vicia faba collection");p1_afabae
 
 ggsave(plot = p1_afabae, width = 12, height = 8, 
