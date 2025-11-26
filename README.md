@@ -6,41 +6,36 @@
 <!-- MarkdownTOC levels="1,2,3" autolink="true" -->
 
 - [Summary](#summary)
-- [GWAS analysis](#gwas-analysis)
-- [Molucar analyses](#molucar-analyses)
 - [Useful links](#useful-links)
 - [References](#references)
 - [Contributors ✨](#contributors-%E2%9C%A8)
 
 <!-- /MarkdownTOC -->
 
-# Summary 
+## Summary 
 
 Within the SPECIFICS project (PIA3 Programme de Recherche Prioritaire "Cultiver et Protéger Autrement" SPECIFICS), a collection of 251 genotypes of _Vicia faba_ (faba bean) were phenotyped for their resistance to _Acyrthosiphon pisum_ and _Aphis fabae_.
 
 Resistance is estimated by measuring the offspring number obtained after 15 days at 18°C from one single L1 24h larvae of A. pisum or A. fabae. The protocol can be found in [`03.protocols/ 01.aphid_fecundity_test/`](03.protocols/01.aphid_fecundity_test).
 
-These results will be used to conduct a GWAS analysis on the collection of exome-sequenced faba bean genotypes (Burstin et al. 2021).
+These results will be used to conduct a GWAS analysis on the collection of exome-sequenced faba bean genotypes (Burstin et al. 2021) and for molecular analyses (mRNA-seq and untargeted metabolomics) on pairs of faba genotypes (PR/S for aphid resistance and for each aphid species investigated).
+
+
 The list of faba genotypes can be found in [`00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv`](00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv).  
 
-# GWAS analysis  
 
-This large screen was performed from 2022 to April 2024 to test the resistance of faba bean genotypes to the pea aphid (_A. pisum_) and to the black bean aphid (_A. fabae_). 
-
-# Molucar analyses
-
-# Useful links
+## Useful links
 
 [FAQ on Generalized Linear Mixed Models](https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html#introduction)  
 
 [Tutorial on lme4 model](https://www.rensvandeschoot.com/tutorials/lme4/)
 
-# References
+## References
 
 **Faba bean collection:**     
 - Judith Burstin, Komlan Avia, Estefania Carillo-Perdomo, Christophe Lecomte, Sana Beji, et al. PeaMUST (Pea MultiStress Tolerance), a multidisciplinary French project uniting researchers, plant breeders, and the food industry. Legume Science, 2021, 3 (3), 10.1002/leg3.108. [hal-03671280](https://hal.inrae.fr/hal-03671280v1)
 
-# Contributors ✨
+## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
