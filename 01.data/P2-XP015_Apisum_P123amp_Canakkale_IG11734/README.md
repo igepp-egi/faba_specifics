@@ -1,17 +1,38 @@
-# README
+# P2-XP015 IG 11734 and Canakkale vs A. pisum P123amp
 
-NIRS P2-XP017
+## Summary and objectives 
 
-Burker MTA 
+Goal: to find differentially expressed genes and differentially accumulated metabolites from _Vicia faba_ plantlets (aged 15 days) infested or not with 100 L3 _Acyrthosiphon pisum_ P123amp larvae. 
 
-Il y a deux types de récipients: 
-- Pour les petites quantités, il y a des "HPLC vials" en verre qu'on peut nettoyer à l'air comprimé (lunettes de protection!) et rincées à l'alcool puis laissées à sécher.  
-- Pour les plus grandes quantités de graines par ex., il y a des coupelles avec une surface en quartzite (qui n'absorbe pas le laser)
+mRNA-seq and untargeted metabolomics to be performed on the same samples. 
 
-Idées pour mesure sur feuille découpée à l'emporte-pièce :   
-- Dimension de la plus petite coupelle quartzite = 4cm
+## Material 
 
+- _Acyrthosiphon pisum_ P123amp (aphid clone sampled in Mauzé-sur-le-Mignon in 1997).
+- _Vicia faba_: 
+	- IG 11734 (IVIP101320): identified as the most partially resistant to AF001 in previous screenings.   
+	- Canakkale (IVIP101957) identified as the most sensitive in previous screenings.  
 
-Il est possible d'extraire la matrice des absorbances x longeur d'onde (cm-1) en format .csv
+## Complete randomized block design 
 
+[FIXME]
 
+## Temperatures and hygrometry
+
+18°C D:N and long days 16:8 D:N. 
+
+In chamber 133 (from seed to 15-day old seedlings):  
+  - probes #38 to 43. 
+  - From 13 October to 27 October 2025.   
+
+In chamber 131 (after aphid installation):  
+  - probes #33 to 37. 
+  - From 27 October to 1 November 2025.  
+
+## mRNA-seq protocol
+
+Macherey-Nagel NucleoSpin RNA protocol. 
+
+## Metabolomics protocol
+
+(Same as P2-XP014)  

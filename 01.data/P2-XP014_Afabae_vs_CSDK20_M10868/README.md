@@ -1,17 +1,35 @@
 # P2-XP014 CSDK20 and ILB540 vs A. fabae AF001
 
-## Setup 
+## Summary and objectives 
+
+Goal: to find differentially expressed genes and differentially accumulated metabolites from _Vicia faba_ plantlets (aged 15 days) infested or not with 100 L3 _Aphis fabae_ larvae. 
+
+mRNA-seq and untargeted metabolomics to be performed on the same samples. 
+
+## Material 
+
+- _Aphis fabae_ AF001 (aphid clone sampled in Le Rheu Spring 2024).
+- _Vicia faba_: 
+	- CS20DK (IVIP102198): identified as the most partially resistant to AF001 in previous screenings.   
+	- M10868 (IVIP100355) identified as the most sensitive in previous screenings.  
 
 ## Complete randomized block design 
 
-[FIXME] Add design
+See [./XP_design_P2-XP014.pdf](XP design file)
 
 ## Temperatures and hygrometry
+
+18°C D:N and long days 16:8 D:N. 
 
 In chamber 133 (from seed to 15-day old seedlings): probes #38 to 43 (September 8 to September 22, 2025).  
 In chamber 131 (after aphid installation), probes #33 to 37 (September 22 to September 27, 2025).  
 
+## mRNA-seq protocol
+
+Macherey-Nagel NucleoSpin RNA protocol. 
+
 ## Metabolomics protocol
+
 **We came up with the following:**  
 1. We will make one extract and use it for the phytohormones and the metabolomics.
 2. Please use 10 mg (dry weight) plant material. Please make an excel table with the exact weights. Just in case you have less, just use less, we will try to adapt the procedure to it (but please indicate).
@@ -38,7 +56,3 @@ Dimensions: 21. x 100mm, 1.8um particles
 Manufacturer: Agilent
 Product/order-Number: 981758-902
  
-That's all for now. If you have questions, please let me know.
-
-All the best,
-Grit
