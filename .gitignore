@@ -16,3 +16,4 @@ faba_specifics.Rproj
 01.data/.DS_Store
 *.fst
 *.sites.pi
+02.analyses/01.GWAS/09.machine_learning_snp_to_pheno/data_genotypes/vfaba.genotypes.tsv
