@@ -27,7 +27,7 @@ suppressPackageStartupMessages(library("dplyr"))
 
 ## data prep
 
-the dataset is loaded and curred. We remove adult = 0 and NAs
+The dataset is loaded and curated. We remove repetitions where adult = 0 as well as all rows containing NAs. This is justified because we believe that adult mortality is linked to issues occurring during installation rather than a response from the plant. Since adult death directly affects fecundity measures, keeping these cases would introduce substantial bias.
 
 ```{r}
 #| echo: true
@@ -153,7 +153,7 @@ write.csv(x = results,
 iqr_results <- results %>% filter(filter == "IQR")
 ```
 
-We now need to visualize the data we generated from the IQR filter to choose the best value for i (minimal number of repetitions to keep a genotype)
+We now need to visualize the data we generated from the IQR filter to choose the best value for i (minimal number of repetitions to keep a genotype in the analysis). The code will remove all genotypes for which we have less than i repetitions. The choice or i is complex as a higher value for i means that we have less genotypes in the GWAS but the genotypes we have have more repetition. However with a lower value for i we have more genotypes in the annalysis but some will have low number of repetition. Our objective is to find the optimal value to maximise the GWAS power without adding too much noise. We metrics we use to choose based on overall number of genotypes, total number of data points, RMSE and heritability.
 
 ```{r}
 #| echo: false
@@ -164,7 +164,7 @@ write.csv(x = results,
 
 ```
 
-Based on these first results it appears that IQR is the best filtering option. We still need to detremine the best value for i. For that we will use a similar loop to which we will add the nucleotid diversity.
+Based on these first results it appears that IQR is the best filtering option. We still need to determine the best value for i.
 
 ```{r}
 # Initialize an empty data frame to store results
@@ -258,8 +258,7 @@ ggplot(results, aes(x = i, y = NGEN)) +
   scale_y_continuous(limits = c(0,250)) +
   theme_bw() +
   ggrepel::geom_text_repel(aes(label = NGEN), arrow = T) +
-  labs(x = "N biological replicates", y = "N genotypes") +
-  ggtitle("N genotypes = f(N biological replicates)")
+  labs(x = "minimal number of rep per genotype", y = "N genotypes")
 
 y<-as.vector(results$NGEN)
 x<-as.vector(results$i)
@@ -272,14 +271,14 @@ x_mid <- (x[-1] + x[-length(x)]) / 2
 
 # Plot slope (derivative)
 plot(x_mid, slope, type = "b", col = "red", main = "Numerical Derivative (Slope)",
-     ylab = "Slope", xlab = "x")
+     ylab = "Slope", xlab = "minimal number of rep per genotype")
 abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 
 
 ```
 
-It can be hard to read the relation between Genotype number and i. Therefore it is helpfull to plot the slop (the value is the difference between number of genotype with i and i + 1) based on the decrease in genotypes number we can choose 5 or 7 as the best i value.
+It can be hard to read the relation between Genotype number and i. Therefore it is helpfull to plot the slop (the value is the difference between number of genotype with i and i + 1). From 2 to 5 the slope is progressive then we start genotypes with a higher rate.
 
 ```{r}
 
@@ -289,7 +288,7 @@ ggplot(results, aes(x = i, y = RMSE)) +
   scale_y_continuous(limits = c(9.15,9.85)) +
   theme_bw() +
   ggrepel::geom_text_repel(aes(label = NGEN), arrow = T) +
-  labs(x = "i", y = "RMSE") +
+  labs(x = "minimal number of repetition per genotype", y = "RMSE") +
   ggtitle("variation of RMSE depending on the minimal number of rep")
 
 y<-as.vector(results$RMSE)
@@ -303,13 +302,13 @@ x_mid <- (x[-1] + x[-length(x)]) / 2
 
 # Plot slope (derivative)
 plot(x_mid, slope, type = "b", col = "red", main = "Numerical Derivative (Slope)",
-     ylab = "Slope", xlab = "x")
+     ylab = "Slope", xlab = "minimal number of repetition per genotype")
 abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 
 ```
 
-the lowest value for RMSE is with i=4. However base on the curve we could be tempted to choose a value of 5 or 7 for i.
+the lowest value for RMSE is with i=4. 
 
 ```{r}
 ggplot(results, aes(x = i, y = n_after)) +
@@ -318,7 +317,7 @@ ggplot(results, aes(x = i, y = n_after)) +
   scale_y_continuous(limits = c(0,1800)) +
   theme_bw() +
   ggrepel::geom_text_repel(aes(label = n_after), arrow = T) +
-  labs(x = "N biological replicates", y = "total number of rep") +
+  labs(x = "minimal number of rep per genotype", y = "total number of rep") +
   ggtitle("total number of observation depending on the number of repetitions")
 
 y<-as.vector(results$n_after)
@@ -332,12 +331,12 @@ x_mid <- (x[-1] + x[-length(x)]) / 2
 
 # Plot slope (derivative)
 plot(x_mid, slope, type = "b", col = "red", main = "Numerical Derivative (Slope)",
-     ylab = "Slope", xlab = "x")
+     ylab = "Slope", xlab = "minimal number of rep per genotype")
 abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 ```
 
-based on overall number of notation we could choose 5 or 7.
+The total number or repetition is the total number of line in our dataset (the number of genotypes x number of repetition per genotype). This metric slowly decrease as i increase. For a i value of 2 to 4 decrease we lose only few repetition, then from 6 to 9 the slope increase and the rate of repetition loss increase.
 
 ```{r}
 ggplot(results, aes(x = i, y = H2)) +
@@ -346,8 +345,8 @@ ggplot(results, aes(x = i, y = H2)) +
   scale_y_continuous(limits = c(0, 0.5)) +
   theme_bw() +
   labs(
-    x = "N biological replicates",
-    y = "Total number of rep"
+    x = "minimal number of rep per genotype",
+    y = "H2"
   ) +
   ggtitle("H2 depending on the number of repetitions")
 
@@ -363,9 +362,88 @@ x_mid <- (x[-1] + x[-length(x)]) / 2
 
 # Plot slope (derivative)
 plot(x_mid, slope, type = "b", col = "red", main = "Numerical Derivative (Slope)",
-     ylab = "Slope", xlab = "x")
+     ylab = "Slope", xlab = "minimal number of rep per genotype")
 abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 ```
 
-based on H2 the best option are 5 or 7
+the highest heritabilty are obtained with i=2, 3 or 4. Heritability then progresivelly decrease as we increase the minimal number of repetitions required.
+
+
+Based on all the metrics presented here it seems that a value of 4 or less would be optimal. choosing 5 could be tempting as we don't lose too much heritability and we don't gain too much RMSE but due to the already low number of genotypes reducing the genotype loss is our priority. However we think that 4 is the minimal number of acceptable repetitions. Going lower to 4 would be quite risky especially since we know that our phenotypes is quite variable. Therefore we choose to keep 4 as the ideal value for i. In the next steps we will conduct GWAS on dataset filterd with a i value of 4, 5 and 6. This is intended to make sure that the choice of i does not change the GWAS pics the detect, however we will only use the GWAS pics from the dataset with i=4.
+
+
+We know have to make sure this filtering does not include some bias. We want to asses this throught 2 key points, the resistance level and the genetic cluster.
+
+
+```{r}
+# -------------------------------
+# 1. IQR filtering
+# -------------------------------
+IQR_value <- IQR(data250_afabae_02$larvae_total_number)
+lower_bound <- quantile(data250_afabae_02$larvae_total_number, 0.25) - 1.5 * IQR_value
+upper_bound <- quantile(data250_afabae_02$larvae_total_number, 0.75) + 1.5 * IQR_value
+
+data <- data250_afabae_02 %>%
+  filter(larvae_total_number >= lower_bound,
+         larvae_total_number <= upper_bound)
+
+# -------------------------------
+# 2. Keep ivip with ≥4 repetitions
+# -------------------------------
+data_afabae_4 <- data %>%
+  group_by(ivip) %>%
+  filter(n() >= 4) %>%
+  ungroup()
+
+# -------------------------------
+# 3. Identify ivip NOT kept
+# -------------------------------
+ivip_not_in_4 <- setdiff(unique(data$ivip), unique(data_afabae_4$ivip))
+data_removed <- data %>% filter(ivip %in% ivip_not_in_4)
+
+# -------------------------------
+# 4. Boxplot with removed ivip in red
+# -------------------------------
+ggplot(data, aes(x = "", y = larvae_total_number)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(alpha = 0.4) +
+  geom_point(data = data_removed,
+             aes(x = "", y = larvae_total_number),
+             color = "red",
+             size = 3) +
+  labs(title = "Boxplot of larvae_total_number",
+       subtitle = "Red points = ivip removed (<4 repetitions)") +
+  theme_minimal()
+
+# -------------------------------
+# 5. Table of removed ivip with genetic cluster
+# -------------------------------
+info_cluster <- read.csv("../../../../../../00.info/11.infos_genotypes/morphological_phenotlogical_data_faba_collection_PeaMUST_with_genet_cluster.csv")
+
+ivip_removed_cluster_table <- data.frame(ivip = ivip_not_in_4) %>%
+  left_join(info_cluster, by = "ivip")
+
+ivip_removed_cluster_table
+
+# -------------------------------
+# 6. Cluster summary table
+# -------------------------------
+# Keep only non-empty, non-NA cluster_name
+ivip_with_cluster <- data %>%
+  distinct(ivip) %>%
+  left_join(info_cluster, by = "ivip") %>%
+  filter(!is.na(cluster_name), cluster_name != "")
+
+cluster_summary <- ivip_with_cluster %>%
+  group_by(cluster_name) %>%
+  summarise(
+    n_original = n(),
+    n_removed = sum(ivip %in% ivip_not_in_4)
+  ) %>%
+  arrange(cluster_name)
+
+cluster_summary
+```
+
+based on these results it does not seems that we have a cluster or resistance level bias

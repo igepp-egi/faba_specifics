@@ -153,8 +153,7 @@ ggplot(iqr_results, aes(x = i, y = NGEN)) +
   scale_y_continuous(limits = c(0,250)) +
   theme_bw() +
   ggrepel::geom_text_repel(aes(label = NGEN), arrow = T) +
-  labs(x = "N biological replicates", y = "N genotypes") +
-  ggtitle("N genotypes = f(N biological replicates)")
+  labs(x = "minimal number of rep per genotype", y = "N genotypes") 
 
 y<-as.vector(iqr_results$NGEN)
 x<-as.vector(iqr_results$i)
@@ -167,7 +166,7 @@ x_mid <- (x[-1] + x[-length(x)]) / 2
 
 # Plot slope (derivative)
 plot(x_mid, slope, type = "b", col = "red", main = "Numerical Derivative (Slope)",
-     ylab = "Slope", xlab = "x")
+     ylab = "Slope", xlab = "minimal number of rep")
 abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 
@@ -175,7 +174,7 @@ abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 ```
 
 
-Based on the variation in genotype number the best i value seems to be 6
+The decrease in genotype number seems quite progressive compared to A. fabae. We can still observe an increase in the genotype loss rate once once i is higher than 6. We can probably choose a value for i that is higher than the one we choose for A. fabae as we don't risk to lose too many genotypes.
 
 ```{r}
 
@@ -185,7 +184,7 @@ away <- ggplot(iqr_results, aes(x = i, y = RMSE)) +
   scale_y_continuous(limits = c(0,7)) +
   theme_bw() +
   ggrepel::geom_text_repel(aes(label = NGEN), arrow = T) +
-  labs(x = "i", y = "RMSE") +
+  labs(x = "Minimal number of rep per genotype", y = "RMSE") +
   ggtitle("variation of RMSE depending on the minimal number of rep")
 
 close<- ggplot(iqr_results, aes(x = i, y = RMSE)) +
@@ -194,7 +193,7 @@ close<- ggplot(iqr_results, aes(x = i, y = RMSE)) +
   scale_y_continuous(limits = c(6.6,6.75)) +
   theme_bw() +
   ggrepel::geom_text_repel(aes(label = NGEN), arrow = T) +
-  labs(x = "i", y = "RMSE") +
+  labs(x = "Minimal number of rep per genotype", y = "RMSE") +
   ggtitle("variation of RMSE depending on the minimal number of rep")
 
 away+close
@@ -210,12 +209,12 @@ x_mid <- (x[-1] + x[-length(x)]) / 2
 
 # Plot slope (derivative)
 plot(x_mid, slope, type = "b", col = "red", main = "Numerical Derivative (Slope)",
-     ylab = "Slope", xlab = "x")
+     ylab = "Slope", xlab = "minimal number of rep")
 abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 
 ```
-it is complicated to select a value for i using RMSE as the value don't vary much
+It is complicated to select an optimal value for i using RMSE as the value don't vary much.
 
 
 ```{r}
@@ -225,7 +224,7 @@ ggplot(iqr_results, aes(x = i, y = n_after)) +
   scale_y_continuous(limits = c(0,2500)) +
   theme_bw() +
   ggrepel::geom_text_repel(aes(label = n_after), arrow = T) +
-  labs(x = "N biological replicates", y = "total number of rep") +
+  labs(x = "Minimal number of repetitions", y = "total number of rep") +
   ggtitle("total number of observation depending on the number of repetitions")
 
 y<-as.vector(iqr_results$n_after)
@@ -239,11 +238,11 @@ x_mid <- (x[-1] + x[-length(x)]) / 2
 
 # Plot slope (derivative)
 plot(x_mid, slope, type = "b", col = "red", main = "Numerical Derivative (Slope)",
-     ylab = "Slope", xlab = "x")
+     ylab = "Slope", xlab = "minimal number of rep")
 abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 ```
-To maximise the overall number of data the best i value seems to be 6
+The decrease in overall number of repetition is quite steady. However with the slope analysis we can see that the loss rate increase after 6 and increase again after 8
 
 ```{r}
 close<-ggplot(iqr_results, aes(x = i, y = H2)) +
@@ -279,9 +278,84 @@ x_mid <- (x[-1] + x[-length(x)]) / 2
 
 # Plot slope (derivative)
 plot(x_mid, slope, type = "b", col = "red", main = "Numerical Derivative (Slope)",
-     ylab = "Slope", xlab = "x")
+     ylab = "Slope", xlab = "minimal number of rep")
 abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 close + away
 ```
-to maximise heritability the best value for i is 7, and the second best value is 6
+Similarly to RMSE heritability does not vary much depending on the value of i. If we zoom we can se that to maximise heritability the best value for i is 7, and the second best value is 6. 
+
+
+Based on all result showed here we believe that a value of 6 for the minimal number of repetition is a good fit that will allow to keep a good number of genotypes without too much noise
+
+
+
+```{r}
+# -------------------------------
+# 1. IQR filtering
+# -------------------------------
+IQR_value <- IQR(data250_apisum_02$larvae_total_number)
+lower_bound <- quantile(data250_apisum_02$larvae_total_number, 0.25) - 1.5 * IQR_value
+upper_bound <- quantile(data250_apisum_02$larvae_total_number, 0.75) + 1.5 * IQR_value
+
+data <- data250_apisum_02 %>%
+  filter(larvae_total_number >= lower_bound,
+         larvae_total_number <= upper_bound)
+
+# -------------------------------
+# 2. Keep ivip with ≥6 repetitions
+# -------------------------------
+data_afabae_6 <- data %>%
+  group_by(ivip) %>%
+  filter(n() >= 6) %>%
+  ungroup()
+
+# -------------------------------
+# 3. Identify ivip NOT kept
+# -------------------------------
+ivip_not_in_6 <- setdiff(unique(data$ivip), unique(data_afabae_6$ivip))
+data_removed <- data %>% filter(ivip %in% ivip_not_in_6)
+
+# -------------------------------
+# 4. Boxplot with removed ivip in red
+# -------------------------------
+ggplot(data, aes(x = "", y = larvae_total_number)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(alpha = 0.4) +
+  geom_point(data = data_removed,
+             aes(y = larvae_total_number),
+             color = "red",
+             size = 3) +
+  labs(title = "Boxplot of larvae_total_number",
+       subtitle = "Red points = ivip removed (<6 repetitions)") +
+  theme_minimal()
+
+# -------------------------------
+# 5. Table of removed ivip with genetic cluster
+# -------------------------------
+info_cluster <- read.csv("../../../../../../00.info/11.infos_genotypes/morphological_phenotlogical_data_faba_collection_PeaMUST_with_genet_cluster.csv")
+
+ivip_removed_cluster_table <- data.frame(ivip = ivip_not_in_6) %>%
+  left_join(info_cluster, by = "ivip")
+
+ivip_removed_cluster_table
+
+# -------------------------------
+# 6. Cluster summary table
+# -------------------------------
+# Keep only non-empty, non-NA cluster_name
+ivip_with_cluster <- data %>%
+  distinct(ivip) %>%
+  left_join(info_cluster, by = "ivip") %>%
+  filter(!is.na(cluster_name), cluster_name != "")
+
+cluster_summary <- ivip_with_cluster %>%
+  group_by(cluster_name) %>%
+  summarise(
+    n_original = n(),
+    n_removed = sum(ivip %in% ivip_not_in_6)
+  ) %>%
+  arrange(cluster_name)
+
+cluster_summary
+```
