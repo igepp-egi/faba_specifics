@@ -8,10 +8,15 @@ mRNA-seq and untargeted metabolomics to be performed on the same samples.
 
 ## Material 
 
+biological material:
 - _Aphis fabae_ AF001 (aphid clone sampled in Le Rheu Spring 2024).
 - _Vicia faba_: 
 	- CS20DK (IVIP102198): identified as the most partially resistant to AF001 in previous screenings.   
 	- M10868 (IVIP100355) identified as the most sensitive in previous screenings.  
+
+material:
+
+Plant were grew in small plastic pots (6,5cm * 6,5cm * 8cm), rigide perfored plastic bag cut from both sides were placed around the pot once the plant had germinated and was maintained using 2 tutors (see picture in the experimental_design file)
 
 ## Complete randomized block design 
 
@@ -24,9 +29,31 @@ See [./XP_design_P2-XP014.pdf](XP design file)
 In chamber 133 (from seed to 15-day old seedlings): probes #38 to 43 (September 8 to September 22, 2025).  
 In chamber 131 (after aphid installation), probes #33 to 37 (September 22 to September 27, 2025).  
 
+see temperature_hygrometry_P2-XP009_and_P2-XP010 files for more informations on temperature and hygrometry
+
+## protocol
+
+presentation of the parameters:
+2 plant genotypes (cf plant material) * 2 conditions (aphid treatment and control treatment) * 4 time points (3hpi, 24hpi, 72hpi, 120hpi) * 10 repetitions --> 160 datapoints
+
+-plant were planted 14 days before the experiment
+-8 days later the plastic bags were placed around the plants
+-Before dropping aphids all control plastic bag were closed using 3-4 staples
+-For the aphid treatment 100 3 days old larvae were dropped on each plants. After the dropping the plastic bags were closed using staples. 
+-At 4 time point (counted in hour post infestation (hpi)) the plants were frozen in liquid nitrogen. Aphids were removed with a brush and the frozen plant were stored in folded aluminium foil. During the sample harvest the aluminium foils were kept in a nitrogen refrigerated polystyrene box before beeing transfered in -80 freezer to be stored.
+- Plants extracts were then grinded at a later date in mortar and pesle with liquid nitrogen. During the process the powder was separated into 3 tubes 2 2ml tubes (1 for transcriptomic and 1 for metabolomic) and a backup tube of 15ml. 
+-metabolomic tubes were hyophilized during 48h. Pierced 2ml tubes cap were used to allow water evacuation without powder contamination.
+-From the lyophilized dried powder about 10mg was placed in a numeroted well plate for each datapoint. The exact weight is indicated in the samples_to_conditions file.
+
+## Comments/observations:
+At the last time point we had contamination on some control plants. We found few A. fabae larvae on the plants these are noted on the samples_to_conditions file.
+
+
 ## mRNA-seq protocol
 
 Macherey-Nagel NucleoSpin RNA protocol. 
+
+
 
 ## Metabolomics protocol
 
