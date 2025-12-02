@@ -16,7 +16,7 @@ biological material:
 
 material:
 
-Plant were grew in small plastic pots (6,5cm * 6,5cm * 8cm), rigide perfored plastic bag cut from both sides were placed around the pot once the plant had germinated and was maintained using 2 tutors (see picture in the experimental_design file)
+Plant were grew in small plastic pots (6,5cm * 6,5cm * 8cm), rigide perfored plastic bag cut from both sides ( 18cm * 40 cm) were placed around the pot once the plant had germinated and was maintained using 2 tutors (see picture in the experimental_design file)
 
 ## Complete randomized block design 
 
