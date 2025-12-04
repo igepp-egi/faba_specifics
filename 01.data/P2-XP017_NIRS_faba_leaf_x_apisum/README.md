@@ -11,13 +11,15 @@ Factors:
     - IG 17734 (sensitive to A. pisum P123amp).    
     - CANAKKALE (part. resistant to A. pisum P123amp).  
 - 2 aphid conditions: 
-    - No aphid with clip-cage. 
-    - 1 adult aphid with clip-cage. 
+    - No aphid with small net on one leaf. 
+    - 5 adult aphids with small net on one leaf. 
 
 Number of biological replicates (1 plant = 1 obs. unit) per modality: n=5
 
 Total of 20 plants. 
 
-## Measure 
+## Measures 
 
-Cut one round piece of leaf of Xcm diameter. 
+Two devices: 
+- MicroNIR with small mirror (to obtain the max. reflectance) > on undetached leaves.  
+- MPA Bruker I FT-NIR on detached leaves. Cut one round piece of leaf of 4cm diameter.  
