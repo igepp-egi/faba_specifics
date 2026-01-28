@@ -43,7 +43,7 @@ ggsave("genome_wide_ld_decay_binned.png", plot = p, width = 10, height = 8, dpi 
 
 
 
-
+ggplot(merged_df, aes(x = Group, y = larvae_total_number)) + geom_boxplot()
 
 
 
