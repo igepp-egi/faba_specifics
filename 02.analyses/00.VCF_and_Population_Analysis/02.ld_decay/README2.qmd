@@ -1,0 +1,63 @@
+---
+title: "README"
+format: html
+editor: visual
+---
+
+
+## LD decay
+
+Pour segmenter le fichier vcf en sous fichier contenant chaqun un chromosome
+
+for chr in chr1L chr1S chr2 chr3 chr4 chr5 chr6; do
+    echo "Extraction de $chr..."
+    bcftools view vfaba_afabae_n4.filtered_imputed_maf.vcf.hedin.vcf.gz | \
+    awk -v chr="$chr" '($1 == chr || $0 ~ /^#/)' | \
+    bgzip > ${chr}.vcf.gz
+    tabix -p vcf ${chr}.vcf.gz
+done
+
+for chr in chr1L chr1S chr2 chr3 chr4 chr5 chr6; do
+    echo "Conversion de ${chr}.vcf.gz en format PLINK..."
+    plink --vcf ${chr}.vcf.gz \
+          --double-id \
+          --allow-extra-chr \
+          --chr-set 30 \
+          --make-bed \
+          --out ${chr}_plink
+done
+
+for chr in chr1L chr1S chr2 chr3 chr4 chr5 chr6; do
+    echo "Calcul du LD pour ${chr}..."
+    plink --bfile ${chr}_plink \
+          --r2 \
+          --ld-window 99999 \
+          --ld-window-kb 1000 \
+          --ld-window-r2 0 \
+          --out ${chr}_ld
+done
+
+
+for chr in chr1L chr1S chr2 chr3 chr4 chr5 chr6; do
+    echo "Extraction des distances et r² pour ${chr}..."
+    tail -n +2 ${chr}_ld.ld | awk '{print ($5 - $2), $7}' > ${chr}_ld_decay.txt
+done
+
+
+
+for chr in chr1L chr1S chr2 chr3 chr4 chr5 chr6; do
+    echo "Calcul des moyennes de r² par intervalles de 10 kb pour ${chr}..."
+    awk '
+    {
+        bin = int($1 / 10000) * 10000;  # Intervalle de 10 kb
+        sum[bin] += $2;
+        count[bin]++;
+    }
+    END {
+        for (bin in sum) {
+            print bin, sum[bin] / count[bin];
+        }
+    }' ${chr}_ld_decay.txt > ${chr}_ld_decay_binned.txt
+done
+
+

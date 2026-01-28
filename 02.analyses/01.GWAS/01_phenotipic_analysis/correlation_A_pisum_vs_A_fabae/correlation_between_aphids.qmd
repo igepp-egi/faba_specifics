@@ -1,0 +1,243 @@
+---
+title: "correlation pisum fabae"
+format: html
+editor: visual
+---
+
+## 
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(ggExtra)
+
+```
+
+```{r}
+datapisum_6<-read.csv( "../../../../02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum_6.csv")
+
+mean(datafabae_4$emmean)
+  datafabae_4<-read.csv("../../../../02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae_4.csv")
+
+pisum <- datapisum_6 %>%
+  dplyr::select(ivip, emmean) %>%
+  dplyr::rename(larvae_pisum = emmean)
+
+fabae <- datafabae_4 %>%
+  dplyr::select(ivip, emmean) %>%
+  dplyr::rename(larvae_fabae = emmean)
+
+merged <- inner_join(pisum, fabae, by = "ivip")
+
+```
+
+```{r}
+
+
+cor_test <- cor.test(merged$larvae_pisum, merged$larvae_fabae)
+cor_test
+
+
+ggplot(merged, aes(x = larvae_pisum, y = larvae_fabae)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm", se = FALSE  +
+  labs(
+    title = "Correlation of Larvae Counts for Shared IVIP",
+    x = "Larvae Total Number (A. pisum)",
+    y = "Larvae Total Number (A. fabae)"
+  ) +
+  theme_minimal()
+
+```
+
+```{r}
+
+p <- ggplot(merged, aes(x = larvae_pisum, y = larvae_fabae)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm", se = FALSE) +
+  annotate(
+    "text",
+    x = Inf, y = Inf,
+    label = paste0("R = ", round(cor_test$estimate, 2)),
+    hjust = 1.1, vjust = 1.5
+  ) +
+  labs(
+    title = "Correlation of Larvae Counts for Shared IVIP",
+    x = "Larvae Total Number (A. pisum)",
+    y = "Larvae Total Number (A. fabae)"
+  ) +
+  theme_minimal()
+
+
+
+library(ggExtra)
+
+ggMarginal(
+  p,
+  type = "histogram",     # or "histogram"
+  margins = "both",     # X and Y
+  size = 5,             # relative size of marginals
+  alpha = 0.5
+)
+
+```
+
+```{r}
+ggplot(merged, aes(x = larvae_pisum, y = larvae_fabae)) + geom_point(size = 2) + geom_smooth(method = "lm", se = FALSE) + scale_x_continuous(limits = c(0, NA)) + scale_y_continuous(limits = c(0, NA)) + labs( title = "Correlation of Larvae Counts for Shared IVIP", x = "Larvae Total Number (Pisum)", y = "Larvae Total Number (Fabae)" ) + theme_minimal()
+```
+
+```{r}
+genetic_cluster<-read.csv("../../../../00.info/11.infos_genotypes/summary_table_faba.csv")
+
+genetic_cluster <- genetic_cluster %>%
+  dplyr::select(ivip, cluster_name)
+
+
+
+merged_cluster_fabae <- inner_join(fabae, genetic_cluster, by = "ivip")
+merged_cluster_pisum <- inner_join(fabae, genetic_cluster, by = "ivip")
+
+
+# Ensure cluster_name is a factor
+merged_cluster$cluster_name <- as.factor(merged_cluster$cluster_name)
+
+# Scatter plot
+ggplot(merged_cluster, aes(x = larvae_pisum, y = larvae_fabae, color = cluster_name)) +
+  geom_point(size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +  # overall regression line +          # axes start at 0
+  labs(
+    title = "Fabae vs Pisum Larvae Counts by Cluster",
+    x = "Larvae Total Number (Pisum)",
+    y = "Larvae Total Number (Fabae)",
+    color = "Genetic Cluster"
+  ) +
+  theme_minimal()
+
+```
+
+
+
+```{r}
+
+summary(merged_cluster)
+
+# Remove rows where cluster_name is NA or empty/only spaces
+merged_cluster <- merged_cluster[!is.na(merged_cluster$cluster_name) & 
+                                 merged_cluster$cluster_name != "" &
+                                 trimws(merged_cluster$cluster_name) != "", ]
+merged_cluster <- droplevels(merged_cluster)
+merged_cluster$cluster_name<-as.factor(merged_cluster$cluster_name)
+
+boxplot(larvae_pisum ~ cluster_name, data = merged_cluster,
+        main = "Box Plot by Cluster (A. pisum)",
+        xlab = "Genetic cluster",
+        ylab = "Fecundity score",
+        las = 2,            # vertical labels
+        cex.axis = 0.6)     # smaller axis text
+
+
+boxplot(larvae_fabae ~ cluster_name, data = merged_cluster,
+        main = "Box Plot by Cluster (A. fabae)",
+        xlab = "Genetic cluster",
+        ylab = "Fecundity score",
+        las = 2,            # vertical labels
+        cex.axis = 0.6)     # smaller axis text
+
+anova_model <- aov(larvae_pisum ~ cluster_name, data = merged_cluster)
+summary(anova_model)
+
+
+
+library(multcomp)
+posthoc <- glht(anova_model, linfct = mcp(cluster_name = "Tukey"))
+summary(posthoc)
+
+
+
+# Assign letters to groups
+library(agricolae)
+tukey <- TukeyHSD(anova_model)
+tukey
+hsd <- HSD.test(anova_model, "cluster_name", group = TRUE)
+hsd$groups
+
+
+anova_model <- aov(larvae_pisum ~ cluster_name, data = merged_cluster)
+summary(anova_model)
+
+
+
+library(multcomp)
+posthoc <- glht(anova_model, linfct = mcp(cluster_name = "Tukey"))
+summary(posthoc)
+
+
+
+# Assign letters to groups
+library(agricolae)
+tukey <- TukeyHSD(anova_model)
+tukey
+hsd <- HSD.test(anova_model, "cluster_name", group = TRUE)
+hsd$groups
+```
+The script used for the final figure:
+
+```{r}
+
+cor_test <- cor.test(merged$larvae_pisum, merged$larvae_fabae)
+cor_test
+
+ggplot(merged, aes(x = larvae_pisum, y = larvae_fabae)) +
+  geom_point(size = 1) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  annotate(
+    "text",
+    x = Inf, y = Inf,
+    label = paste0("R = ", round(cor_test$estimate, 2)),
+    hjust = 1.1, vjust = 1.5
+  ) +
+  labs(
+    title = "Correlation of Larvae Counts for Shared IVIP",
+    x = expression("Adjusted mean of fecundity score" ~ italic("(A. pisum)")),
+    y = expression("Adjusted mean of fecundity score" ~ italic("(A. fabae)"))
+  ) +
+  coord_fixed(ratio = 1) +
+  theme_bw()
+
+
+
+fabae<-read.csv("../../../01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae_4.csv", sep = ",")
+pisum <- read.csv("../../../01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum_6.csv", sep = ",")
+
+ggplot(fabae, aes(x = emmean)) +
+  geom_histogram(
+    bins = 30,
+    color = "black",
+    fill = "grey70"
+  ) +
+  scale_x_reverse() +
+  labs(
+    title = "Histogram of emmean (A. fabae)",
+    x = "emmean",
+    y = "Frequency"
+  ) +
+  theme_bw()
+
+
+ggplot(pisum, aes(x = emmean)) +
+  geom_histogram(
+    bins = 30,
+    color = "black",
+    fill = "grey70"
+  ) +
+  labs(
+    title = "Histogram of emmean (A. fabae)",
+    x = "emmean",
+    y = "Frequency"
+  ) +
+  theme_bw()
+
+
+```
+
+

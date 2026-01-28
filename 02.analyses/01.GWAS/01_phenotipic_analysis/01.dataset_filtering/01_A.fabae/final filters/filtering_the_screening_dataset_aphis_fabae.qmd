@@ -165,6 +165,12 @@ p_without <- data250_afabae_03 %>%
 
 p_with + p_without 
 ```
+::: callout-important
+Conclusions:\
+- Heritability is equal to `r round(res4$heritability, digits=3)`.\
+- There are `r res4$number_of_genotypes` genotypes in total.\
+- There are `r res4$number_of_notation` measurements in total.
+:::
 
 \newpage
 
@@ -211,12 +217,7 @@ data250_afabae_04_6$ivip <- droplevels(data250_afabae_04_6$ivip)
 res5_6 <- calculate_broad_heritability(data = data250_afabae_04_6)
 ```
 
-::: callout-important
-Conclusions:\
-- Heritability is equal to `r round(res4$heritability, digits=3)`.\
-- There are `r res4$number_of_genotypes` genotypes in total.\
-- There are `r res4$number_of_notation` measurements in total.
-:::
+
 
 
 ```{r}
@@ -257,7 +258,47 @@ p <- data250_afabae_04_6 %>%
   theme_bw()
 p
 ```
+::: callout-important
+Conclusions:\
+- Heritability is equal to `r round(res5_4$heritability, digits=3)`.\
+- There are `r res5_4$number_of_genotypes` genotypes in total.\
+- There are `r res5_4$number_of_notation` measurements in total.
+:::
 
+Analysis of the correlation between each session
+```{r}
+
+cor<-create_correlation_plot(data250_afabae_04_4, 
+                         group_cols = c("genotype", "session"), 
+                         value_col = "larvae_total_number")
+cortable<-cor$corrPos
+mean(cortable$corr)
+sd(cortable$corr)
+mean(cortable$corr[cortable$p.value < 0.1], na.rm = TRUE)
+sd(cortable$corr[cortable$p.value < 0.1], na.rm = TRUE)
+
+```
+the correlation is low betwwen replicate
+
+
+heritability:
+```{r}
+mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data250_afabae_04_4)
+  estimates <- as.data.frame(VarCorr(mod_h2))
+  genetic_variance <- estimates$vcov[1]
+  residual_variance <- estimates$vcov[3]
+  nbE <- nlevels(data250_afabae_04_4$session)
+  H2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
+```
+
+
+
+comparison between raw and final distribution
+
+```{r}
+hist(data250_afabae_00$larvae_total_number, breaks = 20, xlab = "Fecundity score", ylab = "frequency")
+hist(data250_afabae_04_4$larvae_total_number, breaks = 20, xlab = "Fecundity score", ylab = "frequency")
+```
 **Write final results to .csv**
 
 ```{r}

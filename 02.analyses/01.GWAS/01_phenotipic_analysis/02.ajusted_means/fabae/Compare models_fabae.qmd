@@ -21,7 +21,7 @@ suppressPackageStartupMessages(library("MASS"))
 preparation of the data based on the result from the filtering script :
 
 ```{r}
-data250fabae <- read.csv("../../01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session))
+data250fabae <- read.csv("../../01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered_4.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session))
 summary(data250fabae)
 data250fabae$ivip<-as.factor(data250fabae$ivip)
 data250fabae <- data250fabae %>% filter(!is.na(ivip))
@@ -59,12 +59,7 @@ test_lrt(model2, model3)
 ```
 
 ```{r}
-
-anova(model3)
-
 #variance stability
-
-
 
 
 

@@ -256,6 +256,44 @@ p <- data250pisum_04_6 %>%
   theme_bw()
 p
 ```
+```{r}
+#| eval: false
+cor<-create_correlation_plot(data250pisum_04_6, 
+                         group_cols = c("genotype", "session"), 
+                         value_col = "larvae_total_number")
+cortable<-cor$corrPos
+mean(cortable$corr)
+sd(cortable$corr)
+mean(cortable$corr[cortable$p.value < 0.1], na.rm = TRUE)
+sd(cortable$corr[cortable$p.value < 0.1], na.rm = TRUE)
+
+```
+
+
+```{r}
+mod_h2 <- lmer(larvae_total_number ~ (1 | ivip) + (1 | session), data = data250pisum_04_6)
+  estimates <- as.data.frame(VarCorr(mod_h2))
+  genetic_variance <- estimates$vcov[1]
+  residual_variance <- estimates$vcov[3]
+  nbE <- nlevels(data250pisum_04_6$session)
+  H2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
+```
+
+comparison between raw and final distribution
+
+```{r}
+hist(data250pisum_00$larvae_total_number, breaks = 20, xlab = "Fecundity score", ylab = "frequency")
+
+hist(
+  data250pisum_04_6$larvae_total_number,
+  breaks = 20,
+  xlim = c(0, max(data250pisum_04_6$larvae_total_number, na.rm = TRUE)),
+  xlab = "Fecundity score",
+  ylab = "Frequency"
+)
+
+
+```
 
 **Write final dataset to .csv**
 
