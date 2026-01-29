@@ -42,6 +42,6 @@ Each plant is inoculated with two adult P123amp aphids.
 A bag is then placed around the plant and secured to the base of the pot with a rubber band. This prevents the aphids from dispersing and thus avoids contamination from one plant to another or with other experiments conducted in the same climate chamber. The tray is then returned to the climate chamber with the same conditions.
 
 
-**Day X (XX/0X/2026)** :
+**Day 26 (30/01/2026)** :
 
 Using the photo booth to photograph each plant in 360° (1 photo every 20°). The image quality is then analyzed locally on a computer.
