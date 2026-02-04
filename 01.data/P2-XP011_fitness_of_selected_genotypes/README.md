@@ -77,7 +77,7 @@ Individual faba plants in cages 2, 4, 6, 8 will be infested with:
 6. Before adding the mini bumble bee beehives(Koppert, Natupol), place a few companion plants (Hypericum calycinum, lavendula) to support feeding. 
 7. Buy stakes for tomatoes to support the faba plants.    
 8. **Weight the aphids** and take pictures of aphids on plant to estimate their performance.   
-
+9. Remove cages two to three weeks before harvesting for optimal drying. 
 
 ## Materials 
 
