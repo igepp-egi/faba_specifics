@@ -1,0 +1,12 @@
+step,snp_variant_count,indel_variant_count,sv_variant_count
+At step 0: N SNPs from raw VCF file,6425454,0,0
+After step 1: N SNPs after individual selection,6425454,0,0
+After step 2: N SNPs after filtering on chromosomes,6417708,0,0
+After step 3: N biallelic SNPs,5812041,0,0
+After step 4: N SNPs after qc filters,2458758,0,0
+After step 5: N SNPs after filtering on fraction missing per SNP,2258614,0,0
+After step6: N SNPs after filtering on MAF before imputation,1486875,0,0
+After step7: N SNPs after filtering on fraction missing per genotype,1486875,0,0
+After step8: N SNPs after filtering on heterozygosity excess,1486875,0,0
+After step9: N SNPs after imputation,1486875,0,0
+After step10: N SNPs after filtering on MAF after imputation,1483564,0,0

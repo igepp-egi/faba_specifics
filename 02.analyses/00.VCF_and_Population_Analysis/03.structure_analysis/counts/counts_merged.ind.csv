@@ -1,0 +1,12 @@
+step,n_individuals
+At step0: raw complete VCF,248
+After step1: individual selection,219
+After step2: filtering on chromosomes,219
+After step3: selecting biallelic SNPs,219
+After step4: SNP quality QC filters,219
+After step5: filtering on fraction missing per SNP,219
+After step6: filtering on MAF,219
+After step7: filtering on fraction missing per genotype,219
+After step8: filtering on heterozygosity excess,218
+After step9: SNP imputation,218
+After step10: MAF filter post-imputation,218

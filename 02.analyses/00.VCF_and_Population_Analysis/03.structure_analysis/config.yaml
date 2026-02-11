@@ -1,0 +1,59 @@
+---
+temp_dir: "scratch/"       # will be removed in the end. Store your intermediate files her
+keep_temp_dir: true  # if true, the temp directory will be kept at the end of the run
+result_dir: "results/"     # will be kept.
+
+threads: 10                # number of threads to use
+
+# are genotypes imputed using beagle ?
+impute_genotypes: "yes" # "yes or no"
+
+# Sample file: one per line
+# Format: # sample_name  [tab]  vcf_file
+# Example:
+# sample    vcf
+# vfaba_raw	vcf_files/test.vcf.gz
+samples: config/samples.tsv # tab-separated file with VCF file(s) and associated short names
+
+# tsv file with individuals to keep;
+# one column with individuals, one individual per line (no header)
+# use 'bcftools query -l my_vcf_file > individuals.tsv' to generate the complete list of individuals from your VCF file.
+individuals: config/individuals_for_structure.tsv # has to end with .tsv
+
+# List of chromosomes to keep;
+# one chromosome per line (no header)
+# use 'bcftools query -f '%CHROM\n' my_vcf_file | sort | uniq > chromosomes.tsv' to generate the complete list of chromosomes from your VCF file.
+chromosomes: config/chromosomes.tsv # has to end with .tsv
+
+# bcftools parameters: 
+# First filters: parameters for filtering on SNP sites (common for all individuals)
+# Second filters: parameters for each genotype (on all or a subset of individuals)
+bcftools:
+  snp: 
+    min_snp_quality:                     "30"   # QUAL field
+    min_snp_depth:                       "5"    # minimum depth of coverage  per SNP site (SNP site eliminated if lower than or equal to; <=)
+    max_snp_depth:                       "200"  # maximum depth of coverage per SNP site (SNP site eliminated if higher than or equal to; >=)
+    mean_depth_per_snp_site:             "10"   # mean depth of coverage per SNP site (lower than or equal to; <=)
+    max_missing_fraction_per_snp:        "0.05" # max allowed fraction of missing genotype calls per SNP site (SNP site eliminated if higher than or equal to; <=)
+  individuals:
+    min_ind_depth:                       "5"    # minimum depth of coverage per sample (lower than or equal to; <=)
+    min_genotype_quality:                "30"   # minimum genotype quality (lower than or equal to; <=)
+    min_maf_before_imputation:           "0.01" # minimum minor allele frequency (higher than or equal to; >=) before imputation
+    max_missing_fraction_per_genotype:   "0.1"  # max fraction of missing genotype calls (exclude if higher than or equal to; <=) 
+    max_heterozygosity:                  "0.15" # max fraction of heterozygous genotypes (depending on the reproduction mode: allogamous or autogamous)
+    # if impute_genotypes == "yes" is chosen 
+    min_maf_after_imputation:            "0.01" # minimum minor allele frequency (higher than or equal to; >=) after imputation
+
+# Beagle v5 parameters (if impute_genotypes == "yes" is chosen):
+beagle: 
+  memory: "4G" # memory for Beagle (e.g. 4G, 8G, 16G, etc.)
+  impute: true # if true, Beagle will be used to impute missing genotypes
+
+# SNP density calculation
+snp_density_bin_size: 1000000  # bin size in base pairs (e.g. 1000000 for 1Mb bins)
+
+
+
+
+
+
