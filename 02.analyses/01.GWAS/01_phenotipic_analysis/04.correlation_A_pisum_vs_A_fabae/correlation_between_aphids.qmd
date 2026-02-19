@@ -1,23 +1,36 @@
 ---
-title: "correlation pisum fabae"
-format: html
+title: "Correlation analysis between A. pisum and A. fabae fecundity results"
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
 editor: visual
 ---
 
-## 
+# Setup
+
+## Libraries
 
 ```{r}
+#| warning: false
+#| message: false
+#| echo: true
+
 library(dplyr)
 library(ggplot2)
-library(ggExtra)
-
 ```
 
-```{r}
-datapisum_6<-read.csv( "../../../../02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum_6.csv")
+## Data
 
-mean(datafabae_4$emmean)
-  datafabae_4<-read.csv("../../../../02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae_4.csv")
+```{r}
+#| warning: false
+#| message: false
+#| echo: true
+
+datapisum_6 <- read.csv( "../../../../02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum_6.csv")
+
+datafabae_4 <- read.csv("../../../../02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae_4.csv")
 
 pisum <- datapisum_6 %>%
   dplyr::select(ivip, emmean) %>%
@@ -28,78 +41,86 @@ fabae <- datafabae_4 %>%
   dplyr::rename(larvae_fabae = emmean)
 
 merged <- inner_join(pisum, fabae, by = "ivip")
-
 ```
 
+::: callout-note
+The merged dataset contains `r nrow(merged)` IVIPs that were phenotyped for both A. pisum and A. fabae, and for which we have adjusted mean fecundity scores for both aphid species.
+:::
+
+# Correlation analysis
+
+## Correlation test
+
 ```{r}
-
-
 cor_test <- cor.test(merged$larvae_pisum, merged$larvae_fabae)
-cor_test
+```
+
+::: callout-note
+Correlation between A. pisum and A. fabae fecundity scores for shared IVIPs is weak.\
+- R correlation score is equal to `r round(cor_test$estimate, 3)`.\
+- The corresponding p-value is equal to `r round(cor_test$p.value, 3)` (not significant).
+:::
+
+## Scatterplot A. pisum vs A. fabae
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| eval: true
+#| fig-width: 5
+#| fig-height: 5
 
 
 ggplot(merged, aes(x = larvae_pisum, y = larvae_fabae)) +
   geom_point(size = 1) +
-  geom_smooth(method = "lm", se = FALSE  +
+  geom_smooth(method = "lm", se = FALSE)  +
   labs(
     title = "Correlation of Larvae Counts for Shared IVIP",
     x = "Larvae Total Number (A. pisum)",
     y = "Larvae Total Number (A. fabae)"
   ) +
-  theme_minimal()
-
-```
-
-```{r}
-
-p <- ggplot(merged, aes(x = larvae_pisum, y = larvae_fabae)) +
-  geom_point(size = 1) +
-  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  # add r2 value to the plot
   annotate(
     "text",
     x = Inf, y = Inf,
-    label = paste0("R = ", round(cor_test$estimate, 2)),
+    label = paste0("R = ", round(cor_test$estimate, 3)),
     hjust = 1.1, vjust = 1.5
-  ) +
-  labs(
-    title = "Correlation of Larvae Counts for Shared IVIP",
-    x = "Larvae Total Number (A. pisum)",
-    y = "Larvae Total Number (A. fabae)"
-  ) +
-  theme_minimal()
-
-
-
-library(ggExtra)
-
-ggMarginal(
-  p,
-  type = "histogram",     # or "histogram"
-  margins = "both",     # X and Y
-  size = 5,             # relative size of marginals
-  alpha = 0.5
-)
+  )
 
 ```
 
-```{r}
-ggplot(merged, aes(x = larvae_pisum, y = larvae_fabae)) + geom_point(size = 2) + geom_smooth(method = "lm", se = FALSE) + scale_x_continuous(limits = c(0, NA)) + scale_y_continuous(limits = c(0, NA)) + labs( title = "Correlation of Larvae Counts for Shared IVIP", x = "Larvae Total Number (Pisum)", y = "Larvae Total Number (Fabae)" ) + theme_minimal()
-```
+# Genetic clusters and fecundity scores
+
+## Import and add the genetic cluster data to the fecundity data for A. pisum and A. fabae.
 
 ```{r}
-genetic_cluster<-read.csv("../../../../00.info/11.infos_genotypes/summary_table_faba.csv")
+#| warning: false
+#| message: false
+#| echo: true
 
-genetic_cluster <- genetic_cluster %>%
-  dplyr::select(ivip, cluster_name)
+genetic_cluster <- read.csv("../../../../00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv") %>% dplyr::select(ivip, cluster_name) %>%
+  # remove NA records
+  filter(!is.na(cluster_name))
 
-
-
-merged_cluster_fabae <- inner_join(fabae, genetic_cluster, by = "ivip")
-merged_cluster_pisum <- inner_join(fabae, genetic_cluster, by = "ivip")
-
+merged_cluster <- inner_join(merged, genetic_cluster, by = "ivip")
 
 # Ensure cluster_name is a factor
 merged_cluster$cluster_name <- as.factor(merged_cluster$cluster_name)
+
+
+
+head(merged_cluster)
+```
+
+## Scatterplot with genetic cluster info overlaid
+
+```{r}
+#| warning: false
+#| message: false
+#| echo: false
+#| eval: true
 
 # Scatter plot
 ggplot(merged_cluster, aes(x = larvae_pisum, y = larvae_fabae, color = cluster_name)) +
@@ -112,21 +133,11 @@ ggplot(merged_cluster, aes(x = larvae_pisum, y = larvae_fabae, color = cluster_n
     color = "Genetic Cluster"
   ) +
   theme_minimal()
-
 ```
 
-
+## Boxplot of fecundity scores by genetic cluster for A. pisum and A. fabae, and ANOVA test to check for significant differences between clusters.
 
 ```{r}
-
-summary(merged_cluster)
-
-# Remove rows where cluster_name is NA or empty/only spaces
-merged_cluster <- merged_cluster[!is.na(merged_cluster$cluster_name) & 
-                                 merged_cluster$cluster_name != "" &
-                                 trimws(merged_cluster$cluster_name) != "", ]
-merged_cluster <- droplevels(merged_cluster)
-merged_cluster$cluster_name<-as.factor(merged_cluster$cluster_name)
 
 boxplot(larvae_pisum ~ cluster_name, data = merged_cluster,
         main = "Box Plot by Cluster (A. pisum)",
@@ -142,7 +153,9 @@ boxplot(larvae_fabae ~ cluster_name, data = merged_cluster,
         ylab = "Fecundity score",
         las = 2,            # vertical labels
         cex.axis = 0.6)     # smaller axis text
+```
 
+```{r}
 anova_model <- aov(larvae_pisum ~ cluster_name, data = merged_cluster)
 summary(anova_model)
 
@@ -180,7 +193,8 @@ tukey
 hsd <- HSD.test(anova_model, "cluster_name", group = TRUE)
 hsd$groups
 ```
-The script used for the final figure:
+
+# The script used for fecundity figure (Figure 1)
 
 ```{r}
 
@@ -239,5 +253,3 @@ ggplot(pisum, aes(x = emmean)) +
 
 
 ```
-
-
