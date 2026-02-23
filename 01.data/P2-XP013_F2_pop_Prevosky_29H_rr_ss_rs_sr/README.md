@@ -1,4 +1,4 @@
-# P2-XP013 Generation of a F2 population between Prevosky, 29H, Skala and sensitive genotypes. 
+# P2-XP013 Assay of parental resistance to aphids of parents for an F2 population between Prevosky, 29H, Skala and sensitive genotypes. 
 
 ## Objectives
 
@@ -8,7 +8,7 @@ Two other genotypes (IVIP102516 and IVIP101240) were also added since they are r
 
 ## Genotypes to confirm for aphid resistance
 
-| IVIP  		    |  Genotype | Name          | Phenotype (screen 022-2024)                                           |
+| IVIP  		    |  Genotype | Name          | Phenotype (screen 2022-2024)                                           |
 |---------------|-----------|---------------|-----------------------------------------------------------------------|
 | IVIP100123  	| 7  	      | PREROVSKY     | Partially resistant to both aphids (PR/PR)                            |
 | IVIP101736	  | 153  	    | TIANMENDOU    | Sensitive to both aphids (S/S)                                        |
