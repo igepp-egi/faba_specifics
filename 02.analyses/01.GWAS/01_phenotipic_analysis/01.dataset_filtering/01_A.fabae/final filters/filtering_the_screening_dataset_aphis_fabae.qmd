@@ -27,6 +27,7 @@ suppressPackageStartupMessages(library("Hmisc"))
 suppressPackageStartupMessages(library("corrplot"))
 suppressPackageStartupMessages(library("emmeans"))
 suppressPackageStartupMessages(library("patchwork"))
+suppressPackageStartupMessages(library("writexl"))
 ```
 
 ## Helper functions
@@ -323,4 +324,54 @@ write.csv(x = data250_afabae_04_5,
 write.csv(x = data250_afabae_04_6, 
           file = "../../../01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered_6.csv", 
           quote = F, row.names = F)
+```
+
+
+
+
+
+
+```{r}
+# List your datasets
+datasets <- list(
+  data250_afabae_01 = data250_afabae_01,
+  data250_afabae_02 = data250_afabae_02,
+  data250_afabae_03 = data250_afabae_03,
+  data250_afabae_04_4 = data250_afabae_04_4
+)
+
+# Function to extract required info
+extract_info <- function(df, name) {
+  res <- calculate_broad_heritability(data = df)
+  
+  # Heritability
+  h2 <- round(res$heritability, 3)
+  
+  # Number of genotypes
+  n_gen <- res$number_of_genotypes
+  
+  # Number of observations
+  n_obs <- res$number_of_notation
+  
+  # Normality test (Shapiro-Wilk)
+  shapiro <- shapiro.test(df$larvae_total_number)
+  normality_p <- shapiro$p.value
+  
+  return(data.frame(
+    dataset = name,
+    heritability = h2,
+    n_genotypes = n_gen,
+    n_observations = n_obs,
+    normality_pvalue = format(normality_p, scientific = TRUE, digits = 3)  ))
+}
+# Apply to all datasets
+results_table <- do.call(rbind, 
+                         mapply(extract_info, datasets, names(datasets), 
+                                SIMPLIFY = FALSE))
+
+# View result
+print(results_table)
+
+
+write_xlsx(results_table, "filtering_process_fabae.xlsx")
 ```

@@ -1,0 +1,58 @@
+ID   A0AAV0Z2V0_VICFA        Unreviewed;       738 AA.
+AC   A0AAV0Z2V0;
+DT   27-NOV-2024, integrated into UniProtKB/TrEMBL.
+DT   27-NOV-2024, sequence version 1.
+DT   28-JAN-2026, entry version 5.
+DE   RecName: Full=Glyoxysomal processing protease, glyoxysomal {ECO:0008006|Google:ProtNLM};
+GN   ORFNames=VFH_I472880 {ECO:0000313|EMBL:CAI8591114.1};
+OS   Vicia faba (Broad bean) (Faba vulgaris).
+OC   Eukaryota; Viridiplantae; Streptophyta; Embryophyta; Tracheophyta;
+OC   Spermatophyta; Magnoliopsida; eudicotyledons; Gunneridae; Pentapetalae;
+OC   rosids; fabids; Fabales; Fabaceae; Papilionoideae; 50 kb inversion clade;
+OC   NPAAA clade; Hologalegina; IRL clade; Fabeae; Vicia.
+OX   NCBI_TaxID=3906 {ECO:0000313|EMBL:CAI8591114.1, ECO:0000313|Proteomes:UP001157006};
+RN   [1] {ECO:0000313|EMBL:CAI8591114.1, ECO:0000313|Proteomes:UP001157006}
+RP   NUCLEOTIDE SEQUENCE [LARGE SCALE GENOMIC DNA].
+RA   Kreplak J.;
+RL   Submitted (JAN-2023) to the EMBL/GenBank/DDBJ databases.
+CC   ---------------------------------------------------------------------------
+CC   Copyrighted by the UniProt Consortium, see https://www.uniprot.org/terms
+CC   Distributed under the Creative Commons Attribution (CC BY 4.0) License
+CC   ---------------------------------------------------------------------------
+DR   EMBL; OX451736; CAI8591114.1; -; Genomic_DNA.
+DR   AlphaFoldDB; A0AAV0Z2V0; -.
+DR   Proteomes; UP001157006; Chromosome 1L.
+DR   GO; GO:0005777; C:peroxisome; IEA:InterPro.
+DR   GO; GO:0004252; F:serine-type endopeptidase activity; IEA:InterPro.
+DR   GO; GO:0016485; P:protein processing; IEA:InterPro.
+DR   FunFam; 2.40.10.10:FF:000096; Glyoxysomal processing protease glyoxysomal; 1.
+DR   FunFam; 2.40.10.10:FF:000074; glyoxysomal processing protease, glyoxysomal-like; 1.
+DR   Gene3D; 2.40.10.120; -; 1.
+DR   Gene3D; 2.40.10.10; Trypsin-like serine proteases; 1.
+DR   InterPro; IPR009003; Peptidase_S1_PA.
+DR   InterPro; IPR043504; Peptidase_S1_PA_chymotrypsin.
+DR   InterPro; IPR039245; TYSND1/DEG15.
+DR   PANTHER; PTHR21004:SF0; PEROXISOMAL LEADER PEPTIDE-PROCESSING PROTEASE; 1.
+DR   PANTHER; PTHR21004; SERINE PROTEASE-RELATED; 1.
+DR   Pfam; PF13365; Trypsin_2; 1.
+DR   SUPFAM; SSF50494; Trypsin-like serine proteases; 2.
+PE   4: Predicted;
+KW   Reference proteome {ECO:0000313|Proteomes:UP001157006}.
+FT   REGION          685..706
+FT                   /note="Disordered"
+FT                   /evidence="ECO:0000256|SAM:MobiDB-lite"
+SQ   SEQUENCE   738 AA;  80574 MW;  2FA09A1F29A30D81 CRC64;
+     MGHSETFNSA RNFAVMVRIR GPDPKGMKMR NHAFHHYRSG ETTLSASGLL VPDTLCDAQV
+     AKRLYGDRFE DHRVLVVTVA SVVEPFLSPQ HRENVPKGRP DLISGVRIDI MTEKTNEESD
+     QGTPSWLEGQ LLSLVDIPAS ALCVQSLVEA SLGLSEHEWE VGWSLASHNN ESQSSKDNFH
+     TQGRISEGGS GSASVMCKSL TRMAILSVSL SLKDSLNYKE PSMNKRGDFL LAVGSPFGVL
+     SSTHFFNSLS VGCIANCYPP NSSDGSLLMA DIRSLPGMEG SPVFSEHASL IGVLIRPLRQ
+     KTSGAEVQLV IPWEAIVKAS SGLLRTFPQN TIEGLHYQEG NSCTPGKIPF IDYEKSETRV
+     PSSNKHEHLN FGSSSPLPIE KAMASVCLVT IGGGVWASGV LLNSQGLILT NAHLLEPWRF
+     GKTHVSSREY GTNPKFFPSM LEGTTSLGDK VETMQVSQTL PSKMTNLYPF AADEQRRYKS
+     NPTYDKHRNI RVRLDHIKPW VWCDAKVVYV CKGPWDVALL QLEPVRANLL PIETNFSRPS
+     TGSKTYVIGH GLFGPKCGFF PSVSSGVVAK VVEAKTPQSY HSVQPEHLHT RVHFPVMLET
+     TAAIHPGASG GAVINSDGHM IGLVTSNARH GGGSTIPHLN FSIPSAALAP IFKFAKDMVD
+     SSLLWILDEP NEYISSIWAL TRPSSPKLNP APDQRQSLLD NKSKEEKGSQ FAKFIAERKD
+     IFNGPIHVGK SGVLPSKL
+//

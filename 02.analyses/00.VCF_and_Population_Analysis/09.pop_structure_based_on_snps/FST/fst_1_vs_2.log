@@ -1,0 +1,19 @@
+
+VCFtools - 0.1.17
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf ../../../../../../files_too_heavy_for_git/pop_analysis/vfaba_filtered_imputed_maf.hedin.vcf
+	--weir-fst-pop pop1.txt
+	--weir-fst-pop pop2.txt
+	--keep pop1.txt
+	--keep pop2.txt
+	--out fst_1_vs_2
+
+Keeping individuals in 'keep' list
+After filtering, kept 200 out of 220 Individuals
+Outputting Weir and Cockerham Fst estimates.
+Weir and Cockerham mean Fst estimate: 0.031166
+Weir and Cockerham weighted Fst estimate: 0.048311
+After filtering, kept 1486875 out of a possible 1486875 Sites
+Run Time = 22.00 seconds
