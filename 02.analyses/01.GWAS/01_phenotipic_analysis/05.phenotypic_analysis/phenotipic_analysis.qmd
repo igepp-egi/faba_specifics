@@ -1,0 +1,46 @@
+---
+title: "experiment_analysis"
+format: html
+editor: visual
+---
+
+```{r}
+data250fabae <- read.csv("../01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered_4.csv", stringsAsFactors = FALSE, sep = ",") %>%  mutate(genotype = as.factor(genotype)) %>% mutate(session = as.factor(session))
+data250fabae$ivip<-as.factor(data250fabae$ivip)
+data250fabae <- data250fabae %>% filter(!is.na(ivip))
+
+```
+
+```{r}
+data250pisum <- read.csv("../01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_5.csv", stringsAsFactors = F)
+data250pisum$genotype <- as.factor(data250pisum$ivip)
+data250pisum <- data250pisum %>% filter(!is.na(ivip))
+
+```
+
+
+```{r}
+
+model_fabae <- lmer(larvae_total_number ~ ivip + (1 | session/block), data = data250fabae)
+anova(model_fabae)
+summary(model_fabae)
+
+model_fabae_lm <- lm(larvae_total_number ~ ivip + session/block, data = data250fabae)
+anova(model_fabae_lm)
+summary(model_fabae_lm)
+
+```
+
+
+
+```{r}
+
+model_pisum <- lmer(larvae_total_number ~ ivip + (1 | session/block), data = data250pisum)
+anova(model_pisum)
+summary(model_pisum)
+
+model_pisum_lm <- lm(larvae_total_number ~ ivip + session/block, data = data250pisum)
+anova(model_pisum_lm)
+summary(model_pisum_lm)
+
+```
