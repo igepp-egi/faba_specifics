@@ -1,0 +1,1827 @@
+---
+title: "hormons analysis"
+format: html
+editor: visual
+---
+
+```{r}
+fabae<-read.csv("Phytohormones_Batch-1.csv")
+fabae <- fabae  %>%
+  filter(!is.na(weight))
+
+fabae_without_3 <- fabae %>%
+  filter(hpi != 3)
+
+pisum<-read.csv("Phytohormones_Batch-2.csv")
+pisum <- pisum  %>%
+  filter(!is.na(weight))
+
+pisum_without_3 <- pisum %>%
+  filter(hpi != 3)
+
+
+three_biotypes<-read.csv("Phytohormones_Batch-3.csv")
+three_biotypes <- three_biotypes %>%
+  filter(!is.na(SA))
+three_biotypes_without_3 <- three_biotypes %>%
+  filter(hpi != 3)
+
+
+
+library(car)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r}
+df<-pisum
+
+
+# ================================
+# PCA with explanatory factors
+# ================================
+
+# ---- Ensure factors ----
+df[,1:3] <- lapply(df[,1:3], as.factor)
+
+# ---- Remove rows with NA in numeric data ----
+df <- df[complete.cases(df[,7:ncol(df)]), ]
+
+# ---- Select numeric data for PCA (columns 6 to end) ----
+pca_data <- df[,7:ncol(df)]
+
+# ---- Run PCA ----
+pca <- prcomp(pca_data,
+              center = TRUE,
+              scale. = TRUE)
+
+# ---- Explained variance ----
+explained_var <- (pca$sdev^2) / sum(pca$sdev^2)
+
+# ---- Create PCA dataframe ----
+pca_df <- as.data.frame(pca$x)
+
+# ---- Add explanatory factors ----
+pca_df$Factor1 <- df[[1]]
+pca_df$Factor2 <- df[[2]]
+pca_df$Factor3 <- df[[3]]
+
+
+# ---- Create combination of all three factors ----
+pca_df$Combo <- interaction(pca_df$Factor1, pca_df$Factor2, pca_df$Factor3, sep = "_")
+
+# ---- Plot PCA ----
+ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
+  geom_point(size = 3, alpha = 0.8) +
+  stat_ellipse(aes(group = Combo), linewidth = 0.8) +
+  labs(
+    x = paste0("PC1 (", round(explained_var[1]*100,1), "%)"),
+    y = paste0("PC2 (", round(explained_var[2]*100,1), "%)"),
+    color = "Factor1 + Factor2 + Factor3"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = "right"
+  )
+
+```
+
+```{r}
+df<-fabae
+
+
+# ================================
+# PCA with explanatory factors
+# ================================
+
+# ---- Ensure factors ----
+df[,1:5] <- lapply(df[,1:5], as.factor)
+
+# ---- Remove rows with NA in numeric data ----
+df <- df[complete.cases(df[,9:ncol(df)]), ]
+
+# ---- Select numeric data for PCA (columns 6 to end) ----
+pca_data <- df[,9:ncol(df)]
+
+# ---- Run PCA ----
+pca <- prcomp(pca_data,
+              center = TRUE,
+              scale. = TRUE)
+
+# ---- Explained variance ----
+explained_var <- (pca$sdev^2) / sum(pca$sdev^2)
+
+# ---- Create PCA dataframe ----
+pca_df <- as.data.frame(pca$x)
+
+# ---- Add explanatory factors ----
+pca_df$Factor1 <- df[[1]]
+pca_df$Factor2 <- df[[3]]
+pca_df$Factor3 <- df[[4]]
+
+
+# ---- Create combination of all three factors ----
+pca_df$Combo <- interaction(pca_df$Factor1, pca_df$Factor2, pca_df$Factor3, sep = "_")
+
+# ---- Plot PCA ----
+ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
+  geom_point(size = 3, alpha = 0.8) +
+  stat_ellipse(aes(group = Combo), linewidth = 0.8) +
+  labs(
+    x = paste0("PC1 (", round(explained_var[1]*100,1), "%)"),
+    y = paste0("PC2 (", round(explained_var[2]*100,1), "%)"),
+    color = "Factor1 + Factor2 + Factor3"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = "right"
+  )
+
+```
+
+```{r}
+df<-three_biotypes
+
+
+# ================================
+# PCA with explanatory factors
+# ================================
+
+# ---- Ensure factors ----
+df[,1:2] <- lapply(df[,1:2], as.factor)
+
+# ---- Remove rows with NA in numeric data ----
+df <- df[complete.cases(df[,5:ncol(df)]), ]
+
+# ---- Select numeric data for PCA (columns 6 to end) ----
+pca_data <- df[,6:ncol(df)]
+
+# ---- Run PCA ----
+pca <- prcomp(pca_data,
+              center = TRUE,
+              scale. = TRUE)
+
+# ---- Explained variance ----
+explained_var <- (pca$sdev^2) / sum(pca$sdev^2)
+
+# ---- Create PCA dataframe ----
+pca_df <- as.data.frame(pca$x)
+
+# ---- Add explanatory factors ----
+pca_df$Factor1 <- df[[1]]
+pca_df$Factor2 <- df[[2]]
+
+
+# ---- Create combination of all three factors ----
+pca_df$Combo <- interaction(pca_df$Factor1, pca_df$Factor2, sep = "_")
+
+# ---- Plot PCA ----
+ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
+  geom_point(size = 3, alpha = 0.8) +
+  stat_ellipse(aes(group = Combo), linewidth = 0.8) +
+  labs(
+    x = paste0("PC1 (", round(explained_var[1]*100,1), "%)"),
+    y = paste0("PC2 (", round(explained_var[2]*100,1), "%)"),
+    color = "Factor1 + Factor2 + Factor3"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = "right"
+  )
+
+```
+
+## SA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae$treatment <- factor(fabae$treatment, levels = c("control", "AF001"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- fabae %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(SA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute AF001 - control mean
+# -----------------------------
+af_diff <- fabae %>%
+  filter(treatment == "AF001") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    SA = SA - control_mean,
+    treatment = "AF001 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  fabae,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "AF001", "AF001 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  theme_bw()
+
+```
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum$treatment <- factor(pisum$treatment, levels = c("control", "P123"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- pisum %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(SA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute P123 - control mean
+# -----------------------------
+af_diff <- pisum %>%
+  filter(treatment == "P123") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    SA = SA - control_mean,
+    treatment = "P123 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  pisum,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "P123", "P123 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(0, 20)) +
+  theme_bw()
+```
+
+```{r}
+
+# -----------------------------
+# 1. Compute control mean
+# -----------------------------
+control_means <- three_biotypes %>%
+  filter(treatment == "control") %>%
+  group_by(hpi) %>%
+  summarise(control_mean = mean(SA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 2. Compute treatment - control
+# -----------------------------
+diff_df <- three_biotypes %>%
+  filter(treatment != "control") %>%
+  left_join(control_means, by = "hpi") %>%
+  mutate(
+    SA = SA - control_mean,
+    treatment = paste0(treatment, " - control")
+  )
+
+# -----------------------------
+# 3. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(three_biotypes, diff_df)
+
+# -----------------------------
+# 4. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ treatment, ncol = 3) +
+  coord_cartesian(ylim = c(0, 20)) +
+  theme_bw()
+```
+
+##JA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae$treatment <- factor(fabae$treatment, levels = c("control", "AF001"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- fabae %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(JA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute AF001 - control mean
+# -----------------------------
+af_diff <- fabae %>%
+  filter(treatment == "AF001") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    JA = JA - control_mean,
+    treatment = "AF001 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  fabae,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "AF001", "AF001 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-2, 3)) +
+  theme_bw()
+
+```
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum$treatment <- factor(pisum$treatment, levels = c("control", "P123"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- pisum %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(JA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute P123 - control mean
+# -----------------------------
+af_diff <- pisum %>%
+  filter(treatment == "P123") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    JA = JA - control_mean,
+    treatment = "P123 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  pisum,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "P123", "P123 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-2, 3)) +
+  theme_bw()
+```
+
+```{r}
+
+# -----------------------------
+# 1. Compute control mean
+# -----------------------------
+control_means <- three_biotypes %>%
+  filter(treatment == "control") %>%
+  group_by(hpi) %>%
+  summarise(control_mean = mean(JA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 2. Compute treatment - control
+# -----------------------------
+diff_df <- three_biotypes %>%
+  filter(treatment != "control") %>%
+  left_join(control_means, by = "hpi") %>%
+  mutate(
+    JA = JA - control_mean,
+    treatment = paste0(treatment, " - control")
+  )
+
+# -----------------------------
+# 3. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(three_biotypes, diff_df)
+
+# -----------------------------
+# 4. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ treatment, ncol = 3) +
+  coord_cartesian(ylim = c(-2, 3)) +
+  theme_bw()
+```
+
+## ABA
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(dplyr)
+library(ggplot2)
+
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae$treatment <- factor(
+  fabae$treatment,
+  levels = c("control", "AF001")
+)
+
+# -----------------------------
+# 2. Plot ABA evolution over hpi
+# -----------------------------
+ggplot(fabae, aes(x = hpi, y = ABA, color = treatment)) +
+  
+  # individual points
+  geom_point(alpha = 0.4, size = 2) +
+  
+  # mean trend line
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  
+  # mean points
+  stat_summary(
+    fun = mean,
+    geom = "point",
+    size = 3
+  ) +
+  
+  # separate panels by genotype
+  facet_wrap(~ genotype) +
+  
+  theme_bw() +
+  
+  labs(
+    x = "Hours post inoculation (hpi)",
+    y = "ABA",
+    color = "Treatment",
+    title = "Evolution of ABA over time"
+  )
+
+```
+
+```{r}
+
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum$treatment <- factor(
+  pisum$treatment,
+  levels = c("control", "P123")
+)
+
+# -----------------------------
+# 2. Plot ABA evolution over hpi
+# -----------------------------
+ggplot(pisum, aes(x = hpi, y = ABA, color = treatment)) +
+  
+  # individual points
+  geom_point(alpha = 0.4, size = 2) +
+  
+  # mean trend line
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  
+  # mean points
+  stat_summary(
+    fun = mean,
+    geom = "point",
+    size = 3
+  ) +
+  
+  # separate panels by genotype
+  facet_wrap(~ genotype) +
+  
+  theme_bw() +
+  
+  labs(
+    x = "Hours post inoculation (hpi)",
+    y = "ABA",
+    color = "Treatment",
+    title = "Evolution of ABA over time"
+  )
+```
+
+```{r}
+
+# -----------------------------
+# 1. Compute control mean
+# -----------------------------
+control_means <- three_biotypes %>%
+  filter(treatment == "control") %>%
+  group_by(hpi) %>%
+  summarise(control_mean = mean(ABA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 2. Compute treatment - control
+# -----------------------------
+diff_df <- three_biotypes %>%
+  filter(treatment != "control") %>%
+  left_join(control_means, by = "hpi") %>%
+  mutate(
+    ABA = ABA - control_mean,
+    treatment = paste0(treatment, " - control")
+  )
+
+# -----------------------------
+# 3. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(three_biotypes, diff_df)
+
+# -----------------------------
+# 4. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = ABA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ treatment, ncol = 3) +
+  coord_cartesian(ylim = c(-0.5, 1)) +
+  theme_bw()
+```
+
+##JA.Ile
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae$treatment <- factor(fabae$treatment, levels = c("control", "AF001"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- fabae %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(JA.Ile, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute AF001 - control mean
+# -----------------------------
+af_diff <- fabae %>%
+  filter(treatment == "AF001") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    JA.Ile = JA.Ile - control_mean,
+    treatment = "AF001 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  fabae,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "AF001", "AF001 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA.Ile, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-0.2, 0.6)) +
+  theme_bw()
+
+```
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum$treatment <- factor(pisum$treatment, levels = c("control", "P123"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- pisum %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(JA.Ile, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute P123 - control mean
+# -----------------------------
+af_diff <- pisum %>%
+  filter(treatment == "P123") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    JA.Ile = JA.Ile - control_mean,
+    treatment = "P123 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  pisum,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "P123", "P123 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA.Ile, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-0.2, 0.6)) +
+  theme_bw()
+```
+
+```{r}
+
+# -----------------------------
+# 1. Compute control mean
+# -----------------------------
+control_means <- three_biotypes %>%
+  filter(treatment == "control") %>%
+  group_by(hpi) %>%
+  summarise(control_mean = mean(JA.Ile, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 2. Compute treatment - control
+# -----------------------------
+diff_df <- three_biotypes %>%
+  filter(treatment != "control") %>%
+  left_join(control_means, by = "hpi") %>%
+  mutate(
+    JA.Ile = JA.Ile - control_mean,
+    treatment = paste0(treatment, " - control")
+  )
+
+# -----------------------------
+# 3. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(three_biotypes, diff_df)
+
+# -----------------------------
+# 4. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA.Ile, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ treatment, ncol = 3) +
+  coord_cartesian(ylim = c(-0.2, 0.6)) +
+  theme_bw()
+```
+
+##OPDA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae$treatment <- factor(fabae$treatment, levels = c("control", "AF001"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- fabae %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(OPDA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute AF001 - control mean
+# -----------------------------
+af_diff <- fabae %>%
+  filter(treatment == "AF001") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    OPDA = OPDA - control_mean,
+    treatment = "AF001 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  fabae,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "AF001", "AF001 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-2, 8)) +
+  theme_bw()
+
+```
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum$treatment <- factor(pisum$treatment, levels = c("control", "P123"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- pisum %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(OPDA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute P123 - control mean
+# -----------------------------
+af_diff <- pisum %>%
+  filter(treatment == "P123") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    OPDA = OPDA - control_mean,
+    treatment = "P123 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  pisum,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "P123", "P123 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-2, 8)) +
+  theme_bw()
+```
+
+```{r}
+
+# -----------------------------
+# 1. Compute control mean
+# -----------------------------
+control_means <- three_biotypes %>%
+  filter(treatment == "control") %>%
+  group_by(hpi) %>%
+  summarise(control_mean = mean(OPDA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 2. Compute treatment - control
+# -----------------------------
+diff_df <- three_biotypes %>%
+  filter(treatment != "control") %>%
+  left_join(control_means, by = "hpi") %>%
+  mutate(
+    OPDA = OPDA - control_mean,
+    treatment = paste0(treatment, " - control")
+  )
+
+# -----------------------------
+# 3. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(three_biotypes, diff_df)
+
+# -----------------------------
+# 4. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ treatment, ncol = 3) +
+  coord_cartesian(ylim = c(-2, 8)) +
+  theme_bw()
+```
+
+# 
+
+##filtering
+
+```{r}
+
+
+hormones <- c("ABA","JA.Ile","JA","SA","OPDA")
+n_keep <- 3
+
+# global standard deviation per hormone
+global_sd <- sapply(three_biotypes[hormones], sd, na.rm = TRUE)
+
+three_biotypes_clean <- three_biotypes %>%
+  
+  group_by(hpi, treatment) %>%
+  
+  mutate(
+    across(all_of(hormones),
+           ~ (. - mean(., na.rm = TRUE)) / (global_sd[cur_column()] + 1e-6),
+           .names = "z_{col}")
+  ) %>%
+  
+  rowwise() %>%
+  mutate(
+    outlier_score = sqrt(sum(c_across(starts_with("z_"))^2, na.rm = TRUE))
+  ) %>%
+  
+  ungroup() %>%
+  group_by(hpi, treatment) %>%
+  
+  arrange(outlier_score, .by_group = TRUE) %>%
+  filter(row_number() <= n_keep) %>%
+  
+  ungroup() %>%
+  select(-starts_with("z_"), -outlier_score)
+```
+
+```{r}
+
+
+hormones <- c("ABA","JA.Ile","JA","SA","OPDA")
+n_keep <- 3
+
+global_sd <- sapply(pisum[hormones], sd, na.rm = TRUE)
+
+pisum_clean <- pisum %>%
+  
+  group_by(genotype, hpi, treatment) %>%
+  
+  mutate(
+    across(all_of(hormones),
+           ~ (. - mean(., na.rm = TRUE)) / (global_sd[cur_column()] + 1e-6),
+           .names = "z_{col}")
+  ) %>%
+  
+  rowwise() %>%
+  mutate(
+    outlier_score = sqrt(sum(c_across(starts_with("z_"))^2, na.rm = TRUE))
+  ) %>%
+  
+  ungroup() %>%
+  group_by(genotype, hpi, treatment) %>%
+  
+  arrange(outlier_score, .by_group = TRUE) %>%
+  filter(row_number() <= n_keep) %>%
+  
+  ungroup() %>%
+  select(-starts_with("z_"), -outlier_score)
+```
+
+```{r}
+
+
+hormones <- c("ABA","JA.Ile","JA","SA","OPDA")
+n_keep <- 3
+
+# Global SD per hormone
+global_sd <- sapply(fabae[hormones], sd, na.rm = TRUE)
+
+fabae_clean <- fabae %>%
+  
+  group_by(genotype, hpi, treatment) %>%
+  
+  mutate(
+    across(all_of(hormones),
+           ~ (. - mean(., na.rm = TRUE)) / (global_sd[cur_column()] + 1e-6),
+           .names = "z_{col}")
+  ) %>%
+  
+  rowwise() %>%
+  mutate(
+    outlier_score = sqrt(sum(c_across(starts_with("z_"))^2, na.rm = TRUE))
+  ) %>%
+  
+  ungroup() %>%
+  group_by(genotype, hpi, treatment) %>%
+  
+  arrange(outlier_score, .by_group = TRUE) %>%
+  filter(row_number() <= n_keep) %>%
+  
+  ungroup() %>%
+  select(-starts_with("z_"), -outlier_score)
+```
+
+## SA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae_clean$treatment <- factor(fabae_clean$treatment, levels = c("control", "AF001"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- fabae_clean %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(SA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute AF001 - control mean
+# -----------------------------
+af_diff <- fabae_clean %>%
+  filter(treatment == "AF001") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    SA = SA - control_mean,
+    treatment = "AF001 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  fabae_clean,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "AF001", "AF001 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-5, 20))
+  theme_bw()
+
+```
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum_clean$treatment <- factor(pisum_clean$treatment, levels = c("control", "P123"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- pisum_clean %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(SA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute P123 - control mean
+# -----------------------------
+af_diff <- pisum_clean %>%
+  filter(treatment == "P123") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    SA = SA - control_mean,
+    treatment = "P123 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  pisum_clean,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "P123", "P123 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-5, 20)) +
+  theme_bw()
+```
+
+```{r}
+
+# -----------------------------
+# 1. Compute control mean
+# -----------------------------
+control_means <- three_biotypes_clean %>%
+  filter(treatment == "control") %>%
+  group_by(hpi) %>%
+  summarise(control_mean = mean(SA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 2. Compute treatment - control
+# -----------------------------
+diff_df <- three_biotypes_clean %>%
+  filter(treatment != "control") %>%
+  left_join(control_means, by = "hpi") %>%
+  mutate(
+    SA = SA - control_mean,
+    treatment = paste0(treatment, " - control")
+  )
+
+# -----------------------------
+# 3. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(three_biotypes_clean, diff_df)
+
+# -----------------------------
+# 4. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ treatment, ncol = 3) +
+  coord_cartesian(ylim = c(0, 20)) +
+  theme_bw()
+```
+
+##JA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae_clean$treatment <- factor(fabae_clean$treatment, levels = c("control", "AF001"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- fabae_clean %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(JA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute AF001 - control mean
+# -----------------------------
+af_diff <- fabae_clean %>%
+  filter(treatment == "AF001") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    JA = JA - control_mean,
+    treatment = "AF001 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  fabae_clean,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "AF001", "AF001 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-2, 3)) +
+  theme_bw()
+
+```
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum_clean$treatment <- factor(pisum_clean$treatment, levels = c("control", "P123"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- pisum_clean %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(JA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute P123 - control mean
+# -----------------------------
+af_diff <- pisum_clean %>%
+  filter(treatment == "P123") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    JA = JA - control_mean,
+    treatment = "P123 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  pisum_clean,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "P123", "P123 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-2, 3)) +
+  theme_bw()
+```
+
+```{r}
+
+# -----------------------------
+# 1. Compute control mean
+# -----------------------------
+control_means <- three_biotypes_clean %>%
+  filter(treatment == "control") %>%
+  group_by(hpi) %>%
+  summarise(control_mean = mean(JA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 2. Compute treatment - control
+# -----------------------------
+diff_df <- three_biotypes_clean %>%
+  filter(treatment != "control") %>%
+  left_join(control_means, by = "hpi") %>%
+  mutate(
+    JA = JA - control_mean,
+    treatment = paste0(treatment, " - control")
+  )
+
+# -----------------------------
+# 3. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(three_biotypes_clean, diff_df)
+
+# -----------------------------
+# 4. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ treatment, ncol = 3) +
+  coord_cartesian(ylim = c(-2, 3)) +
+  theme_bw()
+```
+
+## ABA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae_clean$treatment <- factor(fabae_clean$treatment, levels = c("control", "AF001"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- fabae_clean %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(ABA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute AF001 - control mean
+# -----------------------------
+af_diff <- fabae_clean %>%
+  filter(treatment == "AF001") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    ABA = ABA - control_mean,
+    treatment = "AF001 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  fabae_clean,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "AF001", "AF001 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = ABA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-0.5, 1)) +
+  theme_bw()
+
+```
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum_clean$treatment <- factor(pisum_clean$treatment, levels = c("control", "P123"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- pisum_clean %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(ABA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute P123 - control mean
+# -----------------------------
+af_diff <- pisum_clean %>%
+  filter(treatment == "P123") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    ABA = ABA - control_mean,
+    treatment = "P123 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  pisum_clean,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "P123", "P123 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = ABA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-0.5, 1)) +
+  theme_bw()
+```
+
+```{r}
+
+# -----------------------------
+# 1. Compute control mean
+# -----------------------------
+control_means <- three_biotypes_clean %>%
+  filter(treatment == "control") %>%
+  group_by(hpi) %>%
+  summarise(control_mean = mean(ABA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 2. Compute treatment - control
+# -----------------------------
+diff_df <- three_biotypes_clean %>%
+  filter(treatment != "control") %>%
+  left_join(control_means, by = "hpi") %>%
+  mutate(
+    ABA = ABA - control_mean,
+    treatment = paste0(treatment, " - control")
+  )
+
+# -----------------------------
+# 3. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(three_biotypes_clean, diff_df)
+
+# -----------------------------
+# 4. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = ABA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ treatment, ncol = 3) +
+  coord_cartesian(ylim = c(-0.5, 1)) +
+  theme_bw()
+```
+
+##JA.Ile
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae_clean$treatment <- factor(fabae_clean$treatment, levels = c("control", "AF001"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- fabae_clean %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(JA.Ile, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute AF001 - control mean
+# -----------------------------
+af_diff <- fabae_clean %>%
+  filter(treatment == "AF001") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    JA.Ile = JA.Ile - control_mean,
+    treatment = "AF001 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  fabae_clean,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "AF001", "AF001 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA.Ile, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-0.2, 0.6)) +
+  theme_bw()
+
+```
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum_clean$treatment <- factor(pisum_clean$treatment, levels = c("control", "P123"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- pisum_clean %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(JA.Ile, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute P123 - control mean
+# -----------------------------
+af_diff <- pisum_clean %>%
+  filter(treatment == "P123") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    JA.Ile = JA.Ile - control_mean,
+    treatment = "P123 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  pisum_clean,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "P123", "P123 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA.Ile, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-0.2, 0.6)) +
+  theme_bw()
+```
+
+```{r}
+
+# -----------------------------
+# 1. Compute control mean
+# -----------------------------
+control_means <- three_biotypes_clean %>%
+  filter(treatment == "control") %>%
+  group_by(hpi) %>%
+  summarise(control_mean = mean(JA.Ile, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 2. Compute treatment - control
+# -----------------------------
+diff_df <- three_biotypes_clean %>%
+  filter(treatment != "control") %>%
+  left_join(control_means, by = "hpi") %>%
+  mutate(
+    JA.Ile = JA.Ile - control_mean,
+    treatment = paste0(treatment, " - control")
+  )
+
+# -----------------------------
+# 3. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(three_biotypes_clean, diff_df)
+
+# -----------------------------
+# 4. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = JA.Ile, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ treatment, ncol = 3) +
+  coord_cartesian(ylim = c(-0.2, 0.6)) +
+  theme_bw()
+```
+
+##OPDA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae_clean$treatment <- factor(fabae_clean$treatment, levels = c("control", "AF001"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- fabae_clean %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(OPDA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute AF001 - control mean
+# -----------------------------
+af_diff <- fabae_clean %>%
+  filter(treatment == "AF001") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    OPDA = OPDA - control_mean,
+    treatment = "AF001 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  fabae_clean,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "AF001", "AF001 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-2, 8)) +
+  theme_bw()
+
+```
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum_clean$treatment <- factor(pisum_clean$treatment, levels = c("control", "P123"))
+
+# -----------------------------
+# 2. Compute control mean per genotype × hpi
+# -----------------------------
+control_means <- pisum_clean %>%
+  filter(treatment == "control") %>%
+  group_by(genotype, hpi) %>%
+  summarise(control_mean = mean(OPDA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 3. Compute P123 - control mean
+# -----------------------------
+af_diff <- pisum_clean %>%
+  filter(treatment == "P123") %>%
+  left_join(control_means, by = c("genotype","hpi")) %>%
+  mutate(
+    OPDA = OPDA - control_mean,
+    treatment = "P123 - control"
+  )
+
+# -----------------------------
+# 4. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(
+  pisum_clean,
+  af_diff
+)
+
+plot_df$treatment <- factor(
+  plot_df$treatment,
+  levels = c("control", "P123", "P123 - control")
+)
+
+# -----------------------------
+# 5. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(genotype ~ treatment) +
+  coord_cartesian(ylim = c(-2, 8)) +
+  theme_bw()
+```
+
+```{r}
+
+# -----------------------------
+# 1. Compute control mean
+# -----------------------------
+control_means <- three_biotypes_clean %>%
+  filter(treatment == "control") %>%
+  group_by(hpi) %>%
+  summarise(control_mean = mean(OPDA, na.rm = TRUE), .groups = "drop")
+
+# -----------------------------
+# 2. Compute treatment - control
+# -----------------------------
+diff_df <- three_biotypes_clean %>%
+  filter(treatment != "control") %>%
+  left_join(control_means, by = "hpi") %>%
+  mutate(
+    OPDA = OPDA - control_mean,
+    treatment = paste0(treatment, " - control")
+  )
+
+# -----------------------------
+# 3. Combine datasets
+# -----------------------------
+plot_df <- bind_rows(three_biotypes_clean, diff_df)
+
+# -----------------------------
+# 4. Plot
+# -----------------------------
+ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = mean,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  facet_wrap(~ treatment, ncol = 3) +
+  coord_cartesian(ylim = c(-2, 8)) +
+  theme_bw()
+```
