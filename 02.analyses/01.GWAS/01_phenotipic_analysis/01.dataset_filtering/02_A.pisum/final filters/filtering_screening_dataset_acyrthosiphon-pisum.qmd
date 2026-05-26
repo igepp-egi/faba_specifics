@@ -247,6 +247,7 @@ p
 ```{r}
 #| echo: true
 #| fig-width: 8
+png("histogram_Apisum.png", width = 800, height = 600)
 
 p <- data250pisum_04_6 %>% 
   ggplot(mapping = aes(sample=larvae_total_number)) +
@@ -256,9 +257,13 @@ p <- data250pisum_04_6 %>%
   ggtitle("Dataset filtered with N >= 6") +
   theme_bw()
 p
+
+dev.off()
 ```
 ```{r}
 #| eval: false
+
+
 cor<-create_correlation_plot(data250pisum_04_6, 
                          group_cols = c("genotype", "session"), 
                          value_col = "larvae_total_number")

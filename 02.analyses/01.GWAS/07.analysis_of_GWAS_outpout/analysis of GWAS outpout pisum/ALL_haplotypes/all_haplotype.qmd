@@ -4,7 +4,7 @@ format: html
 editor: visual
 ---
 
-```{r} 
+```{r}
 chr2_35683372 <-read.csv("../chr2_35683372_small-2-validated/chr2_35683372.csv") 
 chr2_35683372$Group_35683372 <- ifelse(chr2_35683372$Group_35683372 == 1, 1, 0)
 
@@ -28,9 +28,6 @@ merged_df_C$Group_1461736473 <-as.factor(merged_df_C$Group_1461736473)
 
 
 ```
-
-
-
 
 ```{r}
 #data prep P2xp006 
@@ -76,8 +73,6 @@ confirmation_merged_group_all_haplotype$Group_1461736473<-as.factor(confirmation
 
 ```
 
-
-
 ```{r}
 
 merged_df_C <- merged_df_C %>%
@@ -103,17 +98,13 @@ merged_df_C$hap_group<-as.factor(merged_df_C$hap_group)
 ```
 
 ```{r}
+pheno <-read.csv("../../../..//01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv") 
 
-model_haplotype_confirmation <- lm(larvae_total_number ~ hap_group/ivip  + session/block , data = merged_df_C)
-
-anova(model_haplotype_confirmation)
-
-model_emmean <- lmer(larvae_total_number ~ hap_group + (1 | session), data = merged_df_C)
-
-
+model_emmean <- lm(larvae_total_number ~ ivip, data = pheno)
+class(emm)
 # Estimated marginal means
 
-emm <- emmeans(model_emmean, ~ hap_group)
+emm <- emmeans(model_emmean, ~ ivip)
 
 # Tukey-adjusted pairwise comparisons
 
@@ -139,6 +130,7 @@ ggplot(
   ylab("Phenotype")
 
 ```
+
 ```{r}
 
 confirmation_merged_group_all_haplotype <- confirmation_merged_group_all_haplotype %>%
@@ -164,8 +156,6 @@ aggregate(ivip ~ hap_group,
 data_filtered_xp008$ivip<-as.factor(data_filtered_xp008$ivip)
 ```
 
-
-
 ```{r}
 
 model_haplotype_confirmation <- lm(larvae_total_number ~ hap_group/ivip  + session/block , data = confirmation_merged_group_all_haplotype)
@@ -189,7 +179,6 @@ cld
 
 ```
 
-
 ```{r}
 ggplot(
   confirmation_merged_group_all_haplotype,
@@ -203,5 +192,3 @@ ggplot(
   xlab("Favorable haplotype combination") +
   ylab("Phenotype")
 ```
-
-

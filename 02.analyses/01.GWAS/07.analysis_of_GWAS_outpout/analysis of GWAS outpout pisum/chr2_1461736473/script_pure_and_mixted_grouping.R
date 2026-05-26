@@ -131,7 +131,7 @@ df_small <- df %>%
 snp_ids_small <- df_small$snp_id
 
 df_small <- df_small %>%
-  select(-chromosome, -position, -snp_id)
+  dplyr::select(-chromosome, -position, -snp_id)
 
 df_small_num <- as.data.frame(lapply(df_small, function(x) sapply(x, geno_to_num)))
 df_small_t <- t(df_small_num)
@@ -221,7 +221,7 @@ df_groups_filtered <- bind_rows(
   df_groups_haplotype,
   df_groups_rescued
 ) %>%
-  select(ivip, haplotype, group_id)
+  dplyr::select(ivip, haplotype, group_id)
 
 df_groups_filtered$group_id[df_groups_filtered$group_id == "Rescued_1"] <- "haplotype_6"
 ############################################################
@@ -284,7 +284,7 @@ df_big <- df %>%
 snp_ids_big <- df_big$snp_id
 
 df_big <- df_big %>%
-  select(-chromosome, -position, -snp_id)
+  dplyr::select(-chromosome, -position, -snp_id)
 
 df_big_num <- as.data.frame(lapply(df_big, function(x) sapply(x, geno_to_num)))
 df_big_t <- t(df_big_num)
@@ -402,15 +402,17 @@ merged_df$group_id <- factor(
   merged_df$group_id,
   levels = names(group_colors_big)
 )
-png( filename = "boxplot_haplotype_comparison_chr2_1461736473.png", width = 2000, height = 1800, res = 300 )
+png( filename = "boxplot_haplotype_comparison_chr2_1461736473.png", width = 3800, height = 1800, res = 300 )
 
-boxplot(
-  larvae_total_number ~ group_id,
-  data = merged_df,
-  main = "Boxplot of Larvae Total Number by Group",
-  xlab = "Group",
-  ylab = "Larvae Total Number",
-  col = group_colors_big
+boxplot(larvae_total_number ~ group_id,
+        data = merged_df,
+        main = "Boxplot of Larvae Total Number by Group",
+        xlab = "Group",
+        ylab = "Larvae Total Number",
+        col = group_colors_big,
+        cex.main = 1,    # Title size (1 = default, 2 = 2x larger)
+        cex.lab = 1.5,   # Axis label size
+        cex.axis = 1.4   # Axis tick label size
 )
 dev.off()
 

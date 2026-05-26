@@ -223,7 +223,7 @@ res5_6 <- calculate_broad_heritability(data = data250_afabae_04_6)
 
 ```{r}
 #| fig-width: 8
-
+png("histogram_Afabae.png", width = 800, height = 600)
 p <- data250_afabae_04_4 %>% 
   ggplot(mapping = aes(sample=larvae_total_number)) +
   stat_qq() +
@@ -232,6 +232,7 @@ p <- data250_afabae_04_4 %>%
   ggtitle("qqplot of final dataset") +
   theme_bw()
 p
+dev.off()
 ```
 
 ```{r}
@@ -375,3 +376,4 @@ print(results_table)
 
 write_xlsx(results_table, "filtering_process_fabae.xlsx")
 ```
+

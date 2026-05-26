@@ -224,11 +224,18 @@ plot(fitted_values, residuals_values,
      ylab="Residuals")
 abline(h=0, col="red")
 
-#residual normality
-hist(residuals_values, main="Histogram of Residuals", xlab="Residuals", breaks=20)
+
+
+png("residual_histogram_Apisum.png", width = 800, height = 600)
+
+hist(residuals_values,
+     main = "Histogram of Residuals",
+     xlab = "Residuals",
+     breaks = 20)
 # 2. Q-Q Plot for Residuals
 qqnorm(residuals_values)
 qqline(residuals_values, col = "red")
+dev.off()
 
 #residual independance
 # Plot residuals over time (for time-series data)

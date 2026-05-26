@@ -61,145 +61,13 @@ Correlation between A. pisum and A. fabae fecundity scores for shared IVIPs is w
 - The corresponding p-value is equal to `r round(cor_test$p.value, 3)` (not significant).
 :::
 
-## Scatterplot A. pisum vs A. fabae
-
-```{r}
-#| warning: false
-#| message: false
-#| echo: false
-#| eval: true
-#| fig-width: 5
-#| fig-height: 5
-
-
-ggplot(merged, aes(x = larvae_pisum, y = larvae_fabae)) +
-  geom_point(size = 1) +
-  geom_smooth(method = "lm", se = FALSE)  +
-  labs(
-    title = "Correlation of Larvae Counts for Shared IVIP",
-    x = "Larvae Total Number (A. pisum)",
-    y = "Larvae Total Number (A. fabae)"
-  ) +
-  theme_minimal() +
-  # add r2 value to the plot
-  annotate(
-    "text",
-    x = Inf, y = Inf,
-    label = paste0("R = ", round(cor_test$estimate, 3)),
-    hjust = 1.1, vjust = 1.5
-  )
-
-```
-
-# Genetic clusters and fecundity scores
-
-## Import and add the genetic cluster data to the fecundity data for A. pisum and A. fabae.
-
-```{r}
-#| warning: false
-#| message: false
-#| echo: true
-
-genetic_cluster <- read.csv("../../../../00.info/02.genetic_structure_jonathan_dijon/faba_bean_ivip_and_genetic_cluster.csv") %>% dplyr::select(ivip, cluster_name) %>%
-  # remove NA records
-  filter(!is.na(cluster_name))
-
-merged_cluster <- inner_join(merged, genetic_cluster, by = "ivip")
-
-# Ensure cluster_name is a factor
-merged_cluster$cluster_name <- as.factor(merged_cluster$cluster_name)
-
-
-
-head(merged_cluster)
-```
-
-## Scatterplot with genetic cluster info overlaid
-
-```{r}
-#| warning: false
-#| message: false
-#| echo: false
-#| eval: true
-
-# Scatter plot
-ggplot(merged_cluster, aes(x = larvae_pisum, y = larvae_fabae, color = cluster_name)) +
-  geom_point(size = 2) +
-  geom_smooth(method = "lm", se = FALSE, color = "black") +  # overall regression line +          # axes start at 0
-  labs(
-    title = "Fabae vs Pisum Larvae Counts by Cluster",
-    x = "Larvae Total Number (Pisum)",
-    y = "Larvae Total Number (Fabae)",
-    color = "Genetic Cluster"
-  ) +
-  theme_minimal()
-```
-
-## Boxplot of fecundity scores by genetic cluster for A. pisum and A. fabae, and ANOVA test to check for significant differences between clusters.
-
-```{r}
-
-boxplot(larvae_pisum ~ cluster_name, data = merged_cluster,
-        main = "Box Plot by Cluster (A. pisum)",
-        xlab = "Genetic cluster",
-        ylab = "Fecundity score",
-        las = 2,            # vertical labels
-        cex.axis = 0.6)     # smaller axis text
-
-
-boxplot(larvae_fabae ~ cluster_name, data = merged_cluster,
-        main = "Box Plot by Cluster (A. fabae)",
-        xlab = "Genetic cluster",
-        ylab = "Fecundity score",
-        las = 2,            # vertical labels
-        cex.axis = 0.6)     # smaller axis text
-```
-
-```{r}
-anova_model <- aov(larvae_pisum ~ cluster_name, data = merged_cluster)
-summary(anova_model)
-
-
-
-library(multcomp)
-posthoc <- glht(anova_model, linfct = mcp(cluster_name = "Tukey"))
-summary(posthoc)
-
-
-
-# Assign letters to groups
-library(agricolae)
-tukey <- TukeyHSD(anova_model)
-tukey
-hsd <- HSD.test(anova_model, "cluster_name", group = TRUE)
-hsd$groups
-
-
-anova_model <- aov(larvae_pisum ~ cluster_name, data = merged_cluster)
-summary(anova_model)
-
-
-
-library(multcomp)
-posthoc <- glht(anova_model, linfct = mcp(cluster_name = "Tukey"))
-summary(posthoc)
-
-
-
-# Assign letters to groups
-library(agricolae)
-tukey <- TukeyHSD(anova_model)
-tukey
-hsd <- HSD.test(anova_model, "cluster_name", group = TRUE)
-hsd$groups
-```
-
 # The script used for fecundity figure (Figure 1)
 
 ```{r}
 
 cor_test <- cor.test(merged$larvae_pisum, merged$larvae_fabae)
 cor_test
+png("corplot_fabae_pisum.png", width = 800, height = 600)
 
 ggplot(merged, aes(x = larvae_pisum, y = larvae_fabae)) +
   geom_point(size = 1) +
@@ -207,21 +75,29 @@ ggplot(merged, aes(x = larvae_pisum, y = larvae_fabae)) +
   annotate(
     "text",
     x = Inf, y = Inf,
-    label = paste0("R = ", round(cor_test$estimate, 2)),
-    hjust = 1.1, vjust = 1.5
+    label = " " ,
+    hjust = 1.1, vjust = 1.5,
+    size = 4  # Adjust size of the annotated text
   ) +
   labs(
-    title = "Correlation of Larvae Counts for Shared IVIP",
-    x = expression("Adjusted mean of fecundity score" ~ italic("(A. pisum)")),
-    y = expression("Adjusted mean of fecundity score" ~ italic("(A. fabae)"))
+    title = " ",
+    x = expression("Adjusted mean of aphid count" ~ italic("(A. pisum)")),
+    y = expression("Adjusted mean of aphid count" ~ italic("(A. fabae)"))
   ) +
   coord_fixed(ratio = 1) +
-  theme_bw()
-
+  theme_bw() +
+  theme(
+    plot.title = element_text(size = 10),  # Title size
+    axis.title = element_text(size = 23),  # Axis label size
+    axis.text = element_text(size = 15)    # Axis tick label size
+  )
+dev.off()
 
 
 fabae<-read.csv("../../../01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae_4.csv", sep = ",")
 pisum <- read.csv("../../../01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum_6.csv", sep = ",")
+
+png("emmean_histogram_Afabae.png", width = 800, height = 500)
 
 ggplot(fabae, aes(x = emmean)) +
   geom_histogram(
@@ -235,8 +111,17 @@ ggplot(fabae, aes(x = emmean)) +
     x = "emmean",
     y = "Frequency"
   ) +
-  theme_bw()
+  theme_bw() +
+  theme(
+    plot.title = element_text(size = 16),  # Title size
+    axis.title = element_text(size = 34),  # Axis label size
+    axis.text = element_text(size = 22)    # Axis tick label size
+  )
 
+dev.off()
+
+
+png("emmean_histogram_Apisum.png", width = 800, height = 500)
 
 ggplot(pisum, aes(x = emmean)) +
   geom_histogram(
@@ -245,11 +130,19 @@ ggplot(pisum, aes(x = emmean)) +
     fill = "grey70"
   ) +
   labs(
-    title = "Histogram of emmean (A. fabae)",
+    title = "Histogram of emmean (A. pisum)",  # Fixed title for A. pisum
     x = "emmean",
     y = "Frequency"
   ) +
-  theme_bw()
+  theme_bw() +
+  theme(
+    plot.title = element_text(size = 16),  # Title size
+    axis.title = element_text(size = 34),  # Axis label size
+    axis.text = element_text(size = 22)    # Axis tick label size
+  )
 
+dev.off()
 
 ```
+
+
