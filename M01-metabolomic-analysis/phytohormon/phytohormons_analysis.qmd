@@ -5,14 +5,14 @@ editor: visual
 ---
 
 ```{r}
-fabae<-read.csv("Phytohormones_Batch-1.csv")
+fabae<-read.csv("../../../../../Documents/metabolomic_too_heavy_for_git/phytohormons/Phytohormones_Batch-1.csv")
 fabae <- fabae  %>%
   filter(!is.na(weight))
 
 fabae_without_3 <- fabae %>%
   filter(hpi != 3)
 
-pisum<-read.csv("Phytohormones_Batch-2.csv")
+pisum<-read.csv("../../../../../Documents/metabolomic_too_heavy_for_git/phytohormons/Phytohormones_Batch-2.csv")
 pisum <- pisum  %>%
   filter(!is.na(weight))
 
@@ -20,7 +20,7 @@ pisum_without_3 <- pisum %>%
   filter(hpi != 3)
 
 
-three_biotypes<-read.csv("Phytohormones_Batch-3.csv")
+three_biotypes<-read.csv("../../../../../Documents/metabolomic_too_heavy_for_git/phytohormons/Phytohormones_Batch-3.csv")
 three_biotypes <- three_biotypes %>%
   filter(!is.na(SA))
 three_biotypes_without_3 <- three_biotypes %>%
@@ -200,42 +200,18 @@ ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
 # -----------------------------
 # 1. Control treatment order
 # -----------------------------
-fabae$treatment <- factor(fabae$treatment, levels = c("control", "AF001"))
-
-# -----------------------------
-# 2. Compute control mean per genotype × hpi
-# -----------------------------
-control_means <- fabae %>%
-  filter(treatment == "control") %>%
-  group_by(genotype, hpi) %>%
-  summarise(control_mean = mean(SA, na.rm = TRUE), .groups = "drop")
-
-# -----------------------------
-# 3. Compute AF001 - control mean
-# -----------------------------
-af_diff <- fabae %>%
-  filter(treatment == "AF001") %>%
-  left_join(control_means, by = c("genotype","hpi")) %>%
-  mutate(
-    SA = SA - control_mean,
-    treatment = "AF001 - control"
-  )
-
-# -----------------------------
-# 4. Combine datasets
-# -----------------------------
-plot_df <- bind_rows(
-  fabae,
-  af_diff
-)
-
-plot_df$treatment <- factor(
-  plot_df$treatment,
-  levels = c("control", "AF001", "AF001 - control")
+fabae$treatment <- factor(
+  fabae$treatment,
+  levels = c("control", "AF001")
 )
 
 # -----------------------------
-# 5. Plot
+# 2. Keep only original data
+# -----------------------------
+plot_df <- fabae
+
+# -----------------------------
+# 3. Plot
 # -----------------------------
 ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
   geom_point(alpha = 0.4) +
@@ -254,42 +230,18 @@ ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
 # -----------------------------
 # 1. Control treatment order
 # -----------------------------
-pisum$treatment <- factor(pisum$treatment, levels = c("control", "P123"))
-
-# -----------------------------
-# 2. Compute control mean per genotype × hpi
-# -----------------------------
-control_means <- pisum %>%
-  filter(treatment == "control") %>%
-  group_by(genotype, hpi) %>%
-  summarise(control_mean = mean(SA, na.rm = TRUE), .groups = "drop")
-
-# -----------------------------
-# 3. Compute P123 - control mean
-# -----------------------------
-af_diff <- pisum %>%
-  filter(treatment == "P123") %>%
-  left_join(control_means, by = c("genotype","hpi")) %>%
-  mutate(
-    SA = SA - control_mean,
-    treatment = "P123 - control"
-  )
-
-# -----------------------------
-# 4. Combine datasets
-# -----------------------------
-plot_df <- bind_rows(
-  pisum,
-  af_diff
-)
-
-plot_df$treatment <- factor(
-  plot_df$treatment,
-  levels = c("control", "P123", "P123 - control")
+pisum$treatment <- factor(
+  pisum$treatment,
+  levels = c("control", "P123")
 )
 
 # -----------------------------
-# 5. Plot
+# 2. Keep only original data
+# -----------------------------
+plot_df <- pisum
+
+# -----------------------------
+# 3. Plot
 # -----------------------------
 ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
   geom_point(alpha = 0.4) +
@@ -300,7 +252,6 @@ ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
     linewidth = 1.5
   ) +
   facet_grid(genotype ~ treatment) +
-  coord_cartesian(ylim = c(0, 20)) +
   theme_bw()
 ```
 
