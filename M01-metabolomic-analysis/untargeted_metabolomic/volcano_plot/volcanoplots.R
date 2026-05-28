@@ -1034,13 +1034,6 @@ colnames(ID_positive)[colnames(ID_positive) == "mappingFeatureId"] <- "metabolit
 ID_negative <- read_tsv('../Negative mode/metabolites identification/SIRIUS_Negative_mode/canopus_formula_summary.tsv')
 colnames(ID_negative)[colnames(ID_negative) == "mappingFeatureId"] <- "metabolite"
 
-ID_positive_GNPS <- read_tsv('metabolites_identification/')
-colnames(ID_positive_GNPS)[colnames(ID_positive_GNPS) == "mappingFeatureId"] <- "metabolite"
-
-ID_negative_GNPS <- read_tsv('../Negative mode/metabolites identification/SIRIUS_Negative_mode/canopus_formula_summary.tsv')
-colnames(ID_negative_GNPS)[colnames(ID_negative_GNPS) == "mappingFeatureId"] <- "metabolite"
-
-
 
 results_batch1_negative_resistant_sub <- results_batch1_negative_resistant[results_batch1_negative_resistant$significant != "Not Significant", ]
 colnames(results_batch1_negative_resistant_sub)[colnames(results_batch1_negative_resistant_sub) == "significant"] <- "significant_resistant"
