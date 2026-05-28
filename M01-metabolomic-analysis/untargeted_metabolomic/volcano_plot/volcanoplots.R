@@ -1,12 +1,14 @@
-   ###packages----
+###packages----
 library(dplyr)
 library(pheatmap)
 library(ggplot2)
 library(ggrepel)
 library(readr)
 library(readxl)
+library(tidyr)
+library(ggvenn)
 #----
-setwd("~/Downloads/Paul Fremaux/untargeted/Negative mode")
+setwd("~/Documents/metabolomic_too_heavy_for_git/untargeted/Negative mode/")
 ##batch_1_negative----
 
 batch1_negative <- read_excel("final_filtered_files/batch_1_Intensity_filtered_notame.xlsx", col_names = FALSE)
@@ -32,14 +34,6 @@ batch1_negative[is.na(batch1_negative)] <- 0
 batch1_negative_constitutive <- batch1_negative[batch1_negative$treatment != "E1-AF", ]
 batch1_negative_constitutive <- batch1_negative_constitutive[, !(names(batch1_negative_constitutive) %in% c("FEATURE_ID", "treatment", "hpi", "Sample_ID", "Injection_order", "Group", "QC"))]
 batch1_negative_constitutive <- t(batch1_negative_constitutive)
-
-
-
-
-
-
-
-
 
 
 
@@ -516,11 +510,11 @@ Volcano_batch2_negative_resistant <- ggplot(results_batch2_negative_resistant, a
 
 results_batch2_negative_resistant$significant<-as.factor(results_batch2_negative_resistant$significant)
 summary(results_batch2_negative_resistant)
-setwd("~/Downloads/Paul Fremaux")
+
 
 
 #----   
-setwd("~/Downloads/Paul Fremaux/untargeted/Positive mode")
+setwd("~/Documents/metabolomic_too_heavy_for_git/untargeted/Positive mode")
 ##batch_1_positive----
 
 batch1_positive <- read_excel("final_filtered_files/batch_1_positive_Intensity_filtered_notame.xlsx", col_names = FALSE)
