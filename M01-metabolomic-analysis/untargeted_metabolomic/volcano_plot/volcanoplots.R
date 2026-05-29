@@ -1218,9 +1218,8 @@ combined <- bind_rows(results_batch2_positive_susceptible_resistant_sub_ID, resu
 
 
 
-# =============================================
 # 1. Define the grouping logic for Up and Down
-# =============================================
+
 
 # Function to create groups for a given regulation type ("Up" or "Down")
 create_groups <- function(data, regulation) {
@@ -1244,9 +1243,8 @@ create_groups <- function(data, regulation) {
     summarise(count = n(), .groups = "drop")
 }
 
-# =============================================
 # 2. Create groups for Up and Down
-# =============================================
+
 
 # Up groups
 up_groups <- create_groups(combined, "Up")
@@ -1258,9 +1256,9 @@ down_groups <- create_groups(combined, "Down")
 print("Down groups:")
 print(head(down_groups))
 
-# =============================================
+
 # 3. Prepare data for plotting
-# =============================================
+
 
 # Get all unique NPC#pathway levels
 all_pathways <- unique(combined$`NPC#pathway`)
@@ -1299,9 +1297,9 @@ down_groups <- all_down_combinations %>%
 print("Down groups after merging:")
 print(head(down_groups))
 
-# =============================================
+
 # 4. Plot stacked bars for Up and Down
-# =============================================
+
 
 # Plot for Up
 up_plot <- ggplot(up_groups, aes(x = group, y = count, fill = `NPC#pathway`)) +

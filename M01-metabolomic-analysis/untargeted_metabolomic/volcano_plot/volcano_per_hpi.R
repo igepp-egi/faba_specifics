@@ -1,6 +1,4 @@
-library(dplyr)
-library(purrr)
-library(pheatmap)
+
 ###packages----
 library(dplyr)
 library(pheatmap)
@@ -10,6 +8,9 @@ library(readr)
 library(readxl)
 library(tidyr)
 library(ggvenn)
+library(dplyr)
+library(purrr)
+library(pheatmap)
 #----
 setwd("~/Documents/metabolomic_too_heavy_for_git/untargeted/Negative mode/")
 ###batch_1_negative----
@@ -1334,7 +1335,7 @@ results_batch2_negative_susceptible$significant[results_batch2_negative_suscepti
 
 Volcano_batch2_negative_susceptible <- ggplot(results_batch2_negative_susceptible, aes(x = log2FC, y = negLog10P, color = significant)) +
   geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c("blue", "grey", "red")) +
+  scale_color_manual(values = c( "grey", "red")) +
   geom_vline(xintercept = c(-1, 1), linetype = "dashed") +
   geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
   theme_minimal() +
@@ -1349,7 +1350,7 @@ Volcano_batch2_negative_susceptible <- ggplot(results_batch2_negative_susceptibl
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 5))    # Adjust min/max for -log10(FDR)
 
 results_batch2_negative_susceptible$significant<-as.factor(results_batch2_negative_susceptible$significant)
 summary(results_batch2_negative_susceptible)
@@ -1897,7 +1898,7 @@ results_batch2_negative_resistant$significant[results_batch2_negative_resistant$
 
 Volcano_batch2_negative_resistant <- ggplot(results_batch2_negative_resistant, aes(x = log2FC, y = negLog10P, color = significant)) +
   geom_point(size = 3, alpha = 0.8) +
-  scale_color_manual(values = c("blue", "grey", "red")) +
+  scale_color_manual(values = c("grey", "red")) +
   geom_vline(xintercept = c(-1, 1), linetype = "dashed") +
   geom_hline(yintercept = -log10(0.05), linetype = "dashed") +
   theme_minimal() +
@@ -1912,7 +1913,7 @@ Volcano_batch2_negative_resistant <- ggplot(results_batch2_negative_resistant, a
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 5))    # Adjust min/max for -log10(FDR)
 
 results_batch2_negative_resistant$significant<-as.factor(results_batch2_negative_resistant$significant)
 summary(results_batch2_negative_resistant)
@@ -3840,7 +3841,7 @@ Volcano_batch2_positive_susceptible <- ggplot(results_batch2_positive_susceptibl
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_susceptible$significant<-as.factor(results_batch2_positive_susceptible$significant)
 summary(results_batch2_positive_susceptible)
@@ -3920,7 +3921,7 @@ Volcano_batch2_positive_susceptible_early <- ggplot(results_batch2_positive_susc
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_susceptible_early$significant<-as.factor(results_batch2_positive_susceptible_early$significant)
 summary(results_batch2_positive_susceptible_early)
@@ -4003,7 +4004,7 @@ Volcano_batch2_positive_susceptible_late <- ggplot(results_batch2_positive_susce
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_susceptible_late$significant<-as.factor(results_batch2_positive_susceptible_late$significant)
 summary(results_batch2_positive_susceptible_late)
@@ -4083,7 +4084,7 @@ Volcano_batch2_positive_susceptible_3hpi <- ggplot(results_batch2_positive_susce
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_susceptible_3hpi$significant<-as.factor(results_batch2_positive_susceptible_3hpi$significant)
 summary(results_batch2_positive_susceptible_3hpi)
@@ -4163,7 +4164,7 @@ Volcano_batch2_positive_susceptible_24hpi <- ggplot(results_batch2_positive_susc
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_susceptible_24hpi$significant<-as.factor(results_batch2_positive_susceptible_24hpi$significant)
 summary(results_batch2_positive_susceptible_24hpi)
@@ -4243,7 +4244,7 @@ Volcano_batch2_positive_susceptible_72hpi <- ggplot(results_batch2_positive_susc
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_susceptible_72hpi$significant<-as.factor(results_batch2_positive_susceptible_72hpi$significant)
 summary(results_batch2_positive_susceptible_72hpi)
@@ -4320,7 +4321,7 @@ Volcano_batch2_positive_susceptible_120hpi <- ggplot(results_batch2_positive_sus
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_susceptible_120hpi$significant<-as.factor(results_batch2_positive_susceptible_120hpi$significant)
 summary(results_batch2_positive_susceptible_120hpi)
@@ -4403,7 +4404,7 @@ Volcano_batch2_positive_resistant <- ggplot(results_batch2_positive_resistant, a
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_resistant$significant<-as.factor(results_batch2_positive_resistant$significant)
 summary(results_batch2_positive_resistant)
@@ -4484,7 +4485,7 @@ Volcano_batch2_positive_resistant_early <- ggplot(results_batch2_positive_resist
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_resistant_early$significant<-as.factor(results_batch2_positive_resistant_early$significant)
 summary(results_batch2_positive_resistant_early)
@@ -4567,7 +4568,7 @@ Volcano_batch2_positive_resistant_late <- ggplot(results_batch2_positive_resista
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_resistant_late$significant<-as.factor(results_batch2_positive_resistant_late$significant)
 summary(results_batch2_positive_resistant_late)
@@ -4647,7 +4648,7 @@ Volcano_batch2_positive_resistant_3hpi <- ggplot(results_batch2_positive_resista
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_resistant_3hpi$significant<-as.factor(results_batch2_positive_resistant_3hpi$significant)
 summary(results_batch2_positive_resistant_3hpi)
@@ -4727,7 +4728,7 @@ Volcano_batch2_positive_resistant_24hpi <- ggplot(results_batch2_positive_resist
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_resistant_24hpi$significant<-as.factor(results_batch2_positive_resistant_24hpi$significant)
 summary(results_batch2_positive_resistant_24hpi)
@@ -4807,7 +4808,7 @@ Volcano_batch2_positive_resistant_72hpi <- ggplot(results_batch2_positive_resist
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_resistant_72hpi$significant<-as.factor(results_batch2_positive_resistant_72hpi$significant)
 summary(results_batch2_positive_resistant_72hpi)
@@ -4884,7 +4885,7 @@ Volcano_batch2_positive_resistant_120hpi <- ggplot(results_batch2_positive_resis
   )+
   # Set fixed x and y axis limits
   scale_x_continuous(limits = c(-5, 5)) +  # Adjust min/max for log2FC
-  scale_y_continuous(limits = c(0, 20))    # Adjust min/max for -log10(FDR)
+  scale_y_continuous(limits = c(0, 10))    # Adjust min/max for -log10(FDR)
 
 results_batch2_positive_resistant_120hpi$significant<-as.factor(results_batch2_positive_resistant_120hpi$significant)
 summary(results_batch2_positive_resistant_120hpi)

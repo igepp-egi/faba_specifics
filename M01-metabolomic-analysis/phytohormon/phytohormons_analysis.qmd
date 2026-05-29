@@ -3,12 +3,14 @@ title: "hormons analysis"
 format: html
 editor: visual
 ---
+
 ```{r}
 library(car)
 library(dplyr)
 library(ggplot2)
 library(corrplot)
 ```
+
 #load datasets
 
 ```{r}
@@ -40,7 +42,9 @@ three_biotypes_without_3 <- three_biotypes %>%
 ```
 
 # pisum
+
 ##PCA
+
 ```{r}
 df<-pisum
 
@@ -79,7 +83,7 @@ pca_df$Factor3 <- df[[3]]
 pca_df$Combo <- interaction(pca_df$Factor1, pca_df$Factor2, pca_df$Factor3, sep = "_")
 
 # ---- Plot PCA ----
-pisum_PCA<-ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
+PCA_pisum<-ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
   geom_point(size = 3, alpha = 0.8) +
   stat_ellipse(aes(group = Combo), linewidth = 0.8) +
   labs(
@@ -94,7 +98,9 @@ pisum_PCA<-ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
   )
 
 ```
+
 ##correlation
+
 ```{r}
 
 df<-pisum[,-c(1:7) ]
@@ -115,7 +121,9 @@ correlation_pisum<-corrplot(
 )
 
 ```
+
 ## SA
+
 ```{r}
 # -----------------------------
 # 1. Control treatment order
@@ -141,11 +149,11 @@ SA_pisum<-ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
     aes(group = treatment),
     linewidth = 1.5
   ) +
-  facet_grid(genotype ~ treatment) +
+  facet_grid(~ genotype) +
   theme_bw()
 ```
-##JA 
 
+##JA
 
 ```{r}
 # -----------------------------
@@ -172,7 +180,7 @@ JA_pisum<-ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
     aes(group = treatment),
     linewidth = 1.5
   ) +
-  facet_grid(genotype ~ treatment) +
+  facet_grid(~ genotype) +
   theme_bw()
 ```
 
@@ -203,7 +211,7 @@ ABA_pisum<-ggplot(plot_df, aes(x = hpi, y = ABA, color = treatment)) +
     aes(group = treatment),
     linewidth = 1.5
   ) +
-  facet_grid(genotype ~ treatment) +
+  facet_grid(~ genotype) +
   theme_bw()
 ```
 
@@ -234,13 +242,14 @@ OPDA_pisum<-ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
     aes(group = treatment),
     linewidth = 1.5
   ) +
-  facet_grid(genotype ~ treatment) +
+  facet_grid(~ genotype) +
   theme_bw()
 ```
 
 ##PDF
+
 ```{r}
-pdf("pisum_hormons.pdf")
+pdf("pisum_hormons.pdf", width = 7, height = 4)
 PCA_pisum
 corrplot(
   cor_mat,
@@ -258,8 +267,11 @@ ABA_pisum
 OPDA_pisum
 dev.off()
 ```
+
 # fabae
+
 ##PCA
+
 ```{r}
 df<-fabae
 
@@ -315,6 +327,7 @@ PCA_fabae<-ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
 ```
 
 ##correlation
+
 ```{r}
 
 df<-fabae[,-c(1:8) ]
@@ -337,6 +350,7 @@ correlation_fabae<-corrplot(
 ```
 
 ## SA
+
 ```{r}
 # -----------------------------
 # 1. Control treatment order
@@ -362,7 +376,7 @@ SA_fabae<-ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
     aes(group = treatment),
     linewidth = 1.5
   ) +
-  facet_grid(genotype ~ treatment) +
+  facet_grid(~ genotype) +
   theme_bw()
 
 ```
@@ -394,7 +408,7 @@ JA_fabae<-ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
     aes(group = treatment),
     linewidth = 1.5
   ) +
-  facet_grid(genotype ~ treatment) +
+  facet_grid(~ genotype) +
   theme_bw()
 
 ```
@@ -426,10 +440,11 @@ ABA_fabae<-ggplot(plot_df, aes(x = hpi, y = ABA, color = treatment)) +
     aes(group = treatment),
     linewidth = 1.5
   ) +
-  facet_grid(genotype ~ treatment) +
+  facet_grid(~ genotype) +
   theme_bw()
 
 ```
+
 ## OPDA
 
 ```{r}
@@ -457,13 +472,15 @@ OPDA_fabae<-ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
     aes(group = treatment),
     linewidth = 1.5
   ) +
-  facet_grid(genotype ~ treatment) +
+  facet_grid(~ genotype) +
   theme_bw()
 
 ```
+
 ##PDF
+
 ```{r}
-pdf("fabae_hormons.pdf")
+pdf("fabae_hormons.pdf", width = 7, height = 4)
 PCA_fabae
 corrplot(
   cor_mat,
@@ -482,8 +499,8 @@ OPDA_fabae
 dev.off()
 ```
 
-#three biotype
-##PCA
+#three biotype ##PCA
+
 ```{r}
 df<-three_biotypes
 
@@ -537,7 +554,6 @@ PCA_three<-ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
 
 ```
 
-
 ##correlation
 
 ```{r}
@@ -560,9 +576,8 @@ corrplot(
 )
 
 ```
+
 ## SA
-
-
 
 ```{r}
 # -----------------------------
@@ -592,7 +607,6 @@ SA_three<-ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
   facet_grid(~ treatment) +
   theme_bw()
 ```
-
 
 ##JA
 
@@ -624,8 +638,6 @@ JA_three<-ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
   facet_grid(~ treatment) +
   theme_bw()
 ```
-
-
 
 ##ABA
 
@@ -660,7 +672,6 @@ ABA_three<-ggplot(plot_df, aes(x = hpi, y = ABA, color = treatment)) +
 
 ##OPDA
 
-
 ```{r}
 # -----------------------------
 # 1. Control treatment order
@@ -691,7 +702,7 @@ OPDA_three<-ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
 ```
 
 ```{r}
-pdf("three_hormons.pdf")
+pdf("three_hormons.pdf", width = 7, height = 4)
 PCA_three
 corrplot(
   cor_mat,
