@@ -1,0 +1,722 @@
+---
+title: "hormons analysis"
+format: html
+editor: visual
+---
+
+```{r}
+library(car)
+library(dplyr)
+library(ggplot2)
+library(corrplot)
+```
+
+#load datasets
+
+```{r}
+fabae<-read.csv("../../../../../Documents/metabolomic_too_heavy_for_git/phytohormons/Phytohormones_Batch-1.csv")
+fabae <- fabae  %>%
+  filter(!is.na(weight))
+
+fabae_without_3 <- fabae %>%
+  filter(hpi != 3)
+
+pisum<-read.csv("../../../../../Documents/metabolomic_too_heavy_for_git/phytohormons/Phytohormones_Batch-2.csv")
+pisum <- pisum  %>%
+  filter(!is.na(weight))
+
+pisum_without_3 <- pisum %>%
+  filter(hpi != 3)
+
+
+three_biotypes<-read.csv("../../../../../Documents/metabolomic_too_heavy_for_git/phytohormons/Phytohormones_Batch-3.csv")
+three_biotypes <- three_biotypes %>%
+  filter(!is.na(SA))
+three_biotypes_without_3 <- three_biotypes %>%
+  filter(hpi != 3)
+
+
+
+
+
+```
+
+# pisum
+
+##PCA
+
+```{r}
+df<-pisum
+
+
+# ================================
+# PCA with explanatory factors
+# ================================
+
+# ---- Ensure factors ----
+df[,1:3] <- lapply(df[,1:3], as.factor)
+
+# ---- Remove rows with NA in numeric data ----
+df <- df[complete.cases(df[,7:ncol(df)]), ]
+
+# ---- Select numeric data for PCA (columns 6 to end) ----
+pca_data <- df[,7:ncol(df)]
+
+# ---- Run PCA ----
+pca <- prcomp(pca_data,
+              center = TRUE,
+              scale. = TRUE)
+
+# ---- Explained variance ----
+explained_var <- (pca$sdev^2) / sum(pca$sdev^2)
+
+# ---- Create PCA dataframe ----
+pca_df <- as.data.frame(pca$x)
+
+# ---- Add explanatory factors ----
+pca_df$Factor1 <- df[[1]]
+pca_df$Factor2 <- df[[2]]
+pca_df$Factor3 <- df[[3]]
+
+
+# ---- Create combination of all three factors ----
+pca_df$Combo <- interaction(pca_df$Factor1, pca_df$Factor2, pca_df$Factor3, sep = "_")
+
+# ---- Plot PCA ----
+PCA_pisum<-ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
+  geom_point(size = 3, alpha = 0.8) +
+  stat_ellipse(aes(group = Combo), linewidth = 0.8) +
+  labs(
+    x = paste0("PC1 (", round(explained_var[1]*100,1), "%)"),
+    y = paste0("PC2 (", round(explained_var[2]*100,1), "%)"),
+    color = "Factor1 + Factor2 + Factor3"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = "right"
+  )
+
+```
+
+##correlation
+
+```{r}
+
+df<-pisum[,-c(1:7) ]
+
+# Compute correlation matrix
+cor_mat <- cor(df, use = "complete.obs")
+
+# Plot
+correlation_pisum<-corrplot(
+  cor_mat,
+  method = "square",      # filled squares
+  type = "lower",         # lower triangle only
+  col = colorRampPalette(c("red", "white", "blue"))(200),
+  tl.col = "black",       # text label color
+  tl.cex = 0.8,           # label size
+  addCoef.col = "black",  # show correlation numbers
+  number.cex = 0.6
+)
+
+```
+
+## SA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum$treatment <- factor(
+  pisum$treatment,
+  levels = c("control", "P123")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- pisum
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+SA_pisum<-ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ genotype) +
+  theme_bw()
+```
+
+##JA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum$treatment <- factor(
+  pisum$treatment,
+  levels = c("control", "P123")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- pisum
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+JA_pisum<-ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ genotype) +
+  theme_bw()
+```
+
+##ABA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum$treatment <- factor(
+  pisum$treatment,
+  levels = c("control", "P123")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- pisum
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+ABA_pisum<-ggplot(plot_df, aes(x = hpi, y = ABA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ genotype) +
+  theme_bw()
+```
+
+##OPDA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+pisum$treatment <- factor(
+  pisum$treatment,
+  levels = c("control", "P123")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- pisum
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+OPDA_pisum<-ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ genotype) +
+  theme_bw()
+```
+
+##PDF
+
+```{r}
+pdf("pisum_hormons.pdf", width = 7, height = 4)
+PCA_pisum
+corrplot(
+  cor_mat,
+  method = "square",
+  type = "lower",
+  col = colorRampPalette(c("red", "white", "blue"))(200),
+  tl.col = "black",
+  tl.cex = 0.8,
+  addCoef.col = "black",
+  number.cex = 0.6
+)
+SA_pisum
+JA_pisum
+ABA_pisum
+OPDA_pisum
+dev.off()
+```
+
+# fabae
+
+##PCA
+
+```{r}
+df<-fabae
+
+
+# ================================
+# PCA with explanatory factors
+# ================================
+
+# ---- Ensure factors ----
+df[,1:5] <- lapply(df[,1:5], as.factor)
+
+# ---- Remove rows with NA in numeric data ----
+df <- df[complete.cases(df[,9:ncol(df)]), ]
+
+# ---- Select numeric data for PCA (columns 6 to end) ----
+pca_data <- df[,9:ncol(df)]
+
+# ---- Run PCA ----
+pca <- prcomp(pca_data,
+              center = TRUE,
+              scale. = TRUE)
+
+# ---- Explained variance ----
+explained_var <- (pca$sdev^2) / sum(pca$sdev^2)
+
+# ---- Create PCA dataframe ----
+pca_df <- as.data.frame(pca$x)
+
+# ---- Add explanatory factors ----
+pca_df$Factor1 <- df[[1]]
+pca_df$Factor2 <- df[[3]]
+pca_df$Factor3 <- df[[4]]
+
+
+# ---- Create combination of all three factors ----
+pca_df$Combo <- interaction(pca_df$Factor1, pca_df$Factor2, pca_df$Factor3, sep = "_")
+
+# ---- Plot PCA ----
+PCA_fabae<-ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
+  geom_point(size = 3, alpha = 0.8) +
+  stat_ellipse(aes(group = Combo), linewidth = 0.8) +
+  labs(
+    x = paste0("PC1 (", round(explained_var[1]*100,1), "%)"),
+    y = paste0("PC2 (", round(explained_var[2]*100,1), "%)"),
+    color = "Factor1 + Factor2 + Factor3"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = "right"
+  )
+
+```
+
+##correlation
+
+```{r}
+
+df<-fabae[,-c(1:8) ]
+
+# Compute correlation matrix
+cor_mat <- cor(df, use = "complete.obs")
+
+# Plot
+correlation_fabae<-corrplot(
+  cor_mat,
+  method = "square",      # filled squares
+  type = "lower",         # lower triangle only
+  col = colorRampPalette(c("red", "white", "blue"))(200),
+  tl.col = "black",       # text label color
+  tl.cex = 0.8,           # label size
+  addCoef.col = "black",  # show correlation numbers
+  number.cex = 0.6
+)
+
+```
+
+## SA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae$treatment <- factor(
+  fabae$treatment,
+  levels = c("control", "AF001")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- fabae
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+SA_fabae<-ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ genotype) +
+  theme_bw()
+
+```
+
+## JA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae$treatment <- factor(
+  fabae$treatment,
+  levels = c("control", "AF001")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- fabae
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+JA_fabae<-ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ genotype) +
+  theme_bw()
+
+```
+
+## ABA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae$treatment <- factor(
+  fabae$treatment,
+  levels = c("control", "AF001")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- fabae
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+ABA_fabae<-ggplot(plot_df, aes(x = hpi, y = ABA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ genotype) +
+  theme_bw()
+
+```
+
+## OPDA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+fabae$treatment <- factor(
+  fabae$treatment,
+  levels = c("control", "AF001")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- fabae
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+OPDA_fabae<-ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ genotype) +
+  theme_bw()
+
+```
+
+##PDF
+
+```{r}
+pdf("fabae_hormons.pdf", width = 7, height = 4)
+PCA_fabae
+corrplot(
+  cor_mat,
+  method = "square",
+  type = "lower",
+  col = colorRampPalette(c("red", "white", "blue"))(200),
+  tl.col = "black",
+  tl.cex = 0.8,
+  addCoef.col = "black",
+  number.cex = 0.6
+)
+SA_fabae
+JA_fabae
+ABA_fabae
+OPDA_fabae
+dev.off()
+```
+
+#three biotype ##PCA
+
+```{r}
+df<-three_biotypes
+
+
+# ================================
+# PCA with explanatory factors
+# ================================
+
+# ---- Ensure factors ----
+df[,1:2] <- lapply(df[,1:2], as.factor)
+
+# ---- Remove rows with NA in numeric data ----
+df <- df[complete.cases(df[,5:ncol(df)]), ]
+
+# ---- Select numeric data for PCA (columns 6 to end) ----
+pca_data <- df[,6:ncol(df)]
+
+# ---- Run PCA ----
+pca <- prcomp(pca_data,
+              center = TRUE,
+              scale. = TRUE)
+
+# ---- Explained variance ----
+explained_var <- (pca$sdev^2) / sum(pca$sdev^2)
+
+# ---- Create PCA dataframe ----
+pca_df <- as.data.frame(pca$x)
+
+# ---- Add explanatory factors ----
+pca_df$Factor1 <- df[[1]]
+pca_df$Factor2 <- df[[2]]
+
+
+# ---- Create combination of all three factors ----
+pca_df$Combo <- interaction(pca_df$Factor1, pca_df$Factor2, sep = "_")
+
+# ---- Plot PCA ----
+PCA_three<-ggplot(pca_df, aes(x = PC1, y = PC2, color = Combo)) +
+  geom_point(size = 3, alpha = 0.8) +
+  stat_ellipse(aes(group = Combo), linewidth = 0.8) +
+  labs(
+    x = paste0("PC1 (", round(explained_var[1]*100,1), "%)"),
+    y = paste0("PC2 (", round(explained_var[2]*100,1), "%)"),
+    color = "Factor1 + Factor2 + Factor3"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = "right"
+  )
+
+```
+
+##correlation
+
+```{r}
+
+df<-three_biotypes[,-c(1:5) ]
+
+# Compute correlation matrix
+cor_mat <- cor(df, use = "complete.obs")
+
+# Plot
+corrplot(
+  cor_mat,
+  method = "square",      # filled squares
+  type = "lower",         # lower triangle only
+  col = colorRampPalette(c("red", "white", "blue"))(200),
+  tl.col = "black",       # text label color
+  tl.cex = 0.8,           # label size
+  addCoef.col = "black",  # show correlation numbers
+  number.cex = 0.6
+)
+
+```
+
+## SA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+three_biotypes$treatment <- factor(
+  three_biotypes$treatment,
+  levels = c("control", "P123", "LSR1", "YR2")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- three_biotypes
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+SA_three<-ggplot(plot_df, aes(x = hpi, y = SA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ treatment) +
+  theme_bw()
+```
+
+##JA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+three_biotypes$treatment <- factor(
+  three_biotypes$treatment,
+  levels = c("control", "P123", "LSR1", "YR2")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- three_biotypes
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+JA_three<-ggplot(plot_df, aes(x = hpi, y = JA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ treatment) +
+  theme_bw()
+```
+
+##ABA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+three_biotypes$treatment <- factor(
+  three_biotypes$treatment,
+  levels = c("control", "P123", "LSR1", "YR2")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- three_biotypes
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+ABA_three<-ggplot(plot_df, aes(x = hpi, y = ABA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ treatment) +
+  theme_bw()
+```
+
+##OPDA
+
+```{r}
+# -----------------------------
+# 1. Control treatment order
+# -----------------------------
+three_biotypes$treatment <- factor(
+  three_biotypes$treatment,
+  levels = c("control", "P123", "LSR1", "YR2")
+)
+
+# -----------------------------
+# 2. Keep only original data
+# -----------------------------
+plot_df <- three_biotypes
+
+# -----------------------------
+# 3. Plot
+# -----------------------------
+OPDA_three<-ggplot(plot_df, aes(x = hpi, y = OPDA, color = treatment)) +
+  geom_point(alpha = 0.4) +
+  stat_summary(
+    fun = median,
+    geom = "line",
+    aes(group = treatment),
+    linewidth = 1.5
+  ) +
+  facet_grid(~ treatment) +
+  theme_bw()
+```
+
+```{r}
+pdf("three_hormons.pdf", width = 7, height = 4)
+PCA_three
+corrplot(
+  cor_mat,
+  method = "square",
+  type = "lower",
+  col = colorRampPalette(c("red", "white", "blue"))(200),
+  tl.col = "black",
+  tl.cex = 0.8,
+  addCoef.col = "black",
+  number.cex = 0.6
+)
+SA_three
+JA_three
+ABA_three
+OPDA_three
+dev.off()
+```

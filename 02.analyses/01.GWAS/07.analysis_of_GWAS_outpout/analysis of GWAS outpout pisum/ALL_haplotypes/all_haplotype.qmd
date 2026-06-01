@@ -1,0 +1,194 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+---
+
+```{r}
+chr2_35683372 <-read.csv("../chr2_35683372_small-2-validated/chr2_35683372.csv") 
+chr2_35683372$Group_35683372 <- ifelse(chr2_35683372$Group_35683372 == 1, 1, 0)
+
+chr2_920208286 <-read.csv("../chr2_920208286_small_validated/chr2_920208494.csv") 
+chr2_920208286$Group_920208286 <- ifelse(chr2_920208286$Group_920208286 == 3, 1, 0)
+
+chr2_1461736473 <-read.csv("../chr2_1461736473/small/chr2_1461736473.csv") 
+chr2_1461736473$Group_1461736473 <- ifelse(chr2_1461736473$Group_1461736473 == 2, 1, 0)
+
+
+pheno <-read.csv("../../../..//01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv") 
+
+merged_df_A <- merge(chr2_35683372, chr2_920208286, by = "ivip", all.x = TRUE) 
+merged_df_B <- merge(merged_df_A, chr2_1461736473, by = "ivip", all.x = TRUE) 
+merged_df_C <- merge(pheno, merged_df_B, by = "ivip", all.x = TRUE)
+
+merged_df_C$Group_35683372 <- as.factor(merged_df_C$Group_35683372)
+merged_df_C$Group_920208286 <- as.factor(merged_df_C$Group_920208286)
+merged_df_C$Group_1461736473 <-as.factor(merged_df_C$Group_1461736473)
+
+
+
+```
+
+```{r}
+#data prep P2xp006 
+data_xp006<-read.csv("../../../../../01.data/P2-XP006_faba_vs_pisum_P123_fecundity-test/P2-XP006_larvae_fecundity_results.csv", stringsAsFactors = F)
+data_xp006$block <- NA
+
+data_xp006 <- data_xp006 %>% filter(!is.na(larvae_total_number))
+data_filtered_xp006 <- data_xp006 %>% filter(adult_alive != "0")
+
+#data prep P2xp008 
+data_xp008<-read.csv("../../../../../01.data/P2-XP008_faba_apisum_confirmation_2/P2-XP008_fecundity_data_apisum.csv", stringsAsFactors = F)
+data_xp008 <- data_xp008 %>% filter(!is.na(larvae_total_number))
+data_filtered_xp008 <- data_xp008 %>% filter(adult_alive != "0")
+
+#data prep P2xp010 ----
+data_xp010<-read.csv("../../../../../01.data/P2-XP010_fabae_pisum_third_confirmation/P2XP010.csv", stringsAsFactors = F)
+data_xp010 <- data_xp010 %>% filter(!is.na(larvae_total_number))
+data_filtered_xp010 <- data_xp010 %>% filter(adult_alive != "0")
+
+
+confirmation_merged <- bind_rows(
+  data_filtered_xp006 %>%
+    select(ivip, block, larvae_total_number) %>%
+    mutate(session = "A"),
+  data_filtered_xp008 %>%
+    select(ivip, block, larvae_total_number) %>%
+    mutate(session = "B"),
+  
+  data_filtered_xp010 %>%
+    select(ivip, block, larvae_total_number) %>%
+    mutate(session = "C")
+)
+
+
+merged_df_C$Group_920208286 <- as.factor(merged_df_C$Group_920208286)
+
+confirmation_merged_group_all_haplotype <- merge(confirmation_merged, merged_df_B, by = "ivip", all.x = FALSE)
+
+confirmation_merged_group_all_haplotype$Group_35683372 <- as.factor(confirmation_merged_group_all_haplotype$Group_35683372)
+confirmation_merged_group_all_haplotype$Group_920208286 <- as.factor(confirmation_merged_group_all_haplotype$Group_920208286)
+confirmation_merged_group_all_haplotype$Group_1461736473<-as.factor(confirmation_merged_group_all_haplotype$Group_1461736473)
+
+
+```
+
+```{r}
+
+merged_df_C <- merged_df_C %>%
+  mutate(
+    hap_group = case_when(
+      Group_920208286 == 0 & Group_35683372 == 0 & Group_1461736473 == 0 ~ "None",
+      Group_920208286 == 0 & Group_35683372 == 1 & Group_1461736473 == 0 ~ "H1",
+      Group_920208286 == 1 & Group_35683372 == 0 & Group_1461736473 == 0 ~ "H2",
+      Group_920208286 == 0 & Group_35683372 == 0 & Group_1461736473 == 1 ~ "H3",
+      Group_920208286 == 1 & Group_35683372 == 1 & Group_1461736473 == 0 ~ "H1+H2",
+      Group_920208286 == 0 & Group_35683372 == 1 & Group_1461736473 == 1 ~ "H1+H3",
+      Group_920208286 == 1 & Group_35683372 == 0 & Group_1461736473 == 1 ~ "H2+H3",
+      Group_920208286 == 1 & Group_35683372 == 1 & Group_1461736473 == 1 ~ "H1+H2+H3"
+    )
+  )
+merged_df_C <- merged_df_C[!is.na(merged_df_C$hap_group), ]
+summary(merged_df_C)
+
+merged_df_C$hap_group<-as.factor(merged_df_C$hap_group)
+
+
+
+```
+
+```{r}
+pheno <-read.csv("../../../..//01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv") 
+
+model_emmean <- lm(larvae_total_number ~ ivip, data = pheno)
+class(emm)
+# Estimated marginal means
+
+emm <- emmeans(model_emmean, ~ ivip)
+
+# Tukey-adjusted pairwise comparisons
+
+cld <- multcomp::cld(emm, Letters = letters, adjust = "tukey")
+
+# View letters
+
+cld
+
+```
+
+```{r}
+ggplot(
+  merged_df_C,
+  aes(
+    x = reorder(hap_group, larvae_total_number, FUN = median),
+    y = larvae_total_number
+  )
+) +
+  geom_boxplot() +
+  theme_bw() +
+  xlab("Favorable haplotype combination") +
+  ylab("Phenotype")
+
+```
+
+```{r}
+
+confirmation_merged_group_all_haplotype <- confirmation_merged_group_all_haplotype %>%
+  mutate(
+    hap_group = case_when(
+      Group_920208286 == 0 & Group_35683372 == 0 & Group_1461736473 == 0 ~ "None",
+      Group_920208286 == 0 & Group_35683372 == 1 & Group_1461736473 == 0 ~ "H1",
+      Group_920208286 == 1 & Group_35683372 == 0 & Group_1461736473 == 0 ~ "H2",
+      Group_920208286 == 0 & Group_35683372 == 0 & Group_1461736473 == 1 ~ "H3",
+      Group_920208286 == 1 & Group_35683372 == 1 & Group_1461736473 == 0 ~ "H1+H2",
+      Group_920208286 == 0 & Group_35683372 == 1 & Group_1461736473 == 1 ~ "H1+H3",
+      Group_920208286 == 1 & Group_35683372 == 0 & Group_1461736473 == 1 ~ "H2+H3",
+      Group_920208286 == 1 & Group_35683372 == 1 & Group_1461736473 == 1 ~ "H1+H2+H3"
+    )
+  )
+confirmation_merged_group_all_haplotype[!is.na(confirmation_merged_group_all_haplotype$hap_group), ]
+confirmation_merged_group_all_haplotype$ivip<-as.factor(confirmation_merged_group_all_haplotype$ivip)
+confirmation_merged_group_all_haplotype$hap_group<-as.factor(confirmation_merged_group_all_haplotype$hap_group)
+summary(confirmation_merged_group_all_haplotype)
+aggregate(ivip ~ hap_group,
+          data = confirmation_merged_group_all_haplotype,
+          FUN = function(x) length(unique(x)))
+data_filtered_xp008$ivip<-as.factor(data_filtered_xp008$ivip)
+```
+
+```{r}
+
+model_haplotype_confirmation <- lm(larvae_total_number ~ hap_group/ivip  + session/block , data = confirmation_merged_group_all_haplotype)
+
+anova(model_haplotype_confirmation)
+
+model_emmean <- lmer(larvae_total_number ~ hap_group + (1 | session), data = confirmation_merged_group_all_haplotype)
+
+
+# Estimated marginal means
+
+emm <- emmeans(model_emmean, ~ hap_group)
+
+# Tukey-adjusted pairwise comparisons
+
+cld <- multcomp::cld(emm, Letters = letters, adjust = "tukey")
+
+# View letters
+
+cld
+
+```
+
+```{r}
+ggplot(
+  confirmation_merged_group_all_haplotype,
+  aes(
+    x = reorder(hap_group, larvae_total_number, FUN = median),
+    y = larvae_total_number
+  )
+) +
+  geom_boxplot() +
+  theme_bw() +
+  xlab("Favorable haplotype combination") +
+  ylab("Phenotype")
+```

@@ -1,24 +1,24 @@
 ﻿genotype,seed_batch,ivip,rep,bbch_10days,installation_block,block,bbch_25days,larvae_total_number,adult_alive,adult_winged,comment
-2,NA,NA,1,9,A,A2,NA,NA,NA,NA,plant dead
-2,NA,NA,6,10,B,A2,14,31,1,0,
-2,NA,NA,11,11,C,A2,14,23,1,0,
-2,NA,NA,16,10,D,A2,14,29,1,0,
-2,NA,NA,2,10,A,B2,NA,NA,NA,NA,Contamination with A. fabae
-2,NA,NA,7,11,B,B2,NA,NA,NA,NA,
-2,NA,NA,12,11,C,B2,NA,NA,NA,NA,Contamination with A. fabae
-2,NA,NA,17,11,D,B2,14,20,1,0,
-2,NA,NA,3,11,A,C2,13,21,1,0,
-2,NA,NA,8,11,B,C2,13,25,1,0,
-2,NA,NA,13,10,C,C2,13,18,1,0,
-2,NA,NA,18,11,D,C2,14,24,1,0,
-2,NA,NA,4,10,A,D2,14,29,1,0,
-2,NA,NA,9,10,B,D2,13,35,1,0,
-2,NA,NA,14,9,C,D2,13,22,1,0,
-2,NA,NA,19,10,D,D2,13,31,1,0,
-2,NA,NA,5,10,A,E2,12,26,1,0,Aphis fabae x 6
-2,NA,NA,10,11,B,E2,13,0,0,0,
-2,NA,NA,15,10,C,E2,14,NA,NA,NA,No aphid
-2,NA,NA,20,0,D,E2,NA,NA,NA,NA,No plant
+2,NA,hedin,1,9,A,A2,NA,NA,NA,NA,plant dead
+2,NA,hedin,6,10,B,A2,14,31,1,0,
+2,NA,hedin,11,11,C,A2,14,23,1,0,
+2,NA,hedin,16,10,D,A2,14,29,1,0,
+2,NA,hedin,2,10,A,B2,NA,NA,NA,NA,Contamination with A. fabae
+2,NA,hedin,7,11,B,B2,NA,NA,NA,NA,
+2,NA,hedin,12,11,C,B2,NA,NA,NA,NA,Contamination with A. fabae
+2,NA,hedin,17,11,D,B2,14,20,1,0,
+2,NA,hedin,3,11,A,C2,13,21,1,0,
+2,NA,hedin,8,11,B,C2,13,25,1,0,
+2,NA,hedin,13,10,C,C2,13,18,1,0,
+2,NA,hedin,18,11,D,C2,14,24,1,0,
+2,NA,hedin,4,10,A,D2,14,29,1,0,
+2,NA,hedin,9,10,B,D2,13,35,1,0,
+2,NA,hedin,14,9,C,D2,13,22,1,0,
+2,NA,hedin,19,10,D,D2,13,31,1,0,
+2,NA,hedin,5,10,A,E2,12,26,1,0,Aphis fabae x 6
+2,NA,hedin,10,11,B,E2,13,0,0,0,
+2,NA,hedin,15,10,C,E2,14,NA,NA,NA,No aphid
+2,NA,hedin,20,0,D,E2,NA,NA,NA,NA,No plant
 7,PF0755,IVIP100123,1,10,A,A2,13,36,1,0,
 7,PF0755,IVIP100123,6,10,B,A2,13,18,1,0,
 7,PF0755,IVIP100123,11,10,C,A2,14,31,1,0,

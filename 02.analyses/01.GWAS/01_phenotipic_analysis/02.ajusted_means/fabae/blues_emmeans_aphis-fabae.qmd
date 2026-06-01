@@ -54,12 +54,15 @@ plot(fitted_values, residuals_values,
      ylab="Residuals")
 abline(h=0, col="red")
 
+
+
+png("residual_histogram_Afabae.png", width = 800, height = 600)
 #residual normality
 hist(residuals_values, main="Histogram of Residuals", xlab="Residuals", breaks=20)
 # 2. Q-Q Plot for Residuals
 qqnorm(residuals_values)
 qqline(residuals_values, col = "red")
-
+dev.off()
 shapiro_result <- shapiro.test(residuals_values)
 
 # Print the p-value (this is your quantification of normality)

@@ -6,5 +6,4 @@ editor: visual
 
 ## GWAS
 
-Kinship matrix was generated using GEMMA sofware on the filtered VCF files formated with plink.
-GWAS was conducted using GApit Rpackage, using the bonferoni threshold.
+Kinship matrix was generated using GEMMA sofware on the filtered VCF files formated with plink. GWAS was conducted using GApit Rpackage, using the bonferoni threshold.
