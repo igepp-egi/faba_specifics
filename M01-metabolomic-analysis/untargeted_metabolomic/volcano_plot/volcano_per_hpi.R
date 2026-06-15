@@ -11,6 +11,7 @@ library(ggvenn)
 library(dplyr)
 library(purrr)
 library(pheatmap)
+library(stringr)
 #----
 setwd("~/Documents/metabolomic_too_heavy_for_git/untargeted/Negative mode/")
 ###batch_1_negative----
@@ -1219,6 +1220,10 @@ merged_results_results_batch1_negative <- merged_results_results_batch1_negative
   rowSums(merged_results_results_batch1_negative[, -1] != "Not Significant", na.rm = TRUE) > 0,
 ]
 
+merged_results_results_batch1_negative$metabolite <- str_c(
+  merged_results_results_batch1_negative$metabolite,
+  "neg"
+)
 
 
 heatmap_batch1_negative <- merged_results_results_batch1_negative
@@ -1245,12 +1250,12 @@ mode(heatmap_matrix) <- "numeric"
 row_score <- rowSums(heatmap_matrix, na.rm = TRUE)
 
 # order from highest to lowest
-heatmap_matrix <- heatmap_matrix[order(row_score, decreasing = TRUE), ]
+heatmap_matrix_batch1_negative <- heatmap_matrix[order(row_score, decreasing = TRUE), ]
 
 
 # Plot heatmap
 pheatmap(
-  heatmap_matrix,
+  heatmap_matrix_batch1_negative,
   color = c("blue", "white", "red"),
   cluster_rows = FALSE,
   cluster_cols = FALSE,
@@ -2463,9 +2468,13 @@ merged_results_results_batch2_negative <- merged_results_results_batch2_negative
   rowSums(merged_results_results_batch2_negative[, -1] != "Not Significant", na.rm = TRUE) > 0,
 ]
 
-
+merged_results_results_batch2_negative$metabolite <- str_c(
+  merged_results_results_batch2_negative$metabolite,
+  "neg"
+)
 
 heatmap_batch2_negative <- merged_results_results_batch2_negative
+
 
 
 heatmap_batch2_negative <- as.data.frame(lapply(heatmap_batch2_negative, as.character))
@@ -2489,12 +2498,12 @@ mode(heatmap_matrix) <- "numeric"
 row_score <- rowSums(heatmap_matrix, na.rm = TRUE)
 
 # order from highest to lowest
-heatmap_matrix <- heatmap_matrix[order(row_score, decreasing = TRUE), ]
+heatmap_matrix_batch2_negative <- heatmap_matrix[order(row_score, decreasing = TRUE), ]
 
 
 # Plot heatmap
 pheatmap(
-  heatmap_matrix,
+  heatmap_matrix_batch2_negative,
   color = c("blue", "white", "red"),
   cluster_rows = FALSE,
   cluster_cols = FALSE,
@@ -3710,9 +3719,12 @@ merged_results_results_batch1_positive <- merged_results_results_batch1_positive
   rowSums(merged_results_results_batch1_positive[, -1] != "Not Significant", na.rm = TRUE) > 0,
 ]
 
-
+merged_results_results_batch1_positive$metabolite <- paste0(
+  merged_results_results_batch1_positive$metabolite,
+  "pos")
 
 heatmap_batch1_positive <- merged_results_results_batch1_positive
+
 
 
 heatmap_batch1_positive <- as.data.frame(lapply(heatmap_batch1_positive, as.character))
@@ -3736,12 +3748,11 @@ mode(heatmap_matrix) <- "numeric"
 row_score <- rowSums(heatmap_matrix, na.rm = TRUE)
 
 # order from highest to lowest
-heatmap_matrix <- heatmap_matrix[order(row_score, decreasing = TRUE), ]
-
+heatmap_matrix_batch1_positive <- heatmap_matrix[order(row_score, decreasing = TRUE), ]
 
 # Plot heatmap
 pheatmap(
-  heatmap_matrix,
+  heatmap_matrix_batch1_positive,
   color = c("blue", "white", "red"),
   cluster_rows = FALSE,
   cluster_cols = FALSE,
@@ -3768,6 +3779,8 @@ batch2_positive_row_name <- batch2_positive %>%
   select(FEATURE_ID,genotype,treatment, hpi)
 batch2_positive <- merge(batch2_positive_row_name,batch2_positive, by ="FEATURE_ID")
 batch2_positive[is.na(batch2_positive)] <- 0 
+batch2_positive <- batch2_positive %>%
+  filter(!is.na(hpi) & !is.na(hpi))
 
 ##batch2_positive_susceptible----
 #batch2_positive_susceptible----
@@ -4954,7 +4967,9 @@ merged_results_results_batch2_positive <- merged_results_results_batch2_positive
   rowSums(merged_results_results_batch2_positive[, -1] != "Not Significant", na.rm = TRUE) > 0,
 ]
 
-
+merged_results_results_batch2_positive$metabolite <- paste0(
+  merged_results_results_batch2_positive$metabolite,
+  "pos")
 
 heatmap_batch2_positive <- merged_results_results_batch2_positive
 
@@ -4980,14 +4995,72 @@ mode(heatmap_matrix) <- "numeric"
 row_score <- rowSums(heatmap_matrix, na.rm = TRUE)
 
 # order from highest to lowest
-heatmap_matrix <- heatmap_matrix[order(row_score, decreasing = TRUE), ]
+heatmap_matrix_batch2_positive <- heatmap_matrix[order(row_score, decreasing = TRUE), ]
 
 
 # Plot heatmap
 pheatmap(
-  heatmap_matrix,
+  heatmap_matrix_batch2_positive,
   color = c("blue", "white", "red"),
   cluster_rows = FALSE,
   cluster_cols = FALSE,
   border_color = "grey80"
 )
+
+
+#join positive and negative#####
+
+fix_names <- function(x) {
+  parts <- strsplit(x, "_")
+  
+  sapply(parts, function(p) {
+    keep <- p[c(1, 3:min(length(p), 4))]  # keep 1st, 3rd, 4th if exists
+    paste(keep, collapse = "_")
+  })
+}
+colnames(heatmap_matrix_batch1_negative) <- fix_names(colnames(heatmap_matrix_batch1_negative))
+colnames(heatmap_matrix_batch1_positive) <- fix_names(colnames(heatmap_matrix_batch1_positive))
+
+colnames(heatmap_matrix_batch2_negative) <- fix_names(colnames(heatmap_matrix_batch2_negative))
+colnames(heatmap_matrix_batch2_positive) <- fix_names(colnames(heatmap_matrix_batch2_positive))
+
+batch1_combined_matrix <- rbind(heatmap_matrix_batch1_negative, heatmap_matrix_batch1_positive)
+batch2_combined_matrix <- rbind(heatmap_matrix_batch2_negative, heatmap_matrix_batch2_positive)
+
+
+
+# compute row sums (total signal per metabolite)
+row_score <- rowSums(batch1_combined_matrix, na.rm = TRUE)
+
+# order from highest to lowest
+batch1_combined_matrix <- batch1_combined_matrix[order(row_score, decreasing = TRUE), ]
+
+
+# Plot heatmap
+pheatmap(
+  batch1_combined_matrix,
+  color = c("blue", "white", "red"),
+  cluster_rows = FALSE,
+  cluster_cols = FALSE,
+  border_color = "grey80"
+)
+
+# compute row sums (total signal per metabolite)
+row_score <- rowSums(batch2_combined_matrix, na.rm = TRUE)
+
+# order from highest to lowest
+batch2_combined_matrix <- batch1_combined_matrix[order(row_score, decreasing = TRUE), ]
+
+
+# Plot heatmap
+pheatmap(
+  batch2_combined_matrix,
+  color = c("blue", "white", "red"),
+  cluster_rows = FALSE,
+  cluster_cols = FALSE,
+  border_color = "grey80"
+)
+
+
+
+
