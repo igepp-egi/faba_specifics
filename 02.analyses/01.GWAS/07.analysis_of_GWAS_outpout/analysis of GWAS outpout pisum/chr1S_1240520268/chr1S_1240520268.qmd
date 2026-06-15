@@ -388,7 +388,7 @@ df_genotype_groups$group_id <- ifelse(
   "Unfavorable"
 )
 
-names(df_genotype_groups)[2] <- "haplo_chr2_35683372"
+names(df_genotype_groups)[2] <- "haplo_chr1S_1240520268"
 
 
 write.csv(
