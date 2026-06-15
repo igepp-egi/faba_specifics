@@ -5062,5 +5062,68 @@ pheatmap(
 )
 
 
+#####
+
+colnames(merged_results_results_batch1_negative) <- fix_names(colnames(merged_results_results_batch1_negative))
+colnames(merged_results_results_batch2_negative) <- fix_names(colnames(merged_results_results_batch2_negative))
+colnames(merged_results_results_batch1_positive) <- fix_names(colnames(merged_results_results_batch1_positive))
+colnames(merged_results_results_batch2_positive) <- fix_names(colnames(merged_results_results_batch2_positive))
+
+merged_results_results_batch1 <- rbind(merged_results_results_batch1_negative, merged_results_results_batch1_positive)
+colnames(merged_results_results_batch1)[colnames(merged_results_results_batch1) == "metabolite_NA_NA_metabolite"] <- "metabolite"
+
+merged_results_results_batch2 <- rbind(merged_results_results_batch2_positive, merged_results_results_batch2_negative)
+colnames(merged_results_results_batch2)[colnames(merged_results_results_batch2) == "metabolite_NA_NA_metabolite"] <- "metabolite"
+
+
+
+
+
+
+ID_positive1 <- read_tsv('../Positive mode/metabolites_identification/SIRIUS_positive_mode/canopus_formula_summary.tsv')
+colnames(ID_positive1)[colnames(ID_positive1) == "mappingFeatureId"] <- "metabolite"
+ID_positive1<-ID_positive1[,c(5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,28)]
+ID_positive2 <- read_tsv('../Positive mode/metabolites_identification/SIRIUS_positive_mode/denovo_structure_identifications.tsv')
+colnames(ID_positive2)[colnames(ID_positive2) == "mappingFeatureId"] <- "metabolite"
+ID_positive2<-ID_positive2[,c(13,21)]
+ID_positive3 <- read_tsv('../Positive mode/metabolites_identification/GNPS_Positive_mode/DB_result/GNPS_positive.tsv')
+colnames(ID_positive3)[colnames(ID_positive3) == "#Scan#"] <- "metabolite"
+ID_positive3<-ID_positive3[,c(2,21)]
+
+merged_ID_positive_pre <- merge(ID_positive1,ID_positive2, by ="metabolite",all=TRUE)
+merged_ID_positive <- merge(merged_ID_positive_pre,ID_positive3, by ="metabolite",all=TRUE)
+
+merged_ID_positive$metabolite <- str_c(
+  merged_ID_positive$metabolite,
+  "pos"
+)
+
+ID_negative1 <- read_tsv('../Negative mode/metabolites identification/SIRIUS_Negative_mode/canopus_formula_summary.tsv')
+colnames(ID_negative1)[colnames(ID_negative1) == "mappingFeatureId"] <- "metabolite"
+ID_negative1<-ID_negative1[,c(5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,28)]
+ID_negative2 <- read_tsv('../Negative mode/metabolites identification/SIRIUS_Negative_mode/denovo_structure_identifications.tsv')
+colnames(ID_negative2)[colnames(ID_negative2) == "mappingFeatureId"] <- "metabolite"
+ID_negative2<-ID_negative2[,c(13,21)]
+ID_negative3 <- read_tsv('../Negative mode/metabolites identification/GNPS_Negative mode/DB_result/GNPS_negative.tsv')
+colnames(ID_negative3)[colnames(ID_negative3) == "#Scan#"] <- "metabolite"
+ID_negative3<-ID_negative3[,c(2,21)]
+
+merged_ID_negative_pre <- merge(ID_negative1,ID_negative2, by ="metabolite",all=TRUE)
+merged_ID_negative <- merge(merged_ID_negative_pre,ID_negative3, by ="metabolite",all=TRUE)
+
+merged_ID_negative$metabolite <- str_c(
+  merged_ID_negative$metabolite,
+  "neg"
+)
+
+merged_ID <- rbind(merged_ID_negative, merged_ID_positive)
+
+
+merged_results_batch1_ID <- merge(merged_results_results_batch1, merged_ID, by ="metabolite",all=FALSE)
+merged_results_batch2_ID <- merge(merged_results_results_batch2, merged_ID, by ="metabolite",all=FALSE)
+
+
+
+
 
 
