@@ -51,6 +51,31 @@ hm <- heatmap.2(kinship,
 # Close PDF device
 dev.off()
 
+postscript(
+  "Kinship_Heatmap_Ward_D2.eps",
+  onefile = FALSE,
+  paper = "special",
+  width = 12,
+  height = 12,
+  horizontal = FALSE
+)
+
+hm <- heatmap.2(
+  kinship,
+  col = rev(heat.colors(256)),
+  scale = "none",
+  trace = "none",
+  density.info = "none",
+  key = TRUE,
+  symkey = FALSE,
+  cexRow = 0.3,
+  cexCol = 0.3,
+  margins = c(3, 3),
+  hclustfun = function(x) hclust(x, method = "ward.D2")
+)
+
+dev.off()
+
 # Extract row dendrogram
 row_dend <- hm$rowDendrogram
 
@@ -241,6 +266,33 @@ legend("topright",
        cex = 1)
 
 dev.off()
+
+postscript(
+  "PCoA.eps",
+  onefile = FALSE,
+  paper = "special",
+  width = 12,
+  height = 12,
+  horizontal = FALSE
+)
+
+# Plot PCoA colored by group
+plot(pcoa$points[,1], pcoa$points[,2],
+     xlab = "PCoA1",
+     ylab = "PCoA2",
+     main = "PCoA of Genotypes by Group",
+     pch = 19,
+     col = cols)
+
+# Add legend
+legend("topright",
+       legend = names(palette),
+       col = palette,
+       pch = 19,
+       cex = 1)
+
+dev.off()
+
 ## Save the group names in the updated xls file  -----
 passport_data<-read.csv("../../../00.info/00.passeport_data/2024-11_passeport_data_and_genetic_cluster_viciafaba_peamust.csv")
 
@@ -321,3 +373,12 @@ p <- ggplot(merged_long, aes(
 
 # Save
 ggsave("strip_combined.png", plot = p, width = 4, height = 15, units = "in", dpi = 300)
+
+ggsave(
+  "strip_combined.eps",
+  plot = p,
+  device = "eps",
+  width = 4,
+  height = 15,
+  units = "in"
+)

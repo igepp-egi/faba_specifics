@@ -1,0 +1,63 @@
+
+```{r}
+############################################################
+## Parameters
+############################################################
+chrM <- "chr2"
+SNP  <- 1461736473
+left <- 1461736473
+right <- 1461746725
+min_group_size <- 10
+```
+
+
+```{r}
+############################################################
+## =========================================================
+## PART A — VCF (LD HEATMAPS ONLY)
+## =========================================================
+############################################################
+
+vcf <- read.vcfR(
+  "../../../../../../../files_too_heavy_for_git/pisum/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin2.vcf"
+)
+
+fix <- getFIX(vcf)
+
+convertToNumeric <- function(x) {
+  gdat <- matrix(NA, nrow = nrow(x), ncol = ncol(x))
+  for (i in seq_len(nrow(x))) {
+    for (j in seq_len(ncol(x))) {
+      alleles <- unlist(strsplit(x[i, j], "[|/]"))
+      gdat[i, j] <- sum(as.numeric(alleles))
+    }
+  }
+  rownames(gdat) <- rownames(x)
+  colnames(gdat) <- colnames(x)
+  gdat
+}
+
+## ---- LD heatmap: initial SNP window ----
+keep_init <- fix[, "CHROM"] == chrM &
+  as.numeric(fix[, "POS"]) >= left &
+  as.numeric(fix[, "POS"]) <= right
+
+vcf_init <- vcf[keep_init, ]
+gt_init <- t(vcf_init@gt[, -1])
+gdat_init <- convertToNumeric(gt_init)
+
+snp_pos_init <- as.numeric(vcf_init@fix[, "POS"])
+snp_ids_init <- paste0(chrM, "_", snp_pos_init)
+
+colnames(gdat_init) <- snp_ids_init
+rownames(gdat_init) <- rownames(gt_init)
+
+gdat_init <- as(gdat_init, "SnpMatrix")
+
+n_colors <- 100
+color_list <- c("black","darkred","red","orange","yellow","white")
+custom_colors <- colorRampPalette(color_list)(n_colors)
+png("LD_heatmap_01_initial_window.png", 1200, 1200, res = 150)
+LDheatmap(gdat_init, color = custom_colors, genetic.distances = snp_pos_init, add.map=TRUE)
+dev.off()
+```
