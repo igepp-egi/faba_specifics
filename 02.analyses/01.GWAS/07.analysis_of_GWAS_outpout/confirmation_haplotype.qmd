@@ -1,0 +1,212 @@
+
+---
+title: "test_haplotype_second_pop"
+format: html
+editor: visual
+---
+
+```{r}
+library(data.table)
+library(dplyr)
+library(tidyr)
+library(vcfR)
+library(LDheatmap)
+library(RColorBrewer)
+library(pheatmap)
+library(emmeans)
+library(lme4)
+library(readxl)
+```
+
+
+```{r}
+sur excel -> liste des genotypes
+sur R liste des snp
+en bash -> separaration des vcf (juste genotypes ou genotypes+snp)
+
+creer un df avec coll 1 nom des genotypes coll 1-4 Favorable or unfavorable based on the sequence for each group of 4
+```
+
+
+```{r}
+vcf <- read.vcfR("../../../../../../nextcloud/2024-2027_Paul_PhD/01.data/01.SNPs_VCF_faba_collection/filtered_for_confirmation.vcf")
+vcf_gt <- extract.gt(vcf, element = "GT")
+vcf_gt[vcf_gt %in% c("0/0", "0|0")] <- 0
+vcf_gt[vcf_gt %in% c("0/1", "1/0", "0|1", "1|0")] <- 1
+vcf_gt[vcf_gt %in% c("1/1", "1|1")] <- 2
+vcf_gt[vcf_gt %in% c("./.", ".|.")] <- NA
+
+vcf_gt <- apply(vcf_gt, 2, as.numeric)
+rownames(vcf_gt) <- rownames(vcf_gt)
+hap <-read.csv("liste_favorable_state/Sheet 2-Table 1.csv", sep=";")
+
+haplotypes <- unique(hap$Haplotype)
+
+result <- data.frame(Genotype = colnames(vcf_gt))
+
+for(h in haplotypes){
+
+  sub <- subset(hap, Haplotype == h)
+
+  snps <- sub$SNP
+  expected <- sub$Value
+
+  present <- snps %in% rownames(vcf_gt)
+
+  gt <- vcf_gt[snps[present], , drop = FALSE]
+
+  expected <- expected[present]
+
+  status <- apply(gt, 2, function(x){
+
+  # HARD safety check
+  if(length(x) != length(expected)){
+    return("Unfavorable")
+  }
+
+  if (isTRUE(all(x == expected))) {
+    "Favorable"
+  } else {
+    "Unfavorable"
+  }
+})
+
+  result[[h]] <- status
+}
+
+```
+
+
+
+```{r}
+library(vcfR)
+
+# ----------------------------
+# 1. READ VCF + EXTRACT GT
+# ----------------------------
+vcf <- read.vcfR("../../../../../../nextcloud/2024-2027_Paul_PhD/01.data/01.SNPs_VCF_faba_collection/filtered_for_confirmation.vcf")
+
+vcf_gt <- extract.gt(vcf, element = "GT")
+
+# convert genotypes to dosage
+vcf_gt[vcf_gt %in% c("0/0", "0|0")] <- 0
+vcf_gt[vcf_gt %in% c("0/1", "1/0", "0|1", "1|0")] <- 1
+vcf_gt[vcf_gt %in% c("1/1", "1|1")] <- 2
+vcf_gt[vcf_gt %in% c("./.", ".|.")] <- NA
+
+vcf_gt <- apply(vcf_gt, 2, as.numeric)
+
+# IMPORTANT: SNP IDs must come from FIX columns
+rownames(vcf_gt) <- getFIX(vcf)[,"ID"]
+
+
+# ----------------------------
+# 2. READ HAPLOTYPE FILE
+# ----------------------------
+hap <- read.csv(
+  "liste_favorable_state/Sheet 2-Table 1.csv",
+  sep = ";"
+)
+
+hap$Value <- as.numeric(hap$Value)
+haplotypes <- unique(hap$Haplotype)
+
+
+# ----------------------------
+# 3. RESULT TABLE
+# ----------------------------
+result <- data.frame(Genotype = colnames(vcf_gt))
+
+
+# ----------------------------
+# 4. LOOP OVER HAPLOTYPES
+# ----------------------------
+for(h in haplotypes){
+
+  sub <- subset(hap, Haplotype == h)
+
+  snps <- sub$SNP
+  expected <- as.numeric(sub$Value)
+
+  present <- snps %in% rownames(vcf_gt)
+
+  cat("\nHaplotype:", h,
+      " total SNPs:", length(snps),
+      " matched:", sum(present))
+
+  # skip if nothing matches
+  if(sum(present) == 0){
+    result[[h]] <- rep("Unfavorable", ncol(vcf_gt))
+    next
+  }
+
+  # subset and align
+  gt <- vcf_gt[snps[present], , drop = FALSE]
+  expected <- expected[present]
+
+  # enforce identical ordering
+  expected <- expected[match(rownames(gt), snps[present])]
+
+  # ----------------------------
+  # 5. COMPARE
+  # ----------------------------
+  status <- apply(gt, 2, function(x){
+
+    # strict safety check
+    if(length(x) != length(expected)){
+      return("Unfavorable")
+    }
+
+    if(isTRUE(all(x == expected, na.rm = FALSE))){
+      "Favorable"
+    } else {
+      "Unfavorable"
+    }
+
+  })
+
+  result[[h]] <- status
+}
+
+
+# ----------------------------
+# 6. SAVE OUTPUT
+# ----------------------------
+#write.csv(result, "haplotype_status.csv", row.names = FALSE)
+```
+
+
+
+```{r}
+emmean <- read_excel("../../../00.info/11.infos_genotypes/metadata_passportdata_emmeans.xlsx")
+names(result)[names(result) == "Genotype"] <- "ivip"
+merged<-merge(result,emmean, by="ivip")
+```
+
+```{r}
+
+merged_fabae <- merged %>%
+  filter(is.na(emmeans_fabae))
+merged_fabae<-merged_fabae[,-c(6:9)]
+# Count "Favorable" in columns 2 to 5 for each row
+n_favorable_fabae <- rowSums(merged_fabae[, 2:5] == "Favorable")
+
+# Count how many rows have 0, 1, 2, 3, or 4 Favorable values
+table(n_favorable_fabae)
+
+
+
+merged_pisum <- merged %>%
+  filter(is.na(emmeans_pisum))
+merged_pisum<-merged_pisum[,-c(2:5)]
+
+# Count "Favorable" in columns 2 to 5 for each row
+n_favorable_pisum <- rowSums(merged_pisum[,2:5] == "Favorable")
+
+# Count how many rows have 0, 1, 2, 3, or 4 Favorable values
+table(n_favorable_pisum)
+
+
+
+```
+

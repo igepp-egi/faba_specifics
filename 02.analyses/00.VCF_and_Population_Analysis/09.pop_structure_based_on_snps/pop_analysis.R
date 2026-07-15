@@ -208,6 +208,21 @@ barplot(t(as.matrix(tbl_ordered)),
 
 dev.off()
 
+postscript("admixture.eps",
+           width = 12,
+           height = 4,
+           horizontal = FALSE,
+           onefile = FALSE,
+           paper = "special")
+
+barplot(t(as.matrix(tbl_ordered)),
+        col = rainbow(3),
+        xlab = "Individual #",
+        ylab = "Ancestry",
+        border = NA)
+
+dev.off()
+
 ## Genarate PCOA  ----
 
 
@@ -313,72 +328,3 @@ list_origin <- merge(
 
 list_origin <- list_origin[, c(1, 6,8,9,10)]
 list_origin <- list_origin[nrow(list_origin):1, ]
-## generate phenotype figure-----
-# Load data
-emmeans_fabae <- read.csv("../../../02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae_4.csv", sep = ",")
-emmeans_fabae <- emmeans_fabae[, c(1,2)]
-colnames(emmeans_fabae)[2] <- "emmeans_fabae"
-
-emmeans_pisum <- read.csv("../../../02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum_6.csv", sep = ",")
-emmeans_pisum <- emmeans_pisum[, c(1,2)]
-colnames(emmeans_pisum)[2] <- "emmeans_pisum"
-
-# Merge data (preserve order)
-merged <- merge(rownames_in_plot, emmeans_pisum, by = "ivip", all.x = TRUE, sort = FALSE)
-merged <- merge(merged, emmeans_fabae, by = "ivip", all.x = TRUE, sort = FALSE)
-
-# Reorder rows
-merged <- merged[match(rownames_in_plot$ivip, merged$ivip), ]
-rownames(merged) <- NULL
-
-# Reshape to long format
-merged_long <- merged |>
-  pivot_longer(cols = c(emmeans_fabae, emmeans_pisum),
-               names_to = "trait",
-               values_to = "value")
-
-
-
-p <- ggplot(merged_long, aes(
-  x = 1, 
-  y = factor(ivip, levels = rownames_in_plot$ivip), 
-  fill = value
-)) +
-  geom_tile() +
-  scale_fill_gradient(
-    low = "green", 
-    high = "red", 
-    na.value = "lightgrey", 
-    labels = number_format(accuracy = 1),
-    breaks = seq(data_min, data_max, by = 10),
-    guide = guide_colorbar(
-      title.position = "top",   # move title above
-      title.hjust = 0.5,       # center title
-      barwidth = 12,           # make bar longer
-      barheight = 4            # make bar shorter
-    )
-  ) +
-  facet_wrap(~trait, ncol = 2) +
-  labs(x = "", y = "Row (ivip)", fill = "Color Key") +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_blank(),
-    axis.ticks.x = element_blank(),
-    axis.title.x = element_blank(),
-    legend.title = element_text(size = 18, face = "bold"),
-    legend.text = element_text(size = 14),
-    legend.position = "bottom",
-    legend.direction = "horizontal"
-  )
-
-# Save
-ggsave("strip_combined.png", plot = p, width = 4, height = 15, units = "in", dpi = 300)
-
-ggsave(
-  "strip_combined.eps",
-  plot = p,
-  device = "eps",
-  width = 4,
-  height = 15,
-  units = "in"
-)
