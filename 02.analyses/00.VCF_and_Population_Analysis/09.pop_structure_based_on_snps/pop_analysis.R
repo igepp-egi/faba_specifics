@@ -18,7 +18,7 @@ myGD <- myGD[, -1]
 ##Prepare the datasets----
 # Extract genotype names
 geno_names <- as.character(myGD2[[1]])
-
+ 
 # Convert to numeric matrix
 kinship <- as.matrix(myKI)
 mode(kinship) <- "numeric"
