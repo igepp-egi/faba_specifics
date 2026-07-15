@@ -1496,12 +1496,12 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="2.4761905"
      inkscape:cx="167.79808"
-     inkscape:cy="144.17308"
-     inkscape:window-width="2560"
-     inkscape:window-height="1387"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
-     inkscape:window-maximized="1"
+     inkscape:cy="144.375"
+     inkscape:window-width="1648"
+     inkscape:window-height="1186"
+     inkscape:window-x="496"
+     inkscape:window-y="78"
+     inkscape:window-maximized="0"
      inkscape:current-layer="g1">
     <inkscape:page
        x="0"
@@ -2862,7 +2862,7 @@
        y="9.2884617"
        id="text431"><tspan
          sodipodi:role="line"
-         id="tspan431"></tspan></text>
+         id="tspan431" /></text>
     <text
        xml:space="preserve"
        style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;white-space:pre;inline-size:11.1292;fill:#000000"
@@ -2872,7 +2872,7 @@
        transform="translate(7.2692308,4.4423077)"><tspan
          x="79.96154"
          y="10.096154"
-         id="tspan2">A</tspan></text>
+         id="tspan3">a</tspan></text>
     <text
        xml:space="preserve"
        style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000"
@@ -2882,7 +2882,7 @@
          sodipodi:role="line"
          id="tspan433"
          x="149.42308"
-         y="36.75">A</tspan></text>
+         y="36.75">b</tspan></text>
     <text
        xml:space="preserve"
        style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000"
@@ -2892,7 +2892,7 @@
          sodipodi:role="line"
          id="tspan434"
          x="216.46153"
-         y="60.576923">A</tspan></text>
+         y="60.576923">b</tspan></text>
     <text
        xml:space="preserve"
        style="text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#000000"
@@ -2902,6 +2902,6 @@
          sodipodi:role="line"
          id="tspan435"
          x="285.11539"
-         y="197.88461">B</tspan></text>
+         y="197.88461">b</tspan></text>
   </g>
 </svg>

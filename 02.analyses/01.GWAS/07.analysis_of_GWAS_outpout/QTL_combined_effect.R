@@ -63,7 +63,7 @@ raw_data_fabae<-read.csv("Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/0
 merge5<-merge(merge3,raw_data_fabae, by="ivip",all = TRUE)
 merge5$Favorable_Count <- rowSums(merge5[, 2:5] == "Favorable", na.rm = TRUE)
 merge5$Favorable_Count<-as.factor(merge5$Favorable_Count)
-mod <- lmer(larvae_total_number ~ Favorable_Count + (1 |session/block), data = merge5)
+mod <- lmer(larvae_total_number ~ Favorable_Count + (1 |ivip) + (1 |session/block), data = merge5)
 
 emm <- emmeans(mod, "Favorable_Count")
 
@@ -124,7 +124,8 @@ raw_data_pisum<-read.csv("Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/0
 merge5<-merge(merge3,raw_data_pisum, by="ivip",all = TRUE)
 merge5$Favorable_Count <- rowSums(merge5[, 2:5] == "Favorable", na.rm = TRUE)
 merge5$Favorable_Count<-as.factor(merge5$Favorable_Count)
-mod <- lmer(larvae_total_number ~ Favorable_Count + (1 |session/block), data = merge5)
+mod <- lmer(larvae_total_number ~ Favorable_Count + (1 |ivip) + (1 |session/block), data = merge5)
+
 
 emm <- emmeans(mod, "Favorable_Count")
 

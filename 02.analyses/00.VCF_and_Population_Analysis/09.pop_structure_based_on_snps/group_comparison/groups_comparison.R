@@ -9,23 +9,66 @@ merge_fabae<-merge(groups,pheno_fabae, by ="ivip", all.x = TRUE)
 merge_pisum$groups <- as.factor(merge_pisum$groups)
 merge_fabae$groups <- as.factor(merge_fabae$groups)
 
+# Pisum
+postscript(
+  "boxplot_groups_comparison_pisum.eps",
+  onefile = FALSE,
+  paper = "special",
+  width = 7,
+  height = 6
+)
 
-png( filename = "boxplot_groups_comparison_pisum.png", width = 2000, height = 1800, res = 300 )
+boxplot(
+  larvae_total_number ~ groups,
+  data = merge_pisum,
+  main = "Boxplot of aphid count by Group",
+  xlab = "Group",
+  ylab = "aphid count",
+  col = "grey"
+)
 
-boxplot(larvae_total_number ~ groups, data = merge_pisum, main = "Boxplot of Larvae Total Number by Group", xlab = "Group", ylab = "Larvae Total Number", col = "grey")
+stripchart(
+  larvae_total_number ~ groups,
+  data = merge_pisum,
+  vertical = TRUE,
+  method = "jitter",
+  pch = 14,
+  col = "black",
+  add = TRUE
+)
 
-stripchart(larvae_total_number ~ groups, data = merge_pisum, vertical = TRUE, method = "jitter", pch = 14, col = "black", add = TRUE)
 dev.off()
 
 
-png( filename = "boxplot_groups_comparison_fabae.png", width = 2000, height = 1800, res = 300 )
+# Fabae
+postscript(
+  "boxplot_groups_comparison_fabae.eps",
+  onefile = FALSE,
+  paper = "special",
+  width = 7,
+  height = 6
+)
 
-boxplot(larvae_total_number ~ groups, data = merge_fabae, main = "Boxplot of Larvae Total Number by Group", xlab = "Group", ylab = "Larvae Total Number", col = "grey")
+boxplot(
+  larvae_total_number ~ groups,
+  data = merge_fabae,
+  main = "Boxplot of aphid count by Group",
+  xlab = "Group",
+  ylab = "aphid count",
+  col = "grey"
+)
 
-stripchart(larvae_total_number ~ groups, data = merge_fabae, vertical = TRUE, method = "jitter", pch = 14, col = "black", add = TRUE)
+stripchart(
+  larvae_total_number ~ groups,
+  data = merge_fabae,
+  vertical = TRUE,
+  method = "jitter",
+  pch = 14,
+  col = "black",
+  add = TRUE
+)
 
 dev.off()
-
 
 # For fabae
 mod_fabae <- lm(larvae_total_number ~ groups + session/block, data = merge_fabae)

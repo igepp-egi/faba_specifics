@@ -11,7 +11,14 @@ library(qqman)
 GWAS fabae BLINK
 
 ```{r}
-png( filename = "Manhathan_BLINK_fabae.png", width = 2000, height = 1800, res = 300 )
+postscript(
+  "Manhathan_BLINK_fabae.eps",
+  onefile = FALSE,
+  paper = "special",
+  width = 7,
+  height = 6,
+  horizontal = FALSE
+)
 
 # 2. Load your GAPIT results
 gwas <- read.csv(
@@ -55,11 +62,21 @@ abline(h = -log10(5e-8), col = "grey50", lwd = 1, lty = 1)
 
 dev.off()
 ```
-GWAS fabae BLINK
-```{r}
-png( filename = "Manhathan_BLINK_pisum.png", width = 2000, height = 1800, res = 300 )
 
-# 2. Load your GAPIT results
+GWAS pisum BLINK
+
+```{r}
+
+postscript(
+  "Manhattan_BLINK_pisum.eps",
+  onefile = FALSE,
+  paper = "special",
+  width = 7,
+  height = 6,
+  horizontal = FALSE
+)
+
+# Load GAPIT results
 gwas <- read.csv(
   "../../../../../results_with_hedin/GWAS outpout/pisum/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv",
   sep = ",",
@@ -67,20 +84,27 @@ gwas <- read.csv(
   stringsAsFactors = FALSE
 )
 
-# 3. Handle zero p-values
+# Handle zero p-values
 gwas$P.value[gwas$P.value == 0] <- 1e-300
 
-# 4. Make sure chromosome is numeric for qqman
+# Make chromosome numeric
 gwas$Chr <- as.numeric(gwas$Chr)
 
-# 5. Optional: Remove NAs
+# Remove missing values
 gwas <- na.omit(gwas)
 
-# 6. Define custom labels (optional, for x-axis)
-chr_labels <- c("1" = "chr1S", "2" = "chr1L", "3" = "chr2",
-                "4" = "chr3", "5" = "chr4", "6" = "chr5", "7" = "chr6")
+# Chromosome labels
+chr_labels <- c(
+  "1" = "chr1S",
+  "2" = "chr1L",
+  "3" = "chr2",
+  "4" = "chr3",
+  "5" = "chr4",
+  "6" = "chr5",
+  "7" = "chr6"
+)
 
-# 7. Manhattan plot
+# Manhattan plot
 manhattan(
   gwas,
   chr = "Chr",
@@ -89,21 +113,35 @@ manhattan(
   snp = "SNP",
   col = c("grey70", "grey40"),
   suggestiveline = FALSE,
-  genomewideline = FALSE,   # do NOT draw the default red line
+  genomewideline = FALSE,
   ylim = c(0, -log10(5e-16)),
-  cex = 0.5, 
+  cex = 0.5,
   main = "Manhattan Plot A.fabae - BLINK (Kansas)",
-  chrlabs = chr_labels  # this will replace 1,2,3,... with your labels
+  chrlabs = chr_labels
 )
 
-# 2. Add a grey genome-wide threshold line manually
-abline(h = -log10(5e-8), col = "grey50", lwd = 1, lty = 1)
+# Add threshold line
+abline(
+  h = -log10(5e-8),
+  col = "grey50",
+  lwd = 1,
+  lty = 1
+)
 
 dev.off()
 ```
 
 ```{r}
-png( filename = "Manhathan_MLMM_pisum.png", width = 2000, height = 1800, res = 300 )
+
+postscript(
+  "Manhathan_MLMM_pisum.eps",
+  onefile = FALSE,
+  paper = "special",
+  width = 7,
+  height = 6,
+  horizontal = FALSE
+)
+
 
 # 2. Load your GAPIT results
 gwas <- read.csv(
@@ -162,12 +200,16 @@ dev.off()
 
 ```
 
-
-
-
 ```{r}
-png( filename = "Manhathan_MLMM_fabae.png", width = 2000, height = 1800, res = 300 )
 
+postscript(
+  "Manhathan_MLMM_fabae.eps",
+  onefile = FALSE,
+  paper = "special",
+  width = 7,
+  height = 6,
+  horizontal = FALSE
+)
 # 2. Load your GAPIT results
 gwas <- read.csv(
   "../../../../../results_with_hedin/GWAS outpout/fabae/GAPIT.Association.GWAS_Results.MLMM.emmean(NYC).csv",
