@@ -11,13 +11,11 @@ library(qqman)
 GWAS fabae BLINK
 
 ```{r}
-postscript(
-  "Manhathan_BLINK_fabae.eps",
-  onefile = FALSE,
-  paper = "special",
+
+pdf(
+  "Manhathan_BLINK_fabae.pdf",
   width = 7,
-  height = 6,
-  horizontal = FALSE
+  height = 6
 )
 
 # 2. Load your GAPIT results
@@ -67,15 +65,12 @@ GWAS pisum BLINK
 
 ```{r}
 
-postscript(
-  "Manhattan_BLINK_pisum.eps",
-  onefile = FALSE,
-  paper = "special",
-  width = 7,
-  height = 6,
-  horizontal = FALSE
-)
 
+pdf(
+  "Manhattan_BLINK_pisum.pdf",
+  width = 7,
+  height = 6
+)
 # Load GAPIT results
 gwas <- read.csv(
   "../../../../../results_with_hedin/GWAS outpout/pisum/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv",
@@ -141,7 +136,11 @@ postscript(
   height = 6,
   horizontal = FALSE
 )
-
+pdf(
+  "Manhathan_MLMM_pisum.pdf",
+  width = 7,
+  height = 6
+)
 
 # 2. Load your GAPIT results
 gwas <- read.csv(
@@ -202,13 +201,10 @@ dev.off()
 
 ```{r}
 
-postscript(
-  "Manhathan_MLMM_fabae.eps",
-  onefile = FALSE,
-  paper = "special",
+pdf(
+  "Manhathan_MLMM_fabae.pdf",
   width = 7,
-  height = 6,
-  horizontal = FALSE
+  height = 6
 )
 # 2. Load your GAPIT results
 gwas <- read.csv(
