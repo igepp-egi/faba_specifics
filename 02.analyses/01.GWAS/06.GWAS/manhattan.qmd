@@ -8,153 +8,212 @@ editor: visual
 library(ggplot2)
 library(ggrastr)
 library(dplyr)
+library(scattermore)
 ```
 
 GWAS fabae BLINK
 
 ```{r}
+library(ggplot2)
+library(dplyr)
+library(scattermore)
 
 # Load data
 gwas <- read.csv(
   "../../../../../results_with_hedin/GWAS outpout/fabae/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv"
 )
 
+# Replace zero p-values
 gwas$P.value[gwas$P.value == 0] <- 1e-300
+
+# Remove missing values
 gwas <- na.omit(gwas)
 
-gwas$Chr <- as.factor(gwas$Chr)
+# Convert variables
+gwas$Chr  <- factor(gwas$Chr)
+gwas$Pos  <- as.numeric(gwas$Pos)
 gwas$logP <- -log10(gwas$P.value)
 
 # Compute cumulative chromosome positions
 chr_sizes <- gwas %>%
   group_by(Chr) %>%
-  summarise(chr_len = max(Pos)) %>%
+  summarise(chr_len = max(Pos), .groups = "drop") %>%
   mutate(offset = lag(cumsum(chr_len), default = 0))
 
 gwas <- left_join(gwas, chr_sizes, by = "Chr")
 gwas$BPcum <- gwas$Pos + gwas$offset
 
-# Chromosome centers for x-axis labels
+# Chromosome centers
 axisdf <- gwas %>%
   group_by(Chr) %>%
-  summarise(center = (min(BPcum) + max(BPcum))/2)
+  summarise(center = (min(BPcum) + max(BPcum)) / 2,
+            .groups = "drop")
 
-axisdf$label <- c("chr1S","chr1L","chr2","chr3","chr4","chr5","chr6")
+axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
+                  "chr4", "chr5", "chr6")
 
-# Plot
-p <- ggplot(gwas,
-            aes(BPcum, logP,
-                colour = factor(as.numeric(Chr) %% 2))) +
-
-  geom_point_rast(size = 0.6, dpi = 600) +
-
+# Manhattan plot
+p <- ggplot(
+  gwas,
+  aes(
+    x = BPcum,
+    y = logP,
+    colour = factor(as.numeric(Chr) %% 2)
+  )
+) +
+  geom_scattermore(
+    pointsize = 10,
+    pixels = c(3000, 2000)
+  ) +
   scale_colour_manual(values = c("grey70", "grey40")) +
-
-  geom_hline(yintercept = -log10(5e-8),
-             colour = "grey50") +
-
+  geom_hline(
+    yintercept = -log10(5e-8),
+    colour = "grey50",
+    linetype = "dashed"
+  ) +
   scale_x_continuous(
     breaks = axisdf$center,
     labels = axisdf$label
   ) +
-
+  coord_cartesian(
+    ylim = c(0, -log10(5e-16))
+  ) +
   labs(
     x = NULL,
     y = expression(-log[10](italic(P))),
     title = "Manhattan Plot A. fabae – BLINK (Kansas)"
   ) +
-
-  coord_cartesian(ylim = c(0, -log10(5e-16))) +
-
   theme_classic() +
   theme(
     legend.position = "none",
-    panel.border = element_blank()
+    panel.border = element_blank(),
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 13),
+    plot.title = element_text(hjust = 0.5, face = "bold")
   )
+
+print(p)
 
 ggsave(
   "Manhattan_BLINK_fabae.pdf",
   p,
   width = 7,
-  height = 6,
-  device = cairo_pdf
+  height = 6
 )
+
+postscript(
+  "Manhattan_BLINK_fabae.eps",
+  width = 7,
+  height = 6,
+  onefile = FALSE,
+  horizontal = FALSE,
+  paper = "special"
+)
+
+print(p)
+
+dev.off()
 ```
 
 GWAS pisum BLINK
 
 ```{r}
-
-
-
-
 gwas <- read.csv(
-  "../../../../../results_with_hedin/GWAS outpout/pisum/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv",
-  sep = ",",
-  header = TRUE,
-  stringsAsFactors = FALSE
+  "../../../../../results_with_hedin/GWAS outpout/pisum/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv"
 )
 
+# Replace zero p-values
 gwas$P.value[gwas$P.value == 0] <- 1e-300
+
+# Remove missing values
 gwas <- na.omit(gwas)
 
-gwas$Chr <- as.factor(gwas$Chr)
+# Convert variables
+gwas$Chr  <- factor(gwas$Chr)
+gwas$Pos  <- as.numeric(gwas$Pos)
 gwas$logP <- -log10(gwas$P.value)
 
 # Compute cumulative chromosome positions
 chr_sizes <- gwas %>%
   group_by(Chr) %>%
-  summarise(chr_len = max(Pos)) %>%
+  summarise(chr_len = max(Pos), .groups = "drop") %>%
   mutate(offset = lag(cumsum(chr_len), default = 0))
 
 gwas <- left_join(gwas, chr_sizes, by = "Chr")
 gwas$BPcum <- gwas$Pos + gwas$offset
 
-# Chromosome centers for x-axis labels
+# Chromosome centers
 axisdf <- gwas %>%
   group_by(Chr) %>%
-  summarise(center = (min(BPcum) + max(BPcum))/2)
+  summarise(center = (min(BPcum) + max(BPcum)) / 2,
+            .groups = "drop")
 
-axisdf$label <- c("chr1S","chr1L","chr2","chr3","chr4","chr5","chr6")
+axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
+                  "chr4", "chr5", "chr6")
 
-# Plot
-p <- ggplot(gwas,
-            aes(BPcum, logP,
-                colour = factor(as.numeric(Chr) %% 2))) +
-
-  geom_point_rast(size = 0.6, dpi = 600) +
-
+# Manhattan plot
+p <- ggplot(
+  gwas,
+  aes(
+    x = BPcum,
+    y = logP,
+    colour = factor(as.numeric(Chr) %% 2)
+  )
+) +
+  geom_scattermore(
+    pointsize = 10,
+    pixels = c(3000, 2000)
+  ) +
   scale_colour_manual(values = c("grey70", "grey40")) +
-
-  geom_hline(yintercept = -log10(5e-8),
-             colour = "grey50") +
-
+  geom_hline(
+    yintercept = -log10(5e-8),
+    colour = "grey50",
+    linetype = "dashed"
+  ) +
   scale_x_continuous(
     breaks = axisdf$center,
     labels = axisdf$label
   ) +
-
+  coord_cartesian(
+    ylim = c(0, -log10(5e-16))
+  ) +
   labs(
     x = NULL,
     y = expression(-log[10](italic(P))),
     title = "Manhattan Plot A. pisum – BLINK (Kansas)"
   ) +
-
-  coord_cartesian(ylim = c(0, -log10(5e-16))) +
-
   theme_classic() +
   theme(
     legend.position = "none",
-    panel.border = element_blank()
+    panel.border = element_blank(),
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 13),
+    plot.title = element_text(hjust = 0.5, face = "bold")
   )
 
+print(p)
+
+# Save PDF (vector)
 ggsave(
-  "Manhattan_BLINK_pisum.pdf",
-  p,
+  filename = "Manhattan_BLINK_pisum.pdf",
+  plot = p,
+  width = 7,
+  height = 6
+)
+
+# Save EPS (vector)
+postscript(
+  "Manhattan_BLINK_pisum.eps",
   width = 7,
   height = 6,
-  device = cairo_pdf
+  horizontal = FALSE,
+  onefile = FALSE,
+  paper = "special"
 )
+
+print(p)
+
+dev.off()
 
 ```
 
@@ -168,58 +227,96 @@ gwas <- read.csv(
   stringsAsFactors = FALSE
 )
 
+# Replace zero p-values
 gwas$P.value[gwas$P.value == 0] <- 1e-300
+
+# Remove missing values
 gwas <- na.omit(gwas)
 
-gwas$Chr <- as.factor(gwas$Chr)
+# Convert variables
+gwas$Chr  <- factor(gwas$Chr)
+gwas$Pos  <- as.numeric(gwas$Pos)
 gwas$logP <- -log10(gwas$P.value)
 
 # Compute cumulative chromosome positions
 chr_sizes <- gwas %>%
   group_by(Chr) %>%
-  summarise(chr_len = max(Pos)) %>%
+  summarise(chr_len = max(Pos), .groups = "drop") %>%
   mutate(offset = lag(cumsum(chr_len), default = 0))
 
 gwas <- left_join(gwas, chr_sizes, by = "Chr")
 gwas$BPcum <- gwas$Pos + gwas$offset
 
-# Chromosome centers for x-axis labels
+# Chromosome centers
 axisdf <- gwas %>%
   group_by(Chr) %>%
-  summarise(center = (min(BPcum) + max(BPcum))/2)
+  summarise(center = (min(BPcum) + max(BPcum)) / 2,
+            .groups = "drop")
 
-axisdf$label <- c("chr1S","chr1L","chr2","chr3","chr4","chr5","chr6")
+axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
+                  "chr4", "chr5", "chr6")
 
-# Plot
-p <- ggplot(gwas,
-            aes(BPcum, logP,
-                colour = factor(as.numeric(Chr) %% 2))) +
-
-  geom_point_rast(size = 0.6, dpi = 600) +
-
+# Manhattan plot
+p <- ggplot(
+  gwas,
+  aes(
+    x = BPcum,
+    y = logP,
+    colour = factor(as.numeric(Chr) %% 2)
+  )
+) +
+  geom_scattermore(
+    pointsize = 10,
+    pixels = c(3000, 2000)
+  ) +
   scale_colour_manual(values = c("grey70", "grey40")) +
-
-  geom_hline(yintercept = -log10(5e-8),
-             colour = "grey50") +
-
+  geom_hline(
+    yintercept = -log10(5e-8),
+    colour = "grey50",
+    linetype = "dashed"
+  ) +
   scale_x_continuous(
     breaks = axisdf$center,
     labels = axisdf$label
   ) +
-
+  coord_cartesian(
+    ylim = c(0, -log10(5e-16))
+  ) +
   labs(
     x = NULL,
     y = expression(-log[10](italic(P))),
     title = "Manhattan Plot A. pisum – MLMM (Kansas)"
   ) +
-
-  coord_cartesian(ylim = c(0, -log10(5e-16))) +
-
   theme_classic() +
   theme(
     legend.position = "none",
-    panel.border = element_blank()
+    panel.border = element_blank(),
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 13),
+    plot.title = element_text(hjust = 0.5, face = "bold")
   )
+
+print(p)
+
+# Save PDF (vector)
+ggsave(
+  filename = "Manhattan_MLMM_pisum.pdf",
+  plot = p,
+  width = 7,
+  height = 6
+)
+
+# Save EPS (vector)
+postscript(
+  "Manhattan_BLINK_pisum.eps",
+  width = 7,
+  height = 6,
+  horizontal = FALSE,
+  onefile = FALSE,
+  paper = "special"
+)
+
+print(p)
 
 ggsave(
   "Manhattan_MLMM_pisum.pdf",
@@ -228,6 +325,7 @@ ggsave(
   height = 6,
   device = cairo_pdf
 )
+dev.off()
 ```
 
 ```{r}
@@ -240,65 +338,97 @@ gwas <- read.csv(
   stringsAsFactors = FALSE
 )
 
+
+# Replace zero p-values
 gwas$P.value[gwas$P.value == 0] <- 1e-300
+
+# Remove missing values
 gwas <- na.omit(gwas)
 
-gwas$Chr <- as.factor(gwas$Chr)
+# Convert variables
+gwas$Chr  <- factor(gwas$Chr)
+gwas$Pos  <- as.numeric(gwas$Pos)
 gwas$logP <- -log10(gwas$P.value)
 
 # Compute cumulative chromosome positions
 chr_sizes <- gwas %>%
   group_by(Chr) %>%
-  summarise(chr_len = max(Pos)) %>%
+  summarise(chr_len = max(Pos), .groups = "drop") %>%
   mutate(offset = lag(cumsum(chr_len), default = 0))
 
 gwas <- left_join(gwas, chr_sizes, by = "Chr")
 gwas$BPcum <- gwas$Pos + gwas$offset
 
-# Chromosome centers for x-axis labels
+# Chromosome centers
 axisdf <- gwas %>%
   group_by(Chr) %>%
-  summarise(center = (min(BPcum) + max(BPcum))/2)
+  summarise(center = (min(BPcum) + max(BPcum)) / 2,
+            .groups = "drop")
 
-axisdf$label <- c("chr1S","chr1L","chr2","chr3","chr4","chr5","chr6")
+axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
+                  "chr4", "chr5", "chr6")
 
-# Plot
-p <- ggplot(gwas,
-            aes(BPcum, logP,
-                colour = factor(as.numeric(Chr) %% 2))) +
-
-  geom_point_rast(size = 0.6, dpi = 600) +
-
+# Manhattan plot
+p <- ggplot(
+  gwas,
+  aes(
+    x = BPcum,
+    y = logP,
+    colour = factor(as.numeric(Chr) %% 2)
+  )
+) +
+  geom_scattermore(
+    pointsize = 10,
+    pixels = c(3000, 2000)
+  ) +
   scale_colour_manual(values = c("grey70", "grey40")) +
-
-  geom_hline(yintercept = -log10(5e-8),
-             colour = "grey50") +
-
+  geom_hline(
+    yintercept = -log10(5e-8),
+    colour = "grey50",
+    linetype = "dashed"
+  ) +
   scale_x_continuous(
     breaks = axisdf$center,
     labels = axisdf$label
   ) +
-
+  coord_cartesian(
+    ylim = c(0, -log10(5e-16))
+  ) +
   labs(
     x = NULL,
     y = expression(-log[10](italic(P))),
     title = "Manhattan Plot A. fabae – MLMM (Kansas)"
   ) +
-
-  coord_cartesian(ylim = c(0, -log10(5e-16))) +
-
   theme_classic() +
   theme(
     legend.position = "none",
-    panel.border = element_blank()
+    panel.border = element_blank(),
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 13),
+    plot.title = element_text(hjust = 0.5, face = "bold")
   )
 
+print(p)
+
+# Save PDF (vector)
 ggsave(
-  "Manhathan_MLMM_fabae.pdf",
-  p,
+  filename = "Manhattan_MLMM_fabae.pdf",
+  plot = p,
   width = 7,
-  height = 6,
-  device = cairo_pdf
+  height = 6
 )
 
+# Save EPS (vector)
+postscript(
+  "Manhattan_MLMM_fabae.eps",
+  width = 7,
+  height = 6,
+  horizontal = FALSE,
+  onefile = FALSE,
+  paper = "special"
+)
+
+print(p)
+
+dev.off()
 ```
