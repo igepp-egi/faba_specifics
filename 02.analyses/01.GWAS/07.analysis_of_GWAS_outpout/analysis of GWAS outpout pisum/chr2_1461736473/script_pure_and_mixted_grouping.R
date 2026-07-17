@@ -484,12 +484,16 @@ merged_df$group_id <- factor(
   levels = group_levels
 )
 
-postscript(
-  file = "boxplot_haplotype_comparison.eps",
-  width = 12.7,
-  height = 6,
-  paper = "special",
-  horizontal = FALSE)
+
+n_groups <- length(unique(merged_df$group_id))
+
+pdf(
+  file = "boxplot_haplotype_comparison_A4.pdf",
+  width = 11.69,
+  height = 8.27
+)
+
+par(mar = c(6, 5, 2, 2))
 
 boxplot(
   larvae_total_number ~ group_id,
@@ -504,7 +508,6 @@ boxplot(
 )
 
 dev.off()
-
 
 ## EXPORT HAPLOTYPE ASSIGNMENTS
 
