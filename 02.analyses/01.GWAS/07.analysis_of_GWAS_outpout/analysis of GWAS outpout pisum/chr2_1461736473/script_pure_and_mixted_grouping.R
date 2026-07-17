@@ -78,11 +78,16 @@ ld <- LDheatmap(
   genetic.distances = snp_pos_init,
   add.map = TRUE
 )
-png("LD_heatmapphysical_map.png", 2000, 1500, res = 150)
+
+gm <- ld$LDheatmapGrob
+gm$children$heatMap <- NULL
+gm$children$Key <- NULL
+gm$childrenOrder <- "geneMap"
+
+png("physical_map.png", width = 2000, height = 1500, res = 150)
+
 grid.newpage()
-pushViewport(viewport(width = 0.8, height = 0.6))
-grid.draw(ld$LDheatmapGrob$children$geneMap)
-popViewport()
+grid.draw(gm)
 
 dev.off()
 
@@ -488,7 +493,7 @@ merged_df$group_id <- factor(
 n_groups <- length(unique(merged_df$group_id))
 
 pdf(
-  file = "boxplot_haplotype_comparison_A4.pdf",
+  file = "boxplot_haplotype_comparison.pdf",
   width = 11.69,
   height = 8.27
 )
