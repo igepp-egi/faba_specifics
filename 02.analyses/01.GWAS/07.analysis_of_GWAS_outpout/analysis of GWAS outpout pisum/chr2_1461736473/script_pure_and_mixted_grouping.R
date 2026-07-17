@@ -423,12 +423,13 @@ pheatmap(
   annotation_colors = annotation_colors_big,
   show_rownames = FALSE,
   show_colnames = FALSE,
-  annotation_names_row = TRUE,
+  annotation_names_row = FALSE,   # remove "group_id"
+  annotation_legend = FALSE,      # remove annotation legend
+  legend = FALSE,                 # remove heatmap legend
   fontsize = 20,
   fontsize_row = 20,
   fontsize_col = 20,
   fontsize_number = 20,
-  main = "Big window — haplotypes",
   filename = "pheatmap_big_all.png",
   width = 13,
   height = 14
