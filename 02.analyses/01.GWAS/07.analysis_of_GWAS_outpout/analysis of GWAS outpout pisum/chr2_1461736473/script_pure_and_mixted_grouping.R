@@ -9,6 +9,7 @@ library(vcfR)
 library(snpStats)
 library(LDheatmap)
 library(tibble)
+library(grid)
 
 
 ## LD HEATMAP — BIG WINDOW----
@@ -59,8 +60,33 @@ gdat_init <- as(gdat_init, "SnpMatrix")
 custom_colors <- colorRampPalette(c("black","darkred","red","orange","yellow","white"))(100)
 
 png("LD_heatmap_big_window.png", 1200, 1200, res = 150)
-LDheatmap(gdat_init, color = custom_colors, genetic.distances = snp_pos_init, add.map=TRUE)
+LDheatmap(
+  gdat_init,
+  color = custom_colors,
+  genetic.distances = snp_pos_init,
+  add.map = TRUE,
+  add.key = FALSE,          # remove the color key
+  geneMapLocation = FALSE   # remove the "Physical Length" scale
+)
 dev.off()
+
+
+
+ld <- LDheatmap(
+  gdat_init,
+  color = custom_colors,
+  genetic.distances = snp_pos_init,
+  add.map = TRUE
+)
+png("LD_heatmapphysical_map.png", 2000, 1500, res = 150)
+grid.newpage()
+pushViewport(viewport(width = 0.8, height = 0.6))
+grid.draw(ld$LDheatmapGrob$children$geneMap)
+popViewport()
+
+dev.off()
+
+
 
 ## LD HEATMAP — SMALL WINDOW----
 # based on LD:
