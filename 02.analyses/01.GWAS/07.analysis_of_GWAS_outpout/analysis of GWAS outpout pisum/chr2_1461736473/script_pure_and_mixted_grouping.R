@@ -521,6 +521,10 @@ annotation_export <- annotation_box
 
 names(annotation_export)[2] <- paste0(chrM, "_", left_small)
 
+annotation_export$chr2_1461736473 <- ifelse(annotation_export$chr2_1461736473 == "haplotype_1",
+                         "Favorable",
+                         "Unfavorable")
+
 write.csv(
   annotation_export,
   paste0("haplo_", chrM, "_", left_small, ".csv"),
