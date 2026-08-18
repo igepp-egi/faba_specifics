@@ -10,8 +10,8 @@ emmean_pisum <- read.csv("../../../../02.analyses/01.GWAS/01_phenotipic_analysis
   
 merge_pisum_emmean<-merge(groups,emmean_pisum, by ="ivip", all.x = TRUE)
 merge_fabae_emmean<-merge(groups,emmean_fabae, by ="ivip", all.x = TRUE)
-merge_pisum_emmean$groups <- as.factor(merge_pisum$groups)
-merge_fabae_emmean$groups <- as.factor(merge_fabae$groups)
+merge_pisum_emmean$groups <- as.factor(merge_pisum_emmean$groups)
+merge_fabae_emmean$groups <- as.factor(merge_fabae_emmean$groups)
 
 # Pisum
 postscript(
@@ -25,9 +25,10 @@ postscript(
 boxplot(
   emmean ~ groups,
   data = merge_pisum_emmean,
+  outline = FALSE,
   main = "Boxplot of aphid count by Group",
   xlab = "Group",
-  ylab = "aphid count",
+  ylab = "Ajusted mean of aphid count for each genotypes",
   col = "grey"
 )
 
@@ -36,7 +37,7 @@ stripchart(
   data = merge_pisum_emmean,
   vertical = TRUE,
   method = "jitter",
-  pch = 14,
+  pch = 1,
   col = "black",
   add = TRUE
 )
@@ -56,9 +57,10 @@ postscript(
 boxplot(
   emmean ~ groups,
   data = merge_fabae_emmean,
+  outline = FALSE,
   main = "Boxplot of aphid count by Group",
   xlab = "Group",
-  ylab = "aphid count",
+  ylab = "Ajusted mean of aphid count for each genotypes",
   col = "grey"
 )
 
@@ -67,7 +69,7 @@ stripchart(
   data = merge_fabae_emmean,
   vertical = TRUE,
   method = "jitter",
-  pch = 14,
+  pch = 1,
   col = "black",
   add = TRUE
 )

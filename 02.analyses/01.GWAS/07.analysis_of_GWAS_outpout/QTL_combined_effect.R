@@ -127,4 +127,6 @@ letters_pisum
 all_haplotype<- merge(merge_haplotype_pisum, merge_haplotype_fabae, by = "ivip", all = TRUE)
 all_haplotype_group <- merge(all_haplotype, cluster, by = "ivip", all = TRUE)
 all_haplotype_group <- all_haplotype_group[!is.na(all_haplotype_group$group), ]
+write.xlsx(all_haplotype_group,"../../../02.analyses/01.GWAS/07.analysis_of_GWAS_outpout/all_haplotype_group_emmean.xls")
+
 
