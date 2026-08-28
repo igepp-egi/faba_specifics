@@ -5,105 +5,219 @@ editor: visual
 ---
 
 ```{r}
-library(qqman)
+library(ggplot2)
+library(ggrastr)
+library(dplyr)
+library(scattermore)
 ```
 
 GWAS fabae BLINK
 
 ```{r}
-png( filename = "Manhathan_BLINK_fabae.png", width = 2000, height = 1800, res = 300 )
+library(ggplot2)
+library(dplyr)
+library(scattermore)
 
-# 2. Load your GAPIT results
+# Load data
 gwas <- read.csv(
-  "../../../../../results_with_hedin/GWAS outpout/fabae/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv",
-  sep = ",",
-  header = TRUE,
-  stringsAsFactors = FALSE
+  "../../../../../results_with_hedin/GWAS outpout/fabae/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv"
 )
 
-# 3. Handle zero p-values
+# Replace zero p-values
 gwas$P.value[gwas$P.value == 0] <- 1e-300
 
-# 4. Make sure chromosome is numeric for qqman
-gwas$Chr <- as.numeric(gwas$Chr)
-
-# 5. Optional: Remove NAs
+# Remove missing values
 gwas <- na.omit(gwas)
 
-# 6. Define custom labels (optional, for x-axis)
-chr_labels <- c("1" = "chr1S", "2" = "chr1L", "3" = "chr2",
-                "4" = "chr3", "5" = "chr4", "6" = "chr5", "7" = "chr6")
+# Convert variables
+gwas$Chr  <- factor(gwas$Chr)
+gwas$Pos  <- as.numeric(gwas$Pos)
+gwas$logP <- -log10(gwas$P.value)
 
-# 7. Manhattan plot
-manhattan(
+# Compute cumulative chromosome positions
+chr_sizes <- gwas %>%
+  group_by(Chr) %>%
+  summarise(chr_len = max(Pos), .groups = "drop") %>%
+  mutate(offset = lag(cumsum(chr_len), default = 0))
+
+gwas <- left_join(gwas, chr_sizes, by = "Chr")
+gwas$BPcum <- gwas$Pos + gwas$offset
+
+# Chromosome centers
+axisdf <- gwas %>%
+  group_by(Chr) %>%
+  summarise(center = (min(BPcum) + max(BPcum)) / 2,
+            .groups = "drop")
+
+axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
+                  "chr4", "chr5", "chr6")
+
+# Manhattan plot
+p <- ggplot(
   gwas,
-  chr = "Chr",
-  bp = "Pos",
-  p = "P.value",
-  snp = "SNP",
-  col = c("grey70", "grey40"),
-  suggestiveline = FALSE,
-  genomewideline = FALSE,   # do NOT draw the default red line
-  ylim = c(0, -log10(5e-16)),
-  cex = 0.5, 
-  main = "Manhattan Plot A.fabae - BLINK (Kansas)",
-  chrlabs = chr_labels  # this will replace 1,2,3,... with your labels
+  aes(
+    x = BPcum,
+    y = logP,
+    colour = factor(as.numeric(Chr) %% 2)
+  )
+) +
+  geom_scattermore(
+    pointsize = 10,
+    pixels = c(3000, 2000)
+  ) +
+  scale_colour_manual(values = c("grey70", "grey40")) +
+  geom_hline(
+    yintercept = -log10(5e-8),
+    colour = "grey50",
+    linetype = "dashed"
+  ) +
+  scale_x_continuous(
+    breaks = axisdf$center,
+    labels = axisdf$label
+  ) +
+  coord_cartesian(
+    ylim = c(0, -log10(5e-16))
+  ) +
+  labs(
+    x = NULL,
+    y = expression(-log[10](italic(P))),
+    title = "Manhattan Plot A. fabae – BLINK (Kansas)"
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    panel.border = element_blank(),
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 13),
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+
+print(p)
+
+ggsave(
+  "Manhattan_BLINK_fabae.pdf",
+  p,
+  width = 7,
+  height = 6
 )
 
-# 2. Add a grey genome-wide threshold line manually
-abline(h = -log10(5e-8), col = "grey50", lwd = 1, lty = 1)
+postscript(
+  "Manhattan_BLINK_fabae.eps",
+  width = 7,
+  height = 6,
+  onefile = FALSE,
+  horizontal = FALSE,
+  paper = "special"
+)
+
+print(p)
 
 dev.off()
 ```
-GWAS fabae BLINK
-```{r}
-png( filename = "Manhathan_BLINK_pisum.png", width = 2000, height = 1800, res = 300 )
 
-# 2. Load your GAPIT results
+GWAS pisum BLINK
+
+```{r}
 gwas <- read.csv(
-  "../../../../../results_with_hedin/GWAS outpout/pisum/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv",
-  sep = ",",
-  header = TRUE,
-  stringsAsFactors = FALSE
+  "../../../../../results_with_hedin/GWAS outpout/pisum/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv"
 )
 
-# 3. Handle zero p-values
+# Replace zero p-values
 gwas$P.value[gwas$P.value == 0] <- 1e-300
 
-# 4. Make sure chromosome is numeric for qqman
-gwas$Chr <- as.numeric(gwas$Chr)
-
-# 5. Optional: Remove NAs
+# Remove missing values
 gwas <- na.omit(gwas)
 
-# 6. Define custom labels (optional, for x-axis)
-chr_labels <- c("1" = "chr1S", "2" = "chr1L", "3" = "chr2",
-                "4" = "chr3", "5" = "chr4", "6" = "chr5", "7" = "chr6")
+# Convert variables
+gwas$Chr  <- factor(gwas$Chr)
+gwas$Pos  <- as.numeric(gwas$Pos)
+gwas$logP <- -log10(gwas$P.value)
 
-# 7. Manhattan plot
-manhattan(
+# Compute cumulative chromosome positions
+chr_sizes <- gwas %>%
+  group_by(Chr) %>%
+  summarise(chr_len = max(Pos), .groups = "drop") %>%
+  mutate(offset = lag(cumsum(chr_len), default = 0))
+
+gwas <- left_join(gwas, chr_sizes, by = "Chr")
+gwas$BPcum <- gwas$Pos + gwas$offset
+
+# Chromosome centers
+axisdf <- gwas %>%
+  group_by(Chr) %>%
+  summarise(center = (min(BPcum) + max(BPcum)) / 2,
+            .groups = "drop")
+
+axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
+                  "chr4", "chr5", "chr6")
+
+# Manhattan plot
+p <- ggplot(
   gwas,
-  chr = "Chr",
-  bp = "Pos",
-  p = "P.value",
-  snp = "SNP",
-  col = c("grey70", "grey40"),
-  suggestiveline = FALSE,
-  genomewideline = FALSE,   # do NOT draw the default red line
-  ylim = c(0, -log10(5e-16)),
-  cex = 0.5, 
-  main = "Manhattan Plot A.fabae - BLINK (Kansas)",
-  chrlabs = chr_labels  # this will replace 1,2,3,... with your labels
+  aes(
+    x = BPcum,
+    y = logP,
+    colour = factor(as.numeric(Chr) %% 2)
+  )
+) +
+  geom_scattermore(
+    pointsize = 10,
+    pixels = c(3000, 2000)
+  ) +
+  scale_colour_manual(values = c("grey70", "grey40")) +
+  geom_hline(
+    yintercept = -log10(5e-8),
+    colour = "grey50",
+    linetype = "dashed"
+  ) +
+  scale_x_continuous(
+    breaks = axisdf$center,
+    labels = axisdf$label
+  ) +
+  coord_cartesian(
+    ylim = c(0, -log10(5e-16))
+  ) +
+  labs(
+    x = NULL,
+    y = expression(-log[10](italic(P))),
+    title = "Manhattan Plot A. pisum – BLINK (Kansas)"
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    panel.border = element_blank(),
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 13),
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+
+print(p)
+
+# Save PDF (vector)
+ggsave(
+  filename = "Manhattan_BLINK_pisum.pdf",
+  plot = p,
+  width = 7,
+  height = 6
 )
 
-# 2. Add a grey genome-wide threshold line manually
-abline(h = -log10(5e-8), col = "grey50", lwd = 1, lty = 1)
+# Save EPS (vector)
+postscript(
+  "Manhattan_BLINK_pisum.eps",
+  width = 7,
+  height = 6,
+  horizontal = FALSE,
+  onefile = FALSE,
+  paper = "special"
+)
+
+print(p)
 
 dev.off()
+
 ```
 
 ```{r}
-png( filename = "Manhathan_MLMM_pisum.png", width = 2000, height = 1800, res = 300 )
 
 # 2. Load your GAPIT results
 gwas <- read.csv(
@@ -113,60 +227,108 @@ gwas <- read.csv(
   stringsAsFactors = FALSE
 )
 
-# 3. Handle zero p-values
+# Replace zero p-values
 gwas$P.value[gwas$P.value == 0] <- 1e-300
 
-levels_order <- c(
-  "chr1S",
-  "chr1L",
-  "chr2",
-  "chr3",
-  "chr4",
-  "chr5",
-  "chr6"
-)
-
-gwas$Chr <- as.numeric(
-  factor(gwas$Chr, levels = levels_order)
-)
-# 4. Make sure chromosome is numeric for qqman
-gwas$Chr <- as.numeric(gwas$Chr)
-
-# 5. Optional: Remove NAs
+# Remove missing values
 gwas <- na.omit(gwas)
 
-# 6. Define custom labels (optional, for x-axis)
-chr_labels <- c("1" = "chr1S", "2" = "chr1L", "3" = "chr2",
-                "4" = "chr3", "5" = "chr4", "6" = "chr5", "7" = "chr6")
+# Convert variables
+gwas$Chr  <- factor(gwas$Chr)
+gwas$Pos  <- as.numeric(gwas$Pos)
+gwas$logP <- -log10(gwas$P.value)
 
-# 7. Manhattan plot
-manhattan(
+# Compute cumulative chromosome positions
+chr_sizes <- gwas %>%
+  group_by(Chr) %>%
+  summarise(chr_len = max(Pos), .groups = "drop") %>%
+  mutate(offset = lag(cumsum(chr_len), default = 0))
+
+gwas <- left_join(gwas, chr_sizes, by = "Chr")
+gwas$BPcum <- gwas$Pos + gwas$offset
+
+# Chromosome centers
+axisdf <- gwas %>%
+  group_by(Chr) %>%
+  summarise(center = (min(BPcum) + max(BPcum)) / 2,
+            .groups = "drop")
+
+axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
+                  "chr4", "chr5", "chr6")
+
+# Manhattan plot
+p <- ggplot(
   gwas,
-  chr = "Chr",
-  bp = "Pos",
-  p = "P.value",
-  snp = "SNP",
-  col = c("grey70", "grey40"),
-  suggestiveline = FALSE,
-  genomewideline = FALSE,   # do NOT draw the default red line
-  ylim = c(0, -log10(5e-16)),
-  cex = 0.5, 
-  main = "Manhattan Plot A.pisum - MLMM (Kansas)",
-  chrlabs = chr_labels  # this will replace 1,2,3,... with your labels
+  aes(
+    x = BPcum,
+    y = logP,
+    colour = factor(as.numeric(Chr) %% 2)
+  )
+) +
+  geom_scattermore(
+    pointsize = 10,
+    pixels = c(3000, 2000)
+  ) +
+  scale_colour_manual(values = c("grey70", "grey40")) +
+  geom_hline(
+    yintercept = -log10(5e-8),
+    colour = "grey50",
+    linetype = "dashed"
+  ) +
+  scale_x_continuous(
+    breaks = axisdf$center,
+    labels = axisdf$label
+  ) +
+  coord_cartesian(
+    ylim = c(0, -log10(5e-16))
+  ) +
+  labs(
+    x = NULL,
+    y = expression(-log[10](italic(P))),
+    title = "Manhattan Plot A. pisum – MLMM (Kansas)"
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    panel.border = element_blank(),
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 13),
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+
+print(p)
+
+# Save PDF (vector)
+ggsave(
+  filename = "Manhattan_MLMM_pisum.pdf",
+  plot = p,
+  width = 7,
+  height = 6
 )
 
-# 2. Add a grey genome-wide threshold line manually
-abline(h = -log10(5e-8), col = "grey50", lwd = 1, lty = 1)
+# Save EPS (vector)
+postscript(
+  "Manhattan_BLINK_pisum.eps",
+  width = 7,
+  height = 6,
+  horizontal = FALSE,
+  onefile = FALSE,
+  paper = "special"
+)
 
+print(p)
+
+ggsave(
+  "Manhattan_MLMM_pisum.pdf",
+  p,
+  width = 7,
+  height = 6,
+  device = cairo_pdf
+)
 dev.off()
-
 ```
 
-
-
-
 ```{r}
-png( filename = "Manhathan_MLMM_fabae.png", width = 2000, height = 1800, res = 300 )
 
 # 2. Load your GAPIT results
 gwas <- read.csv(
@@ -176,52 +338,97 @@ gwas <- read.csv(
   stringsAsFactors = FALSE
 )
 
-# 3. Handle zero p-values
+
+# Replace zero p-values
 gwas$P.value[gwas$P.value == 0] <- 1e-300
 
-
-levels_order <- c(
-  "chr1S",
-  "chr1L",
-  "chr2",
-  "chr3",
-  "chr4",
-  "chr5",
-  "chr6"
-)
-
-gwas$Chr <- as.numeric(
-  factor(gwas$Chr, levels = levels_order)
-)
-
-# 4. Make sure chromosome is numeric for qqman
-gwas$Chr <- as.numeric(gwas$Chr)
-
-# 5. Optional: Remove NAs
+# Remove missing values
 gwas <- na.omit(gwas)
 
-# 6. Define custom labels (optional, for x-axis)
-chr_labels <- c("1" = "chr1S", "2" = "chr1L", "3" = "chr2",
-                "4" = "chr3", "5" = "chr4", "6" = "chr5", "7" = "chr6")
+# Convert variables
+gwas$Chr  <- factor(gwas$Chr)
+gwas$Pos  <- as.numeric(gwas$Pos)
+gwas$logP <- -log10(gwas$P.value)
 
-# 7. Manhattan plot
-manhattan(
+# Compute cumulative chromosome positions
+chr_sizes <- gwas %>%
+  group_by(Chr) %>%
+  summarise(chr_len = max(Pos), .groups = "drop") %>%
+  mutate(offset = lag(cumsum(chr_len), default = 0))
+
+gwas <- left_join(gwas, chr_sizes, by = "Chr")
+gwas$BPcum <- gwas$Pos + gwas$offset
+
+# Chromosome centers
+axisdf <- gwas %>%
+  group_by(Chr) %>%
+  summarise(center = (min(BPcum) + max(BPcum)) / 2,
+            .groups = "drop")
+
+axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
+                  "chr4", "chr5", "chr6")
+
+# Manhattan plot
+p <- ggplot(
   gwas,
-  chr = "Chr",
-  bp = "Pos",
-  p = "P.value",
-  snp = "SNP",
-  col = c("grey70", "grey40"),
-  suggestiveline = FALSE,
-  genomewideline = FALSE,   # do NOT draw the default red line
-  ylim = c(0, -log10(5e-16)),
-  cex = 0.5, 
-  main = "Manhattan Plot A.fabae - MLMM",
-  chrlabs = chr_labels  # this will replace 1,2,3,... with your labels
+  aes(
+    x = BPcum,
+    y = logP,
+    colour = factor(as.numeric(Chr) %% 2)
+  )
+) +
+  geom_scattermore(
+    pointsize = 10,
+    pixels = c(3000, 2000)
+  ) +
+  scale_colour_manual(values = c("grey70", "grey40")) +
+  geom_hline(
+    yintercept = -log10(5e-8),
+    colour = "grey50",
+    linetype = "dashed"
+  ) +
+  scale_x_continuous(
+    breaks = axisdf$center,
+    labels = axisdf$label
+  ) +
+  coord_cartesian(
+    ylim = c(0, -log10(5e-16))
+  ) +
+  labs(
+    x = NULL,
+    y = expression(-log[10](italic(P))),
+    title = "Manhattan Plot A. fabae – MLMM (Kansas)"
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "none",
+    panel.border = element_blank(),
+    axis.text = element_text(size = 11),
+    axis.title = element_text(size = 13),
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  )
+
+print(p)
+
+# Save PDF (vector)
+ggsave(
+  filename = "Manhattan_MLMM_fabae.pdf",
+  plot = p,
+  width = 7,
+  height = 6
 )
 
-# 2. Add a grey genome-wide threshold line manually
-abline(h = -log10(5e-8), col = "grey50", lwd = 1, lty = 1)
+# Save EPS (vector)
+postscript(
+  "Manhattan_MLMM_fabae.eps",
+  width = 7,
+  height = 6,
+  horizontal = FALSE,
+  onefile = FALSE,
+  paper = "special"
+)
+
+print(p)
 
 dev.off()
 ```

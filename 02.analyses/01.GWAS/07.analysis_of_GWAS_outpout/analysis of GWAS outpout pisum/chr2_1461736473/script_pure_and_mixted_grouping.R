@@ -1,8 +1,5 @@
-############################################################
+## LIBRARIES ----
 
-## LIBRARIES
-
-############################################################
 library(data.table)
 library(dplyr)
 library(tidyr)
@@ -12,28 +9,18 @@ library(vcfR)
 library(snpStats)
 library(LDheatmap)
 library(tibble)
+library(grid)
 
-############################################################
 
-## PARAMETERS
-
-############################################################
+## LD HEATMAP — BIG WINDOW----
 chrM <- "chr2"
 min_group_size <- 10
-
-# small window 1461745735 1461745994
-
-left_small  <- 1461736473
-right_small <- 1461745994
 
 # big window
 
 left_big  <- 1461732669
 right_big <- 1461746839
 
-############################################################
-
-############################################################
 vcf <- read.vcfR(
   "../../../../../../../files_too_heavy_for_git/pisum/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin2.vcf"
 )
@@ -53,11 +40,7 @@ convertToNumeric <- function(x) {
   gdat
 }
 
-############################################################
 
-## LD HEATMAP — BIG WINDOW (UNCHANGED)
-
-############################################################
 keep_init <- fix[, "CHROM"] == chrM &
   as.numeric(fix[, "POS"]) >= left_big &
   as.numeric(fix[, "POS"]) <= right_big
@@ -77,14 +60,45 @@ gdat_init <- as(gdat_init, "SnpMatrix")
 custom_colors <- colorRampPalette(c("black","darkred","red","orange","yellow","white"))(100)
 
 png("LD_heatmap_big_window.png", 1200, 1200, res = 150)
-LDheatmap(gdat_init, color = custom_colors, genetic.distances = snp_pos_init, add.map=TRUE)
+LDheatmap(
+  gdat_init,
+  color = custom_colors,
+  genetic.distances = snp_pos_init,
+  add.map = TRUE,
+  add.key = FALSE,          # remove the color key
+  geneMapLocation = FALSE   # remove the "Physical Length" scale
+)
 dev.off()
 
-############################################################
 
-## LD HEATMAP — SMALL WINDOW (UNCHANGED)
 
-############################################################
+ld <- LDheatmap(
+  gdat_init,
+  color = custom_colors,
+  genetic.distances = snp_pos_init,
+  add.map = TRUE
+)
+
+gm <- ld$LDheatmapGrob
+gm$children$heatMap <- NULL
+gm$children$Key <- NULL
+gm$childrenOrder <- "geneMap"
+
+png("physical_map.png", width = 2000, height = 1500, res = 150)
+
+grid.newpage()
+grid.draw(gm)
+
+dev.off()
+
+
+
+## LD HEATMAP — SMALL WINDOW----
+# based on LD:
+left_small  <- 1461736473
+right_small <- 1461745994
+
+
 keep_init <- fix[, "CHROM"] == chrM &
   as.numeric(fix[, "POS"]) >= left_small &
   as.numeric(fix[, "POS"]) <= right_small
@@ -105,11 +119,8 @@ png("LD_heatmap_small_window.png", 1200, 1200, res = 150)
 LDheatmap(gdat_init, color = custom_colors, genetic.distances = snp_pos_init, add.map=TRUE)
 dev.off()
 
-############################################################
+## LOAD TSV ----
 
-## LOAD TSV
-
-############################################################
 df <- fread(
   "../../../../../../../files_too_heavy_for_git/pisum/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin2.tsv"
 )
@@ -137,164 +148,230 @@ df_small_num <- as.data.frame(lapply(df_small, function(x) sapply(x, geno_to_num
 df_small_t <- t(df_small_num)
 rownames(df_small_t) <- colnames(df_small)
 colnames(df_small_t) <- snp_ids_small
+## PHASED HAPLOTYPE ANALYSIS ----
 
-############################################################
+df_phase <- as.matrix(df_small)
+rownames(df_phase) <- snp_ids_small
+df_phase <- t(df_phase)
 
-## HAPLOTYPE GROUPS (UNCHANGED LOGIC)
 
-############################################################
-haplotypes <- apply(df_small_t, 1, paste, collapse = "_")
+## SPLIT INTO THE TWO PHASED HAPLOTYPES
 
-############################################################
-## HAPLOTYPE GROUPING (1 == 2 LOGIC)
-############################################################
-
-# --- STEP 1: collapse genotypes treating 1 as 2 ---
-df_binary <- df_small_t
-df_binary[df_binary == 1] <- 2   # IMPORTANT: merge 1 into 2
-
-haplotypes <- apply(df_binary, 1, paste, collapse = "_")
-
-############################################################
-## STEP 1 — ORIGINAL EXACT MATCH GROUPS (haplotype BASELINE)
-############################################################
-
-hap_raw <- apply(df_small_t, 1, paste, collapse = "_")
-
-df_groups <- data.frame(
-  ivip = rownames(df_small_t),
-  haplotype = hap_raw
+hapA <- matrix(
+  NA,
+  nrow = nrow(df_phase),
+  ncol = ncol(df_phase),
+  dimnames = dimnames(df_phase)
 )
 
-df_groups_summary <- df_groups %>%
-  group_by(haplotype) %>%
-  summarise(
-    group_size = n(),
-    .groups = "drop"
-  ) %>%
-  filter(group_size >= min_group_size) %>%
-  mutate(group_id = paste0("haplotype_", row_number()))
+hapB <- hapA
 
-df_groups_haplotype <- df_groups %>%
-  inner_join(df_groups_summary, by = "haplotype")
+for(i in seq_len(nrow(df_phase))){
+  for(j in seq_len(ncol(df_phase))){
+    
+    alleles <- strsplit(df_phase[i,j], "\\|")[[1]]
+    
+    hapA[i,j] <- alleles[1]
+    hapB[i,j] <- alleles[2]
+  }
+}
 
-############################################################
-## STEP 2 — FIND UNGROUPED IVIPs
-############################################################
 
-ungrouped_ivip <- setdiff(rownames(df_small_t), df_groups_haplotype$ivip)
+## CREATE CHROMOSOME HAPLOTYPES
 
-df_ungrouped <- df_small_t[ungrouped_ivip, , drop = FALSE]
 
-############################################################
-## STEP 3 — RE-GROUP UNGROUPED (1 == 2 LOGIC)
-############################################################
+hapA_string <- apply(hapA, 1, paste, collapse = "_")
+hapB_string <- apply(hapB, 1, paste, collapse = "_")
 
-df_binary <- df_ungrouped
-df_binary[df_binary == 1] <- 2
 
-hap_binary <- apply(df_binary, 1, paste, collapse = "_")
+## FIND MOST COMMON HAPLOTYPE STARTING WITH 1
 
-df_groups2 <- data.frame(
-  ivip = rownames(df_ungrouped),
-  haplotype = hap_binary
+
+all_haps <- data.frame(
+  haplotype = c(hapA_string, hapB_string)
 )
 
-df_groups2_summary <- df_groups2 %>%
-  group_by(haplotype) %>%
-  summarise(
-    group_size = n(),
-    .groups = "drop"
-  ) %>%
-  filter(group_size >= min_group_size) %>%
-  mutate(group_id = paste0("Rescued_", row_number()))
+reference_haplotype <- all_haps %>%
+  filter(substr(haplotype,1,1)=="1") %>%
+  count(haplotype, sort=TRUE) %>%
+  slice(1) %>%
+  pull(haplotype)
 
-df_groups_rescued <- df_groups2 %>%
-  inner_join(df_groups2_summary, by = "haplotype")
+reference_vector <- strsplit(reference_haplotype,"_")[[1]]
 
 
-############################################################
-## STEP 4 — MERGE haplotype + RESCUED GROUPS
-############################################################
+## CLASSIFY INDIVIDUALS
 
-df_groups_filtered <- bind_rows(
-  df_groups_haplotype,
-  df_groups_rescued
-) %>%
-  dplyr::select(ivip, haplotype, group_id)
-
-df_groups_filtered$group_id[df_groups_filtered$group_id == "Rescued_1"] <- "haplotype_6"
-############################################################
-
-
-
-
-############################################################
-## SMALL HEATMAP (GROUP ONLY — CLEAN)
-############################################################
-df_small_selected <- df_small_t[df_groups_filtered$ivip, , drop = FALSE]
-
-annotation1 <- df_groups_filtered %>%
-  column_to_rownames("ivip")
-
-annotation1$group_id <- as.factor(annotation1$group_id)
-
-############################################################
-## DEFINE ONE SHARED COLOR MAP (USED EVERYWHERE)
-############################################################
-library(RColorBrewer)
-
-group_levels_all <- sort(unique(annotation1$group_id))
-
-group_colors <- setNames(
-  colorRampPalette(brewer.pal(8, "Set2"))(length(group_levels_all)),
-  group_levels_all
+df_groups_filtered <- data.frame(
+  ivip = rownames(df_phase),
+  group_id = "other",
+  stringsAsFactors = FALSE
 )
 
-annotation_colors <- list(
-  group_id = group_colors
-)
+for(i in seq_len(nrow(df_phase))){
+  
+  matchA <- all(hapA[i,] == reference_vector)
+  matchB <- all(hapB[i,] == reference_vector)
+  
+  if(matchA & matchB){
+    
+    df_groups_filtered$group_id[i] <- "homozygous"
+    
+  } else if(xor(matchA, matchB)){
+    
+    df_groups_filtered$group_id[i] <- "heterozygous"
+    
+  }
+  
+}
 
-############################################################
-## SMALL HEATMAP
-############################################################
-pheatmap(
-  df_small_selected,
-  clustering_distance_rows = "euclidean",
-  clustering_distance_cols = "euclidean",
-  clustering_method = "average",
-  cluster_cols = FALSE,
-  annotation_row = annotation1["group_id"],
-  annotation_colors = annotation_colors,
-  show_rownames = FALSE,
-  main = "Small window — groups ≥10",
-  filename = "pheatmap_small_groups.png",
-  width = 10,
-  height = 12
+
+
+pheno <- read.csv("../../../../01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv", sep =",")
+
+merge<-merge(df_groups_filtered,pheno, by ="ivip", all.x = TRUE)
+merge$group_id <- as.factor(merge$group_id)
+
+
+# For pisum
+mod <- lm(larvae_total_number ~ group_id + session/block, data = merge)
+anova <- anova(mod)
+print(anova)
+
+# Run Tukey HSD
+tukey_pisum <- TukeyHSD(aov(larvae_total_number ~ group_id, data = merge))
+print(tukey_pisum)
+
+
+emmean<-read.csv("../../../../01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum_6.csv", sep =",")
+merge_emmean<-merge(df_groups_filtered,emmean, by ="ivip", all.x = TRUE)
+merge_emmean$groups_id <- as.factor(merge_emmean$group_id)
+
+boxplot(
+  emmean ~ group_id,
+  data = merge_emmean,
+  main = "Boxplot of aphid count by Group",
+  xlab = "Group",
+  ylab = "aphid count",
+  col = "grey"
 )
 
 
-############################################################
+## HAPLOTYPE ANALYSIS ----
+
+## LOAD BIG WINDOW
+
 df_big <- df %>%
-  separate(snp_id, into = c("chromosome", "position"), sep = "_", convert = TRUE) %>%
-  filter(chromosome == chrM,
-         position >= left_big,
-         position <= right_big) %>% mutate(snp_id = paste0(chromosome, "_", position))
+  separate(snp_id, into = c("chromosome", "position"),
+           sep = "_", convert = TRUE) %>%
+  filter(
+    chromosome == chrM,
+    position >= left_big,
+    position <= right_big
+  ) %>%
+  mutate(snp_id = paste0(chromosome, "_", position))
 
 snp_ids_big <- df_big$snp_id
 
 df_big <- df_big %>%
   dplyr::select(-chromosome, -position, -snp_id)
 
-df_big_num <- as.data.frame(lapply(df_big, function(x) sapply(x, geno_to_num)))
+df_big_num <- as.data.frame(
+  lapply(df_big, function(x) sapply(x, geno_to_num))
+)
+
 df_big_t <- t(df_big_num)
+
 rownames(df_big_t) <- colnames(df_big)
 colnames(df_big_t) <- snp_ids_big
 
 
-############################################################
-## MANUAL GROUP ORDER 
-############################################################
+
+## CREATE HAPLOTYPE GROUPS
+
+
+## Exact haplotypes
+hap_raw <- apply(df_small_t, 1, paste, collapse = "_")
+
+df_groups_joint <- data.frame(
+  ivip = rownames(df_small_t),
+  haplotype = hap_raw,
+  stringsAsFactors = FALSE
+)
+
+
+## FIND REFERENCE (MOST COMMON HAPLOTYPE STARTING WITH 2)
+
+
+hap_summary <- df_groups_joint %>%
+  count(haplotype, sort = TRUE) %>%
+  mutate(first_snp = sub("_.*", "", haplotype))
+
+reference_haplotype <- hap_summary %>%
+  filter(first_snp == "2") %>%
+  slice(1) %>%
+  pull(haplotype)
+
+reference_vector <- strsplit(reference_haplotype, "_")[[1]]
+
+
+## COLLAPSE HOMOZYGOUS + HETEROZYGOUS
+
+for(i in seq_len(nrow(df_groups_joint))){
+  
+  hap <- strsplit(df_groups_joint$haplotype[i], "_")[[1]]
+  
+  ## Only haplotypes beginning with 2 can belong
+  ## to the reference group
+  if(hap[1] == "2"){
+    
+    hap_test <- hap
+    hap_test[hap_test == "1"] <- "2"
+    
+    if(all(hap_test == reference_vector)){
+      df_groups_joint$haplotype[i] <- reference_haplotype
+    }
+  }
+  
+}
+
+
+## CREATE GROUPS
+
+
+df_groups_joint_summary <- df_groups_joint %>%
+  group_by(haplotype) %>%
+  summarise(
+    group_size = n(),
+    .groups = "drop"
+  )
+
+## Common haplotypes
+df_groups_joint_summary <- df_groups_joint_summary %>%
+  filter(group_size >= min_group_size) %>%
+  arrange(desc(group_size)) %>%
+  mutate(group_id = paste0("haplotype_", row_number()))
+
+df_groups_joint_filtered <- df_groups_joint %>%
+  left_join(df_groups_joint_summary, by = "haplotype")
+
+## Pool rare haplotypes
+df_groups_joint_filtered$group_id[is.na(df_groups_joint_filtered$group_id)] <- "other"
+
+df_groups_joint_filtered <- df_groups_joint_filtered %>%
+  dplyr::select(ivip, haplotype, group_id)
+
+## RENAME HAPLOTYPES
+
+df_groups_joint_filtered$group_id <- recode(
+  df_groups_joint_filtered$group_id,
+  "haplotype_4" = "haplotype_1",
+  "haplotype_6" = "haplotype_4",
+  "haplotype_1" = "haplotype_6")
+
+
+## DEFINE PHEATMAP GROUP ORDER
+
 
 group_levels <- c(
   "haplotype_1",
@@ -302,72 +379,73 @@ group_levels <- c(
   "haplotype_3",
   "haplotype_4",
   "haplotype_5",
-  "haplotype_6"
+  "haplotype_6",
+  "other"
 )
 
-# safety: keep only groups that actually exist
-group_levels <- group_levels[group_levels %in% unique(df_groups_filtered$group_id)]
+# keep only groups present
+group_levels <- group_levels[
+  group_levels %in% unique(df_groups_joint_filtered$group_id)
+]
 
-grouped_order <- c()
 
-for (g in group_levels) {
-  ivips_g <- df_groups_filtered %>%
+
+## ORDER INDIVIDUALS BY HAPLOTYPE GROUP
+
+
+ordered_ivips <- character(0)
+
+for(g in group_levels){
+  
+  ivips_g <- df_groups_joint_filtered %>%
     filter(group_id == g) %>%
     pull(ivip)
   
-  if (length(ivips_g) > 2) {
+  # cluster individuals inside each haplotype
+  if(length(ivips_g) > 2){
+    
     hc <- hclust(dist(df_big_t[ivips_g, ]))
     ivips_g <- hc$labels[hc$order]
+    
   }
   
-  grouped_order <- c(grouped_order, ivips_g)
+  ordered_ivips <- c(ordered_ivips, ivips_g)
+  
 }
 
-if (length(ungrouped_ivip) > 2) {
-  hc <- hclust(dist(df_big_t[ungrouped_ivip, ]))
-  ungrouped_order <- hc$labels[hc$order]
-} else {
-  ungrouped_order <- ungrouped_ivip
-}
+df_big_ordered <- df_big_t[ordered_ivips, ]
 
-final_order <- unique(c(grouped_order, ungrouped_order))
-df_big_ordered <- df_big_t[final_order, ]
+## HEATMAP ANNOTATION
 
 
-############################################################
-## BIG HEATMAP ANNOTATION (GROUP ONLY)
-############################################################
-annotation2 <- data.frame(ivip = rownames(df_big_ordered))
-
-annotation2 <- annotation2 %>%
-  left_join(df_groups_filtered[, c("ivip","group_id")], by = "ivip")
-
-
-
-annotation2$group_id[is.na(annotation2$group_id)] <- "ungrouped"
+annotation2 <- df_groups_joint_filtered %>%
+  dplyr::select(ivip, group_id)
 
 rownames(annotation2) <- annotation2$ivip
 annotation2$ivip <- NULL
 
-annotation2$group_id <- as.factor(annotation2$group_id)
+annotation2$group_id <- factor(
+  annotation2$group_id,
+  levels = group_levels
+)
 
-############################################################
-## UPDATE COLORS TO INCLUDE UNGROUPED
-############################################################
-all_groups_big <- sort(unique(annotation2$group_id))
+
+## COLORS
+
 
 group_colors_big <- setNames(
-  colorRampPalette(brewer.pal(8, "Set2"))(length(all_groups_big)),
-  all_groups_big
+  colorRampPalette(brewer.pal(8, "Set2"))(length(group_levels)),
+  group_levels
 )
 
 annotation_colors_big <- list(
   group_id = group_colors_big
 )
 
-############################################################
-## FINAL BIG HEATMAP (GROUP ONLY)
-############################################################
+
+## BIG HEATMAP
+
+
 pheatmap(
   df_big_ordered,
   cluster_rows = FALSE,
@@ -375,66 +453,81 @@ pheatmap(
   annotation_row = annotation2["group_id"],
   annotation_colors = annotation_colors_big,
   show_rownames = FALSE,
-  annotation_names_row = TRUE,
+  show_colnames = FALSE,
+  annotation_names_row = FALSE,   # remove "group_id"
+  annotation_legend = FALSE,      # remove annotation legend
+  legend = FALSE,                 # remove heatmap legend
   fontsize = 20,
   fontsize_row = 20,
   fontsize_col = 20,
   fontsize_number = 20,
-  main = "Big window — haplotypes",
   filename = "pheatmap_big_all.png",
   width = 13,
   height = 14
 )
 
-############################################################
-## BOXPLOT WITH SAME COLORS
-############################################################
 
-pheno <-read.csv("../../../../01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv") 
+## BOXPLOT
 
 
-annotation2 <- annotation2 %>%
-  rownames_to_column(var = "ivip")
-merged_df <- merge(pheno, annotation2, by = "ivip", all.x = TRUE)
+pheno <- read.csv(
+  "../../../../01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv"
+)
 
-# IMPORTANT: ensure same order
+annotation_box <- annotation2 %>%
+  tibble::rownames_to_column("ivip")
+
+merged_df <- merge(
+  pheno,
+  annotation_box,
+  by = "ivip",
+  all.x = TRUE
+)
+
 merged_df$group_id <- factor(
   merged_df$group_id,
-  levels = names(group_colors_big)
+  levels = group_levels
 )
-png( filename = "boxplot_haplotype_comparison_chr2_1461736473.png", width = 3800, height = 1800, res = 300 )
 
-boxplot(larvae_total_number ~ group_id,
-        data = merged_df,
-        main = "Boxplot of Larvae Total Number by Group",
-        xlab = "Group",
-        ylab = "Larvae Total Number",
-        col = group_colors_big,
-        cex.main = 1,    # Title size (1 = default, 2 = 2x larger)
-        cex.lab = 1.5,   # Axis label size
-        cex.axis = 1.4   # Axis tick label size
+
+n_groups <- length(unique(merged_df$group_id))
+
+pdf(
+  file = "boxplot_haplotype_comparison.pdf",
+  width = 11.69,
+  height = 8.27
 )
+
+par(mar = c(6, 5, 2, 2))
+
+boxplot(
+  larvae_total_number ~ group_id,
+  data = merged_df,
+  main = "Larvae Total Number by Haplotype Group",
+  xlab = "Group",
+  ylab = "Larvae Total Number",
+  col = group_colors_big,
+  cex.main = 1,
+  cex.lab = 1.5,
+  cex.axis = 1.4
+)
+
 dev.off()
 
+## EXPORT HAPLOTYPE ASSIGNMENTS
 
 
+annotation_export <- annotation_box
 
-favorable_haps <- c("haplotype_6")
+names(annotation_export)[2] <- paste0(chrM, "_", left_small)
 
-annotation2$group_id <- ifelse(
-  annotation2$group_id %in% favorable_haps,
-  "Favorable",
-  "Unfavorable"
-)
-
-names(annotation2)[2] <- "chr2_1461736473"
-
+annotation_export$chr2_1461736473 <- ifelse(annotation_export$chr2_1461736473 == "haplotype_1",
+                         "Favorable",
+                         "Unfavorable")
 
 write.csv(
-  annotation2,
-  "haplo_chr2_1461736473.csv",
+  annotation_export,
+  paste0("haplo_", chrM, "_", left_small, ".csv"),
   row.names = FALSE
 )
-
-
 
