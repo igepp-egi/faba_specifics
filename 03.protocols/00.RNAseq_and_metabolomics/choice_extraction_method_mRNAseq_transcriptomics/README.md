@@ -1,1 +1,0 @@
-data to choose the best extraction method based on RNA content  and DNA contamination

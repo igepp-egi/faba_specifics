@@ -1,0 +1,11 @@
+---
+title: "README"
+format: html
+editor: visual
+---
+
+## LD decay
+
+the LD decay plot was obtained using the sofware popLDdecay (Zhang et al., 2019)
+
+Zhang, C., Dong, S.-S., Xu, J.-Y., He, W.-M., & Yang, T.-L. (2019). PopLDdecay: A fast and effective tool for linkage disequilibrium decay analysis based on variant call format files. *Bioinformatics, 35*(10), 1786–1788. https://doi.org/10.1093/bioinformatics/bty875

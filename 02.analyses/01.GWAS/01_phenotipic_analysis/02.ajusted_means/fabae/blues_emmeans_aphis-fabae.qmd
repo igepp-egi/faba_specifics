@@ -77,18 +77,13 @@ emm_genotype <- emmeans(model, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
 
 
-
-# Define the file path
-file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae_4.csv"
-
 # Save the data frame to the specified location
-write.csv(emm_df, file = file_path, row.names = FALSE)
+write.csv(emm_df, file = "emmeans_fabae_4.csv", row.names = FALSE)
 
 genotype_name<- emm_df[,1]
 
-file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/genotype_name_4.csv"
 
-write.csv(emm_df, file = file_path, row.names = FALSE)
+write.csv(emm_df, file = "genotype_name_4.csv", row.names = FALSE)
 
 
 ```
@@ -149,18 +144,12 @@ emm_genotype <- emmeans(model, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
 
 
-
-# Define the file path
-file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae_5.csv"
-
 # Save the data frame to the specified location
-write.csv(emm_df, file = file_path, row.names = FALSE)
+write.csv(emm_df, file = "emmeans_fabae_5.csv", row.names = FALSE)
 
 genotype_name<- emm_df[,1]
 
-file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/genotype_name_5.csv"
-
-write.csv(emm_df, file = file_path, row.names = FALSE)
+write.csv(emm_df, file = "genotype_name_5.csv", row.names = FALSE)
 ```
 
 ```{r}
@@ -219,17 +208,12 @@ emm_genotype <- emmeans(model, ~ ivip)
 emm_df <- as.data.frame(emm_genotype)
 
 
-
-# Define the file path
-file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/emmeans_fabae_6.csv"
-
 # Save the data frame to the specified location
-write.csv(emm_df, file = file_path, row.names = FALSE)
+write.csv(emm_df, file = "emmeans_fabae_6.csv", row.names = FALSE)
 
 
 genotype_name<- emm_df[,1]
 
-file_path <- "~/Documents/gitrepo/faba_specifics/02.analyses/01.GWAS/01_phenotipic_analysis/02.ajusted_means/fabae/genotype_name_6.csv"
 
-write.csv(emm_df, file = file_path, row.names = FALSE)
+write.csv(emm_df, file = "genotype_name_6.csv", row.names = FALSE)
 ```

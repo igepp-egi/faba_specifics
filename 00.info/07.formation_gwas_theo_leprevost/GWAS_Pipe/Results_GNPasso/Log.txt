@@ -1,9 +1,0 @@
-Experimenter: Toto
-2024-09-04
-
-GWAS_Essai
-Panel
-Marker Type: SNP
-Genome Reference: Ref_v2
-FASTLMM
-Statistical model used: K
