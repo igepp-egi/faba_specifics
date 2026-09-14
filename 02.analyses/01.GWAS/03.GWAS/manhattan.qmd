@@ -8,431 +8,257 @@ Load packages
 
 ```{r}
 library(ggplot2)
-library(ggrastr)
 library(dplyr)
-library(scattermore)
+library(patchwork)
+library(ggrepel)
 ```
 
-Using the output from GAPIT we generate the manhattan plots:
+## Shared setup
 
-# GWAS fabae BLINK
+`prepare_gwas()` reads one GAPIT output file and does all the cleaning / cumulative-position math, and flags which SNPs are genome-wide significant (`sig`).
+
+`make_manhattan()` builds a single Manhattan panel using plain `geom_point()` (fully vector, so it stays crisp in PDF). Significant SNPs are drawn bigger, and optionally labelled with a QTL name you type in yourself -- you pick which SNP by its `id` number from `list_significant()`'s printed table, so there's no chromosome-naming or position guessing involved.
 
 ```{r}
-# Load data
-gwas <- read.csv(
-  "../../../../files_too_heavy_for_git/output_gapit/Afabae/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv"
+sig_threshold <- 5e-8
+y_axis_cap    <- 5e-16   # controls plotted ylim, same as before
+
+prepare_gwas <- function(file, chr_labels) {
+  gwas <- read.csv(file, stringsAsFactors = FALSE)
+
+  # Replace zero p-values
+  gwas$P.value[gwas$P.value == 0] <- 1e-300
+
+  # Remove missing values
+  gwas <- na.omit(gwas)
+
+  # Convert variables
+  gwas$Chr  <- factor(gwas$Chr)
+  gwas$Pos  <- as.numeric(gwas$Pos)
+  gwas$logP <- -log10(gwas$P.value)
+  gwas$sig  <- gwas$P.value < sig_threshold
+
+  # Compute cumulative chromosome positions
+  chr_sizes <- gwas %>%
+    group_by(Chr) %>%
+    summarise(chr_len = max(Pos), .groups = "drop") %>%
+    mutate(offset = lag(cumsum(chr_len), default = 0))
+
+  gwas <- left_join(gwas, chr_sizes, by = "Chr")
+  gwas$BPcum <- gwas$Pos + gwas$offset
+
+  # Chromosome centers, for axis labels
+  axisdf <- gwas %>%
+    group_by(Chr) %>%
+    summarise(center = (min(BPcum) + max(BPcum)) / 2, .groups = "drop")
+  axisdf$label <- chr_labels
+
+  list(data = gwas, axis = axisdf)
+}
+
+# Prints the significant SNPs, each with a simple sequential ID, plus its
+# raw Chr value, friendly axis label, position, and -log10(P). Use the ID
+# number (not Chr/Pos) to tell make_manhattan() which SNP gets which QTL
+# name -- this can't be thrown off by chromosome-naming mismatches.
+list_significant <- function(prepped) {
+  sig <- subset(prepped$data, sig)
+  sig <- sig[order(sig$Chr, sig$Pos), ]
+  sig <- dplyr::left_join(sig, prepped$axis[, c("Chr", "label")], by = "Chr")
+  names(sig)[names(sig) == "label"] <- "axis_label"
+  sig$id <- seq_len(nrow(sig))
+  sig[, c("id", "Chr", "axis_label", "Pos", "logP")]
+}
+
+# qtl_labels is a small data frame you type by hand:
+#   id    = the ID number from list_significant()'s printed table
+#   Label = the QTL name you want printed next to that SNP
+make_manhattan <- function(prepped, qtl_labels = NULL, show_x_labels = TRUE) {
+  gwas   <- prepped$data
+  axisdf <- prepped$axis
+
+  gwas$qtl_label <- NA_character_
+
+  if (!is.null(qtl_labels) && nrow(qtl_labels) > 0) {
+    # rebuild the exact same sorted significant-SNP table that
+    # list_significant() shows, so the id numbers line up
+    sig_table <- subset(gwas, sig)
+    sig_table <- sig_table[order(sig_table$Chr, sig_table$Pos), ]
+    sig_table$id <- seq_len(nrow(sig_table))
+
+    for (i in seq_len(nrow(qtl_labels))) {
+      id_i  <- qtl_labels$id[i]
+      lab_i <- qtl_labels$Label[i]
+
+      match_row <- sig_table[sig_table$id == id_i, , drop = FALSE]
+      if (nrow(match_row) == 0) {
+        warning(sprintf(
+          "No significant SNP with id %s for label '%s' -- skipped (check list_significant() output).",
+          id_i, lab_i
+        ))
+        next
+      }
+
+      target <- which(gwas$Chr == match_row$Chr[1] & gwas$Pos == match_row$Pos[1])
+      if (length(target) >= 1) {
+        gwas$qtl_label[target[1]] <- lab_i
+      }
+    }
+  }
+
+  label_points <- subset(gwas, !is.na(qtl_label))
+
+  p <- ggplot(gwas, aes(x = BPcum, y = logP)) +
+    # background: non-significant SNPs, alternating grey / dark red by chromosome
+    geom_point(
+      data = subset(gwas, !sig),
+      aes(colour = factor(as.numeric(Chr) %% 2)),
+      size = 0.6,
+      alpha = 0.8
+    ) +
+    # foreground: significant SNPs, drawn bigger and in solid red so they pop out
+    geom_point(
+      data = subset(gwas, sig),
+      colour = "red",
+      size = 2.2
+    ) +
+    scale_colour_manual(values = c("grey70", "darkred")) +
+    geom_hline(
+      yintercept = -log10(sig_threshold),
+      colour = "grey50",
+      linetype = "dashed"
+    ) +
+    scale_x_continuous(
+      breaks = axisdf$center,
+      labels = axisdf$label
+    ) +
+    coord_cartesian(ylim = c(0, -log10(y_axis_cap))) +
+    labs(
+      x = NULL,
+      y = expression(-log[10](italic(P)))
+    ) +
+    theme_classic() +
+    theme(
+      legend.position = "none",
+      panel.border    = element_blank(),
+      axis.text       = element_text(size = 11),
+      axis.title      = element_text(size = 13),
+      axis.text.x     = if (show_x_labels) element_text(size = 11) else element_blank(),
+      axis.ticks.x    = if (show_x_labels) element_line() else element_blank()
+    )
+
+  # only add the QTL-name layer if at least one label was actually matched
+  if (nrow(label_points) > 0) {
+    p <- p + geom_text_repel(
+      data                = label_points,
+      aes(label = qtl_label),
+      size                = 3,
+      fontface            = "italic",
+      colour              = "black",
+      nudge_y             = 1,
+      min.segment.length  = Inf   # never draw a connecting line back to the point
+    )
+  }
+
+  p
+}
+
+chr_labels_7 <- c("chr1S", "chr1L", "chr2", "chr3", "chr4", "chr5", "chr6")
+```
+
+## BLINK composite (pisum on top = A, fabae below = B)
+
+First load the data, then check which SNPs are significant -- each row gets an `id` number:
+
+```{r}
+pisum_blink <- prepare_gwas(
+  "../../../../files_too_heavy_for_git/output_gapit/Apisum/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv",
+  chr_labels_7
 )
 
-# Replace zero p-values
-gwas$P.value[gwas$P.value == 0] <- 1e-300
+fabae_blink <- prepare_gwas(
+  "../../../../files_too_heavy_for_git/output_gapit/Afabae/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv",
+  chr_labels_7
+)
 
-# Remove missing values
-gwas <- na.omit(gwas)
+list_significant(pisum_blink)
+list_significant(fabae_blink)
+```
 
-# Convert variables
-gwas$Chr  <- factor(gwas$Chr)
-gwas$Pos  <- as.numeric(gwas$Pos)
-gwas$logP <- -log10(gwas$P.value)
+Now type in the `id` of whichever significant SNP you want labelled, next to the QTL name. Leave a table with 0 rows (e.g. `data.frame(id = numeric(), Label = character())`) to skip labelling that panel entirely.
 
-# Compute cumulative chromosome positions
-chr_sizes <- gwas %>%
-  group_by(Chr) %>%
-  summarise(chr_len = max(Pos), .groups = "drop") %>%
-  mutate(offset = lag(cumsum(chr_len), default = 0))
+```{r}
+pisum_blink_labels <- data.frame(
+  id    = c(1, 2, 3, 4),
+  Label = c("APRIS", "APRII.1", "APRII.2", "APRII.3"),
+  stringsAsFactors = FALSE
+)
 
-gwas <- left_join(gwas, chr_sizes, by = "Chr")
-gwas$BPcum <- gwas$Pos + gwas$offset
+fabae_blink_labels <- data.frame(
+  id    = c(1, 2, 3, 4),
+  Label = c("AFRIL", "AFRIII", "AFRV", "AFRVI"),
+  stringsAsFactors = FALSE
+)
 
-# Chromosome centers
-axisdf <- gwas %>%
-  group_by(Chr) %>%
-  summarise(center = (min(BPcum) + max(BPcum)) / 2,
-            .groups = "drop")
+p_pisum_blink <- make_manhattan(pisum_blink, qtl_labels = pisum_blink_labels, show_x_labels = FALSE)
+p_fabae_blink <- make_manhattan(fabae_blink, qtl_labels = fabae_blink_labels, show_x_labels = TRUE)
 
-axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
-                  "chr4", "chr5", "chr6")
+composite_blink <- (p_pisum_blink / p_fabae_blink) +
+  plot_annotation(tag_levels = "A")
 
-# Manhattan plot
-p <- ggplot(
-  gwas,
-  aes(
-    x = BPcum,
-    y = logP,
-    colour = factor(as.numeric(Chr) %% 2)
-  )
-) +
-  geom_scattermore(
-    pointsize = 10,
-    pixels = c(3000, 2000)
-  ) +
-  scale_colour_manual(values = c("grey70", "darkred")) +
-  geom_hline(
-    yintercept = -log10(5e-8),
-    colour = "grey50",
-    linetype = "dashed"
-  ) +
-  scale_x_continuous(
-    breaks = axisdf$center,
-    labels = axisdf$label
-  ) +
-  coord_cartesian(
-    ylim = c(0, -log10(5e-16))
-  ) +
-  labs(
-    x = NULL,
-    y = expression(-log[10](italic(P))),
-    title = "Manhattan Plot A. fabae – BLINK (Kansas)"
-  ) +
-  theme_classic() +
-  theme(
-    legend.position = "none",
-    panel.border = element_blank(),
-    axis.text = element_text(size = 11),
-    axis.title = element_text(size = 13),
-    plot.title = element_text(hjust = 0.5, face = "bold")
-  )
-
-print(p)
+print(composite_blink)
 
 ggsave(
-  "Manhattan_BLINK_fabae.pdf",
-  p,
-  width = 7,
-  height = 4
+  "Manhattan_BLINK_composite.pdf",
+  composite_blink,
+  width  = 7,
+  height = 8
 )
-
-postscript(
-  "Manhattan_BLINK_fabae.eps",
-  width = 7,
-  height = 4,
-  onefile = FALSE,
-  horizontal = FALSE,
-  paper = "special"
-)
-
-print(p)
-
-dev.off()
 ```
 
-# GWAS pisum BLINK
+## MLMM composite (pisum on top = A, fabae below = B)
+
+Note: these two files are the "NYC" MLMM results (matching your original file paths).
 
 ```{r}
-gwas <- read.csv(
-  "../../../../files_too_heavy_for_git/output_gapit/Apisum/GAPIT.Association.GWAS_Results.BLINK.emmean(Kansas).csv"
-)
-
-# Replace zero p-values
-gwas$P.value[gwas$P.value == 0] <- 1e-300
-
-# Remove missing values
-gwas <- na.omit(gwas)
-
-# Convert variables
-gwas$Chr  <- factor(gwas$Chr)
-gwas$Pos  <- as.numeric(gwas$Pos)
-gwas$logP <- -log10(gwas$P.value)
-
-# Compute cumulative chromosome positions
-chr_sizes <- gwas %>%
-  group_by(Chr) %>%
-  summarise(chr_len = max(Pos), .groups = "drop") %>%
-  mutate(offset = lag(cumsum(chr_len), default = 0))
-
-gwas <- left_join(gwas, chr_sizes, by = "Chr")
-gwas$BPcum <- gwas$Pos + gwas$offset
-
-# Chromosome centers
-axisdf <- gwas %>%
-  group_by(Chr) %>%
-  summarise(center = (min(BPcum) + max(BPcum)) / 2,
-            .groups = "drop")
-
-axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
-                  "chr4", "chr5", "chr6")
-
-# Manhattan plot
-p <- ggplot(
-  gwas,
-  aes(
-    x = BPcum,
-    y = logP,
-    colour = factor(as.numeric(Chr) %% 2)
-  )
-) +
-  geom_scattermore(
-    pointsize = 10,
-    pixels = c(3000, 2000)
-  ) +
-  scale_colour_manual(values = c("grey70", "darkred")) +
-  geom_hline(
-    yintercept = -log10(5e-8),
-    colour = "grey50",
-    linetype = "dashed"
-  ) +
-  scale_x_continuous(
-    breaks = axisdf$center,
-    labels = axisdf$label
-  ) +
-  coord_cartesian(
-    ylim = c(0, -log10(5e-16))
-  ) +
-  labs(
-    x = NULL,
-    y = expression(-log[10](italic(P))),
-    title = "Manhattan Plot A. pisum – BLINK (Kansas)"
-  ) +
-  theme_classic() +
-  theme(
-    legend.position = "none",
-    panel.border = element_blank(),
-    axis.text = element_text(size = 11),
-    axis.title = element_text(size = 13),
-    plot.title = element_text(hjust = 0.5, face = "bold")
-  )
-
-print(p)
-
-# Save PDF (vector)
-ggsave(
-  filename = "Manhattan_BLINK_pisum.pdf",
-  plot = p,
-  width = 7,
-  height = 4
-)
-
-# Save EPS (vector)
-postscript(
-  "Manhattan_BLINK_pisum.eps",
-  width = 7,
-  height = 4,
-  horizontal = FALSE,
-  onefile = FALSE,
-  paper = "special"
-)
-
-print(p)
-
-dev.off()
-
-```
-
-# GWAS pisum MLMM
-
-```{r}
-
-# 2. Load your GAPIT results
-gwas <- read.csv(
+pisum_mlmm <- prepare_gwas(
   "../../../../files_too_heavy_for_git/output_gapit/Apisum/GAPIT.Association.GWAS_Results.MLMM.emmean(NYC).csv",
-  sep = ",",
-  header = TRUE,
-  stringsAsFactors = FALSE
+  chr_labels_7
 )
 
-# Replace zero p-values
-gwas$P.value[gwas$P.value == 0] <- 1e-300
-
-# Remove missing values
-gwas <- na.omit(gwas)
-
-# Convert variables
-gwas$Chr  <- factor(gwas$Chr)
-gwas$Pos  <- as.numeric(gwas$Pos)
-gwas$logP <- -log10(gwas$P.value)
-
-# Compute cumulative chromosome positions
-chr_sizes <- gwas %>%
-  group_by(Chr) %>%
-  summarise(chr_len = max(Pos), .groups = "drop") %>%
-  mutate(offset = lag(cumsum(chr_len), default = 0))
-
-gwas <- left_join(gwas, chr_sizes, by = "Chr")
-gwas$BPcum <- gwas$Pos + gwas$offset
-
-# Chromosome centers
-axisdf <- gwas %>%
-  group_by(Chr) %>%
-  summarise(center = (min(BPcum) + max(BPcum)) / 2,
-            .groups = "drop")
-
-axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
-                  "chr4", "chr5", "chr6")
-
-# Manhattan plot
-p <- ggplot(
-  gwas,
-  aes(
-    x = BPcum,
-    y = logP,
-    colour = factor(as.numeric(Chr) %% 2)
-  )
-) +
-  geom_scattermore(
-    pointsize = 10,
-    pixels = c(3000, 2000)
-  ) +
-  scale_colour_manual(values = c("grey70", "darkred")) +
-  geom_hline(
-    yintercept = -log10(5e-8),
-    colour = "grey50",
-    linetype = "dashed"
-  ) +
-  scale_x_continuous(
-    breaks = axisdf$center,
-    labels = axisdf$label
-  ) +
-  coord_cartesian(
-    ylim = c(0, -log10(5e-16))
-  ) +
-  labs(
-    x = NULL,
-    y = expression(-log[10](italic(P))),
-    title = "Manhattan Plot A. pisum – MLMM (Kansas)"
-  ) +
-  theme_classic() +
-  theme(
-    legend.position = "none",
-    panel.border = element_blank(),
-    axis.text = element_text(size = 11),
-    axis.title = element_text(size = 13),
-    plot.title = element_text(hjust = 0.5, face = "bold")
-  )
-
-print(p)
-
-# Save PDF (vector)
-ggsave(
-  filename = "Manhattan_MLMM_pisum.pdf",
-  plot = p,
-  width = 7,
-  height = 4
+fabae_mlmm <- prepare_gwas(
+  "../../../../files_too_heavy_for_git/output_gapit/Afabae/GAPIT.Association.GWAS_Results.MLMM.emmean(NYC).csv",
+  chr_labels_7
 )
 
-# Save EPS (vector)
-postscript(
-  "Manhattan_BLINK_pisum.eps",
-  width = 7,
-  height = 4,
-  horizontal = FALSE,
-  onefile = FALSE,
-  paper = "special"
-)
-
-print(p)
-
-ggsave(
-  "Manhattan_MLMM_pisum.pdf",
-  p,
-  width = 7,
-  height = 4,
-  device = cairo_pdf
-)
-dev.off()
+list_significant(pisum_mlmm)
+list_significant(fabae_mlmm)
 ```
 
-# GWAS fabae MLMM
-
 ```{r}
-
-# 2. Load your GAPIT results
-gwas <- read.csv(
-  "../../../../files_too_heavy_for_git/output_gapit/Afabae/GAPIT.Association.GWAS_Results.MLMM.emmean(NYC).csv",
-  sep = ",",
-  header = TRUE,
+pisum_mlmm_labels <- data.frame(
+  id    = c(1, 2, 3),
+  Label = c("APRII.1", "APRII.2", "APRII.3"),
   stringsAsFactors = FALSE
 )
 
+fabae_mlmm_labels <- data.frame(
+  id    = c(1),
+  Label = c("AFRIII"),
+  stringsAsFactors = FALSE
+)
 
-# Replace zero p-values
-gwas$P.value[gwas$P.value == 0] <- 1e-300
+p_pisum_mlmm <- make_manhattan(pisum_mlmm, qtl_labels = pisum_mlmm_labels, show_x_labels = FALSE)
+p_fabae_mlmm <- make_manhattan(fabae_mlmm, qtl_labels = fabae_mlmm_labels, show_x_labels = TRUE)
 
-# Remove missing values
-gwas <- na.omit(gwas)
+composite_mlmm <- (p_pisum_mlmm / p_fabae_mlmm) +
+  plot_annotation(tag_levels = "A")
 
-# Convert variables
-gwas$Chr  <- factor(gwas$Chr)
-gwas$Pos  <- as.numeric(gwas$Pos)
-gwas$logP <- -log10(gwas$P.value)
+print(composite_mlmm)
 
-# Compute cumulative chromosome positions
-chr_sizes <- gwas %>%
-  group_by(Chr) %>%
-  summarise(chr_len = max(Pos), .groups = "drop") %>%
-  mutate(offset = lag(cumsum(chr_len), default = 0))
-
-gwas <- left_join(gwas, chr_sizes, by = "Chr")
-gwas$BPcum <- gwas$Pos + gwas$offset
-
-# Chromosome centers
-axisdf <- gwas %>%
-  group_by(Chr) %>%
-  summarise(center = (min(BPcum) + max(BPcum)) / 2,
-            .groups = "drop")
-
-axisdf$label <- c("chr1S", "chr1L", "chr2", "chr3",
-                  "chr4", "chr5", "chr6")
-
-# Manhattan plot
-p <- ggplot(
-  gwas,
-  aes(
-    x = BPcum,
-    y = logP,
-    colour = factor(as.numeric(Chr) %% 2)
-  )
-) +
-  geom_scattermore(
-    pointsize = 10,
-    pixels = c(3000, 2000)
-  ) +
-  scale_colour_manual(values = c("grey70", "darkred")) +
-  geom_hline(
-    yintercept = -log10(5e-8),
-    colour = "grey50",
-    linetype = "dashed"
-  ) +
-  scale_x_continuous(
-    breaks = axisdf$center,
-    labels = axisdf$label
-  ) +
-  coord_cartesian(
-    ylim = c(0, -log10(5e-16))
-  ) +
-  labs(
-    x = NULL,
-    y = expression(-log[10](italic(P))),
-    title = "Manhattan Plot A. fabae – MLMM (Kansas)"
-  ) +
-  theme_classic() +
-  theme(
-    legend.position = "none",
-    panel.border = element_blank(),
-    axis.text = element_text(size = 11),
-    axis.title = element_text(size = 13),
-    plot.title = element_text(hjust = 0.5, face = "bold")
-  )
-
-print(p)
-
-# Save PDF (vector)
 ggsave(
-  filename = "Manhattan_MLMM_fabae.pdf",
-  plot = p,
-  width = 7,
-  height = 4
+  "Manhattan_MLMM_composite.pdf",
+  composite_mlmm,
+  width  = 7,
+  height = 8
 )
-
-# Save EPS (vector)
-postscript(
-  "Manhattan_MLMM_fabae.eps",
-  width = 7,
-  height = 4,
-  horizontal = FALSE,
-  onefile = FALSE,
-  paper = "special"
-)
-
-print(p)
-
-dev.off()
 ```
