@@ -20,6 +20,7 @@ library(tibble)
 ```
 
 The SNP detected with the GWAS was located at the folowing position : 1240520268
+
 ```{r}
 chrM <- "chr1S"
 left<-1240520268 - 1000
@@ -84,12 +85,13 @@ dev.off()
 
 ```
 
+Based on LD we choose this window:
+
 ```{r}
 chrM <- "chr1S"
 left<-1240520255
 right<-1240520298
 ```
-
 
 ```{r}
 

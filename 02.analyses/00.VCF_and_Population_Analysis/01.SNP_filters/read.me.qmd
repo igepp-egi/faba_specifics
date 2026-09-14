@@ -1,0 +1,13 @@
+---
+title: "READ.ME"
+format: html
+editor: visual
+---
+
+2 fichiers config
+
+3 fichier liste de genotypes
+
+3 fichier avec le nombre de SNP et genotype avant et apres filtre
+
+lien vers le pipline
