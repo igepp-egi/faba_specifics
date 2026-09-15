@@ -29,10 +29,10 @@
      inkscape:cy="585.76779"
      inkscape:window-width="2560"
      inkscape:window-height="1387"
-     inkscape:window-x="45"
-     inkscape:window-y="76"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer1"><inkscape:page
+     inkscape:current-layer="g1-2"><inkscape:page
        x="0"
        y="0"
        width="210"
@@ -1076,7 +1076,7 @@
          id="tspan120"
          style="font-variant:normal;font-weight:normal;font-size:6.16491px;font-family:Helvetica;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.174763"
          x="-1392.1152"
-         y="775.73431">haplotype 1</tspan></text><text
+         y="775.73431">haplotype A</tspan></text><text
        id="text120-0"
        xml:space="preserve"
        transform="scale(1.0092444,0.99084027)"
@@ -1086,7 +1086,7 @@
          id="tspan120-6"
          style="font-variant:normal;font-weight:normal;font-size:6.16491px;font-family:Helvetica;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.174763"
          x="-1348.3961"
-         y="775.69739">haplotype 2</tspan></text><path
+         y="775.69739">haplotype B</tspan></text><path
        id="path123"
        d="M -1420.4467,747.02161 V 675.39736"
        style="fill:none;stroke:#000000;stroke-width:0.205965;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1" /><path
@@ -1178,7 +1178,7 @@
          id="tspan120-2"
          style="font-variant:normal;font-weight:normal;font-size:6.16491px;font-family:Helvetica;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.174763"
          x="-1305.3258"
-         y="775.69739">haplotype 3</tspan></text><text
+         y="775.69739">haplotype C</tspan></text><text
        id="text120-8"
        xml:space="preserve"
        transform="scale(1.0092444,0.99084027)"
@@ -1188,7 +1188,7 @@
          id="tspan120-9"
          style="font-variant:normal;font-weight:normal;font-size:6.16491px;font-family:Helvetica;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.174763"
          x="-1218.4801"
-         y="775.04102">haplotype 5</tspan></text><text
+         y="775.04102">haplotype E</tspan></text><text
        id="text120-7"
        xml:space="preserve"
        transform="scale(1.0092444,0.99084027)"
@@ -1198,7 +1198,7 @@
          id="tspan120-7"
          style="font-variant:normal;font-weight:normal;font-size:6.16491px;font-family:Helvetica;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.174763"
          x="-1262.1608"
-         y="775.54919">haplotype 4</tspan></text><text
+         y="775.54919">haplotype D</tspan></text><text
        id="text120-3"
        xml:space="preserve"
        transform="scale(1.0092444,0.99084027)"
@@ -1208,7 +1208,7 @@
          id="tspan120-4"
          style="font-variant:normal;font-weight:normal;font-size:6.16491px;font-family:Helvetica;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.174763"
          x="-1177.134"
-         y="774.79407">haplotype 6</tspan></text><text
+         y="774.79407">haplotype F</tspan></text><text
        id="text120-68"
        xml:space="preserve"
        transform="scale(1.0092444,0.99084027)"
@@ -1343,6 +1343,11 @@
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.505341px;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:3.03205, 1.51602;stroke-dashoffset:0;stroke-opacity:1"
        d="m -1260.6922,461.56985 0.3206,65.67908"
        id="path121-6-2"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0" /><path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.505341px;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:3.03205, 1.51602;stroke-dashoffset:0;stroke-opacity:1"
+       d="m -1275.3944,462.63419 0.3206,65.67908"
+       id="path121-6-2-1"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0" /><path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.505341px;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:3.03205, 1.51602;stroke-dashoffset:0;stroke-opacity:1"
