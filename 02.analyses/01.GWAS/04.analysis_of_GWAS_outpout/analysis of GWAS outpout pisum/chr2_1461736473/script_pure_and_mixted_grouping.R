@@ -22,7 +22,7 @@ left_big  <- 1461732669
 right_big <- 1461746839
 
 vcf <- read.vcfR(
-  "../../../../../../../files_too_heavy_for_git/pisum/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin2.vcf"
+  "../files_too_heavy_for_git/genotype_files/pisum/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin.vcf"
 )
 
 fix <- getFIX(vcf)
@@ -59,7 +59,7 @@ gdat_init <- as(gdat_init, "SnpMatrix")
 
 custom_colors <- colorRampPalette(c("black","darkred","red","orange","yellow","white"))(100)
 
-png("LD_heatmap_big_window.png", 1200, 1200, res = 150)
+png("02.analyses/01.GWAS/04.analysis_of_GWAS_outpout/analysis of GWAS outpout pisum/chr2_1461736473/LD_heatmap_big_window.png", 1200, 1200, res = 150)
 LDheatmap(
   gdat_init,
   color = custom_colors,
@@ -84,7 +84,7 @@ gm$children$heatMap <- NULL
 gm$children$Key <- NULL
 gm$childrenOrder <- "geneMap"
 
-png("physical_map.png", width = 2000, height = 1500, res = 150)
+png("02.analyses/01.GWAS/04.analysis_of_GWAS_outpout/analysis of GWAS outpout pisum/chr2_1461736473/physical_map.png", width = 2000, height = 1500, res = 150)
 
 grid.newpage()
 grid.draw(gm)
@@ -115,14 +115,14 @@ rownames(gdat_init) <- rownames(gt_init)
 
 gdat_init <- as(gdat_init, "SnpMatrix")
 
-png("LD_heatmap_small_window.png", 1200, 1200, res = 150)
+png("02.analyses/01.GWAS/04.analysis_of_GWAS_outpout/analysis of GWAS outpout pisum/chr2_1461736473/LD_heatmap_small_window.png", 1200, 1200, res = 150)
 LDheatmap(gdat_init, color = custom_colors, genetic.distances = snp_pos_init, add.map=TRUE)
 dev.off()
 
 ## LOAD TSV ----
 
 df <- fread(
-  "../../../../../../../files_too_heavy_for_git/pisum/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin2.tsv"
+  "../files_too_heavy_for_git/genotype_files/pisum/vfaba_apisum_n6.filtered_imputed_maf.vcf.hedin.tsv"
 )
 
 geno_to_num <- function(g) {
@@ -227,7 +227,7 @@ for(i in seq_len(nrow(df_phase))){
 
 
 
-pheno <- read.csv("../../../../01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv", sep =",")
+pheno <- read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv", sep =",")
 
 merge<-merge(df_groups_filtered,pheno, by ="ivip", all.x = TRUE)
 merge$group_id <- as.factor(merge$group_id)
@@ -243,10 +243,17 @@ tukey_pisum <- TukeyHSD(aov(larvae_total_number ~ group_id, data = merge))
 print(tukey_pisum)
 
 
-emmean<-read.csv("../../../../01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum_6.csv", sep =",")
+emmean<-read.csv("02.analyses//01.GWAS/01_phenotipic_analysis/02.ajusted_means/pisum/emmeans_pisum_6.csv", sep =",")
 merge_emmean<-merge(df_groups_filtered,emmean, by ="ivip", all.x = TRUE)
 merge_emmean$groups_id <- as.factor(merge_emmean$group_id)
 
+postscript(
+  "02.analyses/01.GWAS/04.analysis_of_GWAS_outpout/analysis of GWAS outpout pisum/chr2_1461736473/boxplot_homozygous_heterozygous.eps",
+  onefile = FALSE,
+  paper = "special",
+  width = 7,
+  height = 6
+)
 boxplot(
   emmean ~ group_id,
   data = merge_emmean,
@@ -255,6 +262,18 @@ boxplot(
   ylab = "aphid count",
   col = "grey"
 )
+
+stripchart(
+  emmean ~ group_id,
+  data = merge_emmean,
+  vertical = TRUE,
+  method = "jitter",
+  pch = 1,
+  col = "black",
+  add = TRUE
+)
+
+dev.off()
 
 
 ## HAPLOTYPE ANALYSIS ----
@@ -461,7 +480,7 @@ pheatmap(
   fontsize_row = 20,
   fontsize_col = 20,
   fontsize_number = 20,
-  filename = "pheatmap_big_all.png",
+  filename = "02.analyses/01.GWAS/04.analysis_of_GWAS_outpout/analysis of GWAS outpout pisum/chr2_1461736473/pheatmap_big_all.png",
   width = 13,
   height = 14
 )
@@ -471,7 +490,7 @@ pheatmap(
 
 
 pheno <- read.csv(
-  "../../../../01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv"
+  "02.analyses/01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv"
 )
 
 annotation_box <- annotation2 %>%
@@ -493,7 +512,7 @@ merged_df$group_id <- factor(
 n_groups <- length(unique(merged_df$group_id))
 
 pdf(
-  file = "boxplot_haplotype_comparison.pdf",
+  file = "02.analyses/01.GWAS/04.analysis_of_GWAS_outpout/analysis of GWAS outpout pisum/chr2_1461736473/boxplot_haplotype_comparison.pdf",
   width = 11.69,
   height = 8.27
 )
@@ -527,7 +546,7 @@ annotation_export$chr2_1461736473 <- ifelse(annotation_export$chr2_1461736473 ==
 
 write.csv(
   annotation_export,
-  paste0("haplo_", chrM, "_", left_small, ".csv"),
+  paste0("02.analyses/01.GWAS/04.analysis_of_GWAS_outpout/analysis of GWAS outpout pisum/chr2_1461736473/haplo_", chrM, "_", left_small, ".csv"),
   row.names = FALSE
 )
 

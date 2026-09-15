@@ -118,8 +118,8 @@ make_manhattan <- function(prepped, qtl_labels = NULL, show_x_labels = TRUE) {
     # foreground: significant SNPs, drawn bigger and in solid red so they pop out
     geom_point(
       data = subset(gwas, sig),
-      colour = "red",
-      size = 2.2
+      colour = "darkred",
+      size = 1.8
     ) +
     scale_colour_manual(values = c("grey70", "darkred")) +
     geom_hline(

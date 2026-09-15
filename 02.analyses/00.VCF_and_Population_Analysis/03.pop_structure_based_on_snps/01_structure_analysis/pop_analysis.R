@@ -123,7 +123,7 @@ for (i in seq_along(k_values)) {
 }
 
 # Plot elbow curve
-pdf("elbow_curve.pdf", width = 7, height = 5)
+pdf("02.analyses/00.VCF_and_Population_Analysis/03.pop_structure_based_on_snps/elbow_curve.pdf", width = 7, height = 5)
 
 plot(k_values, wss,
      type = "b",
@@ -134,7 +134,7 @@ plot(k_values, wss,
      main = "Elbow Method for Optimal K")
 
 
-
+dev.off()
 
 
 
@@ -157,7 +157,7 @@ for (i in seq_along(k_values)) {
   avg_sil[i] <- mean(sil[, 3])  # Average silhouette width
 }
 
-pdf("silhouette_method.pdf", width = 7, height = 5)
+pdf("02.analyses/00.VCF_and_Population_Analysis/03.pop_structure_based_on_snps/silhouette_method.pdf", width = 7, height = 5)
 # Plot
 plot(k_values, avg_sil, type="b", pch=19,
      xlab="Number of clusters (K)",
