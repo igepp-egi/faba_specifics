@@ -1,0 +1,27 @@
+##
+## GEMMA Version    = 0.98.5 (2021-08-25)
+## Build profile    = /gnu/store/8rvid272yb53bgascf5c468z0jhsyflj-profile
+## GCC version      = 4.2.1
+## GSL Version      = 2.8
+## OpenBlas         = OpenBLAS 0.3.29  - OpenBLAS 0.3.29 DYNAMIC_ARCH NO_AFFINITY Nehalem MAX_THREADS=128
+##   arch           = Nehalem
+##   threads        = 8
+##   parallel type  = threaded
+##
+## Command Line Input = gemma -bfile vfaba_filtered_imputed_maf.hedin -gk 1 -o kinship_pop_analysis 
+##
+## Date = Fri Mar 20 10:36:44 2026
+##
+## Summary Statistics:
+## number of total individuals = 220
+## number of analyzed individuals = 220
+## number of covariates = 1
+## number of phenotypes = 1
+## number of total SNPs/var = 1486875
+## number of analyzed SNPs/var = 1486875
+##
+## Computation Time:
+## total computation time = 1.641 min 
+## computation time break down: 
+##      time on calculating relatedness matrix = 1.47664 min 
+##
