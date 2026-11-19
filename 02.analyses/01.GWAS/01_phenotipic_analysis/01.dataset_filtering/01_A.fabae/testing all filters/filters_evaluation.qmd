@@ -52,8 +52,8 @@ The goal of this script is to study how our model reacts to changes in the outli
 
 in the folowing loop we varry two parameters, i the minimal number of reps for the genotypes and the outlier filtering method.
 
-
 ## function to calculate all metric used to compare filters
+
 ```{r}
 analyze_filtered_data <- function(data, i, filter_name) {
   data <- data %>%
@@ -92,6 +92,7 @@ analyze_filtered_data <- function(data, i, filter_name) {
 ```
 
 ## analyse of the filtered datasets
+
 ```{r}
 
 # Initialize an empty data frame to store results
@@ -137,9 +138,11 @@ for (i in 2:9) {
 
 print(results)
 ```
+
 Based on these results it seems appropriate to select the IQR filter as it yield best heritability, lower RMSE and more normal data.
 
 ## Advanced visualisation for datasets filtered with IQR
+
 ```{r}
 #| eval: false
 #| echo: true
@@ -308,7 +311,7 @@ abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 ```
 
-the lowest value for RMSE is with i=4. 
+the lowest value for RMSE is with i=4.
 
 ```{r}
 ggplot(results, aes(x = i, y = n_after)) +
@@ -369,12 +372,9 @@ abline(h = 0, col = "gray", lty = 2)  # reference line for zero slope
 
 the highest heritabilty are obtained with i=2, 3 or 4. Heritability then progresivelly decrease as we increase the minimal number of repetitions required.
 
-
 Based on all the metrics presented here it seems that a value of 4 or less would be optimal. choosing 5 could be tempting as we don't lose too much heritability and we don't gain too much RMSE but due to the already low number of genotypes reducing the genotype loss is our priority. However we think that 4 is the minimal number of acceptable repetitions. Going lower to 4 would be quite risky especially since we know that our phenotypes is quite variable. Therefore we choose to keep 4 as the ideal value for i. In the next steps we will conduct GWAS on dataset filterd with a i value of 4, 5 and 6. This is intended to make sure that the choice of i does not change the GWAS pics the detect, however we will only use the GWAS pics from the dataset with i=4.
 
-
 We know have to make sure this filtering does not include some bias. We want to asses this throught 2 key points, the resistance level and the genetic cluster.
-
 
 ```{r}
 # -------------------------------

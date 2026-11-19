@@ -377,3 +377,13 @@ print(results_table)
 write_xlsx(results_table, "filtering_process_fabae.xlsx")
 ```
 
+```{r}
+data250_afabae_flagged <- data250_afabae_01 %>%
+  mutate(filtered = if_else(
+    do.call(paste, c(data250_afabae_01, sep = "|")) %in%
+      do.call(paste, c(data250_afabae_04_4[, names(data250_afabae_01)], sep = "|")),
+    "no", "yes"))
+
+write_xlsx(data250_afabae_flagged, "comparison_before_vs_after_Afabae.xlsx")
+
+```

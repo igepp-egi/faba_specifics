@@ -13,21 +13,22 @@ calculate_broad_heritability <- function(data) {
   genetic_variance <- estimates$vcov[1]
   residual_variance <- estimates$vcov[3]  # Adjust based on the placement of residual variance
   
-  # Get the number of levels for the 'session' random effect
-  nbE <- nlevels(data$session)
+  # Get the average number of replicates per genotype
+  mean_reps <- mean(table(data$ivip))
   
   # Calculate heritability (h2)
-  h2 <- genetic_variance / (genetic_variance + (residual_variance / nbE))
+  h2 <- genetic_variance / (genetic_variance + (residual_variance / mean_reps))
   
-  
-  nlvl<-nlevels(data$ivip)
-  
-  nnotation<-nrow(data)
+  nlvl <- nlevels(data$ivip)
+  nnotation <- nrow(data)
   
   # Return a list with heritability and variance components
   result <- list(
     heritability = h2,
+    mean_replicates = mean_reps,
     number_of_genotypes = nlvl,
-    number_of_notation = nnotation)
+    number_of_notation = nnotation
+  )
   
+  return(result)
 }
