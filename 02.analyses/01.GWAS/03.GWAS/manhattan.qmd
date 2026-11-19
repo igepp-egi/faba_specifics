@@ -20,8 +20,8 @@ library(ggrepel)
 `make_manhattan()` builds a single Manhattan panel using plain `geom_point()` (fully vector, so it stays crisp in PDF). Significant SNPs are drawn bigger, and optionally labelled with a QTL name you type in yourself -- you pick which SNP by its `id` number from `list_significant()`'s printed table, so there's no chromosome-naming or position guessing involved.
 
 ```{r}
-sig_threshold <- 5e-8
-y_axis_cap    <- 5e-16   # controls plotted ylim, same as before
+alpha         <- 0.05
+y_axis_cap    <- 5e-16
 
 prepare_gwas <- function(file, chr_labels) {
   gwas <- read.csv(file, stringsAsFactors = FALSE)
@@ -32,11 +32,14 @@ prepare_gwas <- function(file, chr_labels) {
   # Remove missing values
   gwas <- na.omit(gwas)
 
+  # Bonferroni threshold: alpha / number of SNPs left after cleaning
+  bonf_threshold <- alpha / nrow(gwas)
+
   # Convert variables
   gwas$Chr  <- factor(gwas$Chr)
   gwas$Pos  <- as.numeric(gwas$Pos)
   gwas$logP <- -log10(gwas$P.value)
-  gwas$sig  <- gwas$P.value < sig_threshold
+  gwas$sig  <- gwas$P.value < bonf_threshold
 
   # Compute cumulative chromosome positions
   chr_sizes <- gwas %>%
@@ -53,7 +56,10 @@ prepare_gwas <- function(file, chr_labels) {
     summarise(center = (min(BPcum) + max(BPcum)) / 2, .groups = "drop")
   axisdf$label <- chr_labels
 
-  list(data = gwas, axis = axisdf)
+  message(sprintf("N = %d SNPs, Bonferroni threshold = %.2e (-log10 = %.2f)",
+                  nrow(gwas), bonf_threshold, -log10(bonf_threshold)))
+
+  list(data = gwas, axis = axisdf, threshold = bonf_threshold)
 }
 
 # Prints the significant SNPs, each with a simple sequential ID, plus its
@@ -122,8 +128,9 @@ make_manhattan <- function(prepped, qtl_labels = NULL, show_x_labels = TRUE) {
       size = 1.8
     ) +
     scale_colour_manual(values = c("grey70", "darkred")) +
+    # Bonferroni line: this dataset's own threshold (alpha / N)
     geom_hline(
-      yintercept = -log10(sig_threshold),
+      yintercept = -log10(prepped$threshold),
       colour = "grey50",
       linetype = "dashed"
     ) +
@@ -161,8 +168,7 @@ make_manhattan <- function(prepped, qtl_labels = NULL, show_x_labels = TRUE) {
 
   p
 }
-
-chr_labels_7 <- c("chr1S", "chr1L", "chr2", "chr3", "chr4", "chr5", "chr6")
+chr_labels_7 <- c("chr1S", "chr1L", "chr2", "chr3","chr4", "chr5", "chr6")
 ```
 
 ## BLINK composite (pisum on top = A, fabae below = B)
@@ -189,13 +195,13 @@ Now type in the `id` of whichever significant SNP you want labelled, next to the
 ```{r}
 pisum_blink_labels <- data.frame(
   id    = c(1, 2, 3, 4),
-  Label = c("APRIS", "APRII.1", "APRII.2", "APRII.3"),
+  Label = c("Ap-Vf1S.1", "Ap-Vf2.1", "Ap-Vf2.2", "Ap-Vf2.3"),
   stringsAsFactors = FALSE
 )
 
 fabae_blink_labels <- data.frame(
   id    = c(1, 2, 3, 4),
-  Label = c("AFRIL", "AFRIII", "AFRV", "AFRVI"),
+  Label = c("Af-Vf1L.1", "Af-Vf3.1", "Af-Vf5.1", "Af-Vf6.1"),
   stringsAsFactors = FALSE
 )
 
@@ -203,7 +209,8 @@ p_pisum_blink <- make_manhattan(pisum_blink, qtl_labels = pisum_blink_labels, sh
 p_fabae_blink <- make_manhattan(fabae_blink, qtl_labels = fabae_blink_labels, show_x_labels = TRUE)
 
 composite_blink <- (p_pisum_blink / p_fabae_blink) +
-  plot_annotation(tag_levels = "A")
+  plot_annotation(tag_levels = "A") &
+  theme(plot.tag = element_text(size = 18))
 
 print(composite_blink)
 
@@ -217,7 +224,7 @@ ggsave(
 
 ## MLMM composite (pisum on top = A, fabae below = B)
 
-Note: these two files are the "NYC" MLMM results (matching your original file paths).
+Note: these two files are the "NYC" MLMM results (matching the original file paths).
 
 ```{r}
 pisum_mlmm <- prepare_gwas(
@@ -237,13 +244,13 @@ list_significant(fabae_mlmm)
 ```{r}
 pisum_mlmm_labels <- data.frame(
   id    = c(1, 2, 3),
-  Label = c("APRII.1", "APRII.2", "APRII.3"),
+  Label = c("Ap-Vf2.1", "Ap-Vf2.2", "Ap-Vf2.3"),
   stringsAsFactors = FALSE
 )
 
 fabae_mlmm_labels <- data.frame(
   id    = c(1),
-  Label = c("AFRIII"),
+  Label = c("Af-Vf3.1"),
   stringsAsFactors = FALSE
 )
 
@@ -251,7 +258,8 @@ p_pisum_mlmm <- make_manhattan(pisum_mlmm, qtl_labels = pisum_mlmm_labels, show_
 p_fabae_mlmm <- make_manhattan(fabae_mlmm, qtl_labels = fabae_mlmm_labels, show_x_labels = TRUE)
 
 composite_mlmm <- (p_pisum_mlmm / p_fabae_mlmm) +
-  plot_annotation(tag_levels = "A")
+  plot_annotation(tag_levels = "A") &
+  theme(plot.tag = element_text(size = 18))
 
 print(composite_mlmm)
 
