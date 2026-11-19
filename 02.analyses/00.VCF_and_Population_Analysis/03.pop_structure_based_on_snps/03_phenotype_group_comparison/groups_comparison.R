@@ -13,70 +13,40 @@ merge_fabae_emmean<-merge(groups,emmean_fabae, by ="ivip", all.x = TRUE)
 merge_pisum_emmean$groups <- as.factor(merge_pisum_emmean$groups)
 merge_fabae_emmean$groups <- as.factor(merge_fabae_emmean$groups)
 
-# Pisum
-postscript(
-  "02.analyses/00.VCF_and_Population_Analysis/03.pop_structure_based_on_snps/03_phenotype_group_comparison/boxplot_groups_comparison_pisum.eps",
-  onefile = FALSE,
-  paper = "special",
-  width = 7,
-  height = 6
-)
+library(ggplot2)
+library(patchwork)
 
-boxplot(
-  emmean ~ groups,
-  data = merge_pisum_emmean,
-  outline = FALSE,
-  main = "Boxplot of aphid count by Group",
-  xlab = "Group",
-  ylab = "Ajusted mean of aphid count for each genotypes",
-  col = "grey"
-)
+outdir <- "02.analyses/00.VCF_and_Population_Analysis/03.pop_structure_based_on_snps/03_phenotype_group_comparison"
+dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
 
-stripchart(
-  emmean ~ groups,
-  data = merge_pisum_emmean,
-  vertical = TRUE,
-  method = "jitter",
-  pch = 1,
-  col = "black",
-  add = TRUE
-)
+make_group_plot <- function(data, plot_title) {
+  
+  ggplot(data, aes(x = factor(groups), y = emmean)) +
+    geom_boxplot(fill = "grey85", colour = "black", outlier.shape = NA) +
+    geom_jitter(width = 0.15, shape = 1, colour = "black", size = 2) +
+    scale_y_continuous(limits = c(0, 45), breaks = seq(0, 45, by = 5)) +
+    labs(title = plot_title,
+         x = "Group",
+         y = "Adjusted mean of aphid count for each genotype") +
+    theme_classic(base_size = 18) +
+    theme(
+      axis.text         = element_text(size = 18, colour = "black"),
+      axis.title        = element_text(size = 20),
+      axis.ticks        = element_line(linewidth = 0.8),
+      axis.ticks.length = unit(0.25, "cm"),
+      axis.line         = element_line(linewidth = 0.8),
+      plot.title        = element_text(size = 22, face = "bold.italic")
+    )
+}
 
-dev.off()
+p_pisum <- make_group_plot(merge_pisum_emmean, "A. pisum")
+p_fabae <- make_group_plot(merge_fabae_emmean, "A. fabae")
 
+# pisum first (left), fabae second (right)
+p_groups <- p_pisum | p_fabae
 
-# Fabae
-postscript(
-  "02.analyses/00.VCF_and_Population_Analysis/03.pop_structure_based_on_snps/03_phenotype_group_comparison/boxplot_groups_comparison_fabae.eps",
-  onefile = FALSE,
-  paper = "special",
-  width = 7,
-  height = 6
-)
-
-boxplot(
-  emmean ~ groups,
-  data = merge_fabae_emmean,
-  outline = FALSE,
-  main = "Boxplot of aphid count by Group",
-  xlab = "Group",
-  ylab = "Ajusted mean of aphid count for each genotypes",
-  col = "grey"
-)
-
-stripchart(
-  emmean ~ groups,
-  data = merge_fabae_emmean,
-  vertical = TRUE,
-  method = "jitter",
-  pch = 1,
-  col = "black",
-  add = TRUE
-)
-
-dev.off()
-
-
+ggsave(file.path(outdir, "boxplot_groups_comparison_pisum_fabae.svg"),
+       plot = p_groups, device = "svg", width = 14, height = 6)
 
 
 pheno_fabae <- read.csv("02.analyses/01.GWAS/01_phenotipic_analysis/01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered_4.csv", sep =",")

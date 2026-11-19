@@ -247,33 +247,30 @@ emmean<-read.csv("02.analyses//01.GWAS/01_phenotipic_analysis/02.ajusted_means/p
 merge_emmean<-merge(df_groups_filtered,emmean, by ="ivip", all.x = TRUE)
 merge_emmean$groups_id <- as.factor(merge_emmean$group_id)
 
-postscript(
-  "02.analyses/01.GWAS/04.analysis_of_GWAS_outpout/analysis of GWAS outpout pisum/chr2_1461736473/boxplot_homozygous_heterozygous.eps",
-  onefile = FALSE,
-  paper = "special",
-  width = 7,
-  height = 6
-)
-boxplot(
-  emmean ~ group_id,
-  data = merge_emmean,
-  main = "Boxplot of aphid count by Group",
-  xlab = "Group",
-  ylab = "aphid count",
-  col = "grey"
-)
+library(ggplot2)
 
-stripchart(
-  emmean ~ group_id,
-  data = merge_emmean,
-  vertical = TRUE,
-  method = "jitter",
-  pch = 1,
-  col = "black",
-  add = TRUE
-)
+outdir <- "02.analyses/01.GWAS/04.analysis_of_GWAS_outpout/analysis of GWAS outpout pisum/chr2_1461736473"
+dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
 
-dev.off()
+p_gwas <- ggplot(merge_emmean, aes(x = factor(group_id), y = emmean)) +
+  geom_boxplot(fill = "grey85", colour = "black", outlier.shape = NA) +
+  geom_jitter(width = 0.15, shape = 1, colour = "black", size = 2) +
+  scale_y_continuous(limits = c(0, 45), breaks = seq(0, 45, by = 5)) +
+  labs(title = "Boxplot of aphid count by Group",
+       x = "Group",
+       y = "Aphid count") +
+  theme_classic(base_size = 18) +
+  theme(
+    axis.text         = element_text(size = 18, colour = "black"),
+    axis.title        = element_text(size = 20),
+    axis.ticks        = element_line(linewidth = 0.8),
+    axis.ticks.length = unit(0.25, "cm"),
+    axis.line         = element_line(linewidth = 0.8),
+    plot.title        = element_text(size = 22, face = "bold")
+  )
+
+ggsave(file.path(outdir, "boxplot_homozygous_heterozygous.svg"),
+       plot = p_gwas, device = "svg", width = 7, height = 6)
 
 
 ## HAPLOTYPE ANALYSIS ----

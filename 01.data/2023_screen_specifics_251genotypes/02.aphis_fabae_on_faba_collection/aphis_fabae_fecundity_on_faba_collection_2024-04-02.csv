@@ -1,4 +1,4 @@
-genotype,seed_batch,ivip,aphid,block,rep,session,clim_chb,age_plant,start_date,end_date,adult_alive,adult_winged,larvae_total_number
+﻿genotype,seed_batch,ivip,aphid,block,rep,session,clim_chb,age_plant,start_date,end_date,adult_alive,adult_winged,larvae_total_number
 2,KF2229,Hedin2,A.fabae AF001,1A,1,A,132,10,14-Sep,28-Sep,1,0,40
 2,KF2229,Hedin2,A.fabae AF001,1A,2,A,132,10,14-Sep,28-Sep,1,0,37
 2,KF2229,Hedin2,A.fabae AF001,1B,3,B,132,10,12-Oct,26-Oct,1,0,25
@@ -2639,15 +2639,16 @@ genotype,seed_batch,ivip,aphid,block,rep,session,clim_chb,age_plant,start_date,e
 249,KF0200,IVIP103314,A.fabae AF001,15E,10,E,132,10,25-Jan,8-Feb,1,0,14
 249,KF0200,IVIP103314,A.fabae AF001,15F,11,F,132,10,22-Feb,7-Mar,1,0,27
 249,KF0200,IVIP103314,A.fabae AF001,15F,12,F,132,10,22-Feb,7-Mar,1,0,21
-251,Sutton,NA,A.fabae AF001,15A,1,A,132,10,14-Sep,28-Sep,0,0,0
-251,Sutton,NA,A.fabae AF001,15A,2,A,132,10,14-Sep,28-Sep,1,0,11
-251,Sutton,NA,A.fabae AF001,15B,3,B,132,10,12-Oct,26-Oct,1,0,33
-251,Sutton,NA,A.fabae AF001,15C,4,C,132,10,7-Nov,21-Nov,1,0,32
-251,Sutton,NA,A.fabae AF001,15D,5,D,132,10,7-Dec,21-Dec,1,0,48
-251,Sutton,NA,A.fabae AF001,15E,6,E,132,10,25-Jan,8-Feb,1,0,23
-251,Sutton,NA,A.fabae AF001,15E,7,E,132,14,29-Jan,12-Feb,1,0,44
-251,Sutton,NA,A.fabae AF001,15G,8,G,132,10,19-Mar,4-Apr,0,0,0
-251,Sutton,NA,A.fabae AF001,15G,9,G,132,10,19-Mar,4-Apr,1,0,42
-251,Sutton,NA,A.fabae AF001,15G,10,G,132,10,19-Mar,4-Apr,1,0,44
-251,Sutton,NA,A.fabae AF001,15NA,11,NA,NA,10,NA,NA,1,0,NA
-251,Sutton,NA,A.fabae AF001,15NA,12,NA,NA,10,NA,NA,1,0,NA
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+,,,,,,,,,,,,,
+

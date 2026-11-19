@@ -14,6 +14,9 @@ library(lme4)
 library(emmeans)
 library(multcomp)
 library(multcompView)
+library(dplyr)
+library(tidyr)
+library(performance)
 ```
 
 ## Load the datasets
@@ -37,6 +40,8 @@ haplotype_cluster_fabae<-merge(merge_haplotype_fabae,cluster, by="ivip",all = TR
 
 raw_data_fabae<-read.csv("../../../../02.analyses/01.GWAS/01_phenotipic_analysis/01.dataset_filtering/01_A.fabae/final filters/aphis_fabae_data_filtered_4.csv")
 
+raw_data_fabae$ivip[raw_data_fabae$ivip == "Hedin2"] <- "Hedin"
+
 merge5<-merge(merge3,raw_data_fabae, by="ivip",all = TRUE)
 merge5$Favorable_Count <- rowSums(merge5[, 2:5] == "Favorable", na.rm = TRUE)
 merge5$Favorable_Count<-as.factor(merge5$Favorable_Count)
@@ -50,10 +55,15 @@ haplotype_cluster_fabae$Favorable_Count <- rowSums(haplotype_cluster_fabae[, 2:5
 # Rename column 6 (optional)
 names(haplotype_cluster_fabae)[6] <- "emmeans"
 
+mod_cumulated_effect<-lm(emmean ~ haplo_chr1L_1703281021 + haplo_chr3_641834492 + haplo_chr5_1299427225 + haplo_chr6_369308865, data = merge_haplotype_fabae)
+
+R2    <- summary(mod_cumulated_effect)$r.squared
+R2adj <- summary(mod_cumulated_effect)$adj.r.squared
+cat("Variance explained by the 4 QTL: R2 =", round(R2, 3),
+    "| adjusted R2 =", round(R2adj, 3), "\n")
+
+
 ```
-
-
-
 
 ```{r}
 
@@ -85,6 +95,36 @@ letters_fabae
 
 ```
 
+```{r}
+
+# the 4 haplotype columns
+haplo_cols <- c("haplo_chr1L_1703281021",
+                "haplo_chr3_641834492",
+                "haplo_chr5_1299427225",
+                "haplo_chr6_369308865")
+
+# output folder
+dir.create("boxplots_svg", showWarnings = FALSE)
+
+for (col in haplo_cols) {
+
+  # drop missing haplotype calls for this locus
+  df <- merge_haplotype_fabae %>%
+    filter(!is.na(.data[[col]]))
+
+  p <- ggplot(df, aes(x = factor(.data[[col]]), y = emmean)) +
+    geom_boxplot(fill = "grey85", colour = "black", outlier.shape = NA) +
+    geom_jitter(width = 0.15, alpha = 0.5, size = 1.5) +
+    scale_y_continuous(limits = c(0, 45)) +
+    labs(title = col, x = "Haplotype", y = "emmean") +
+    theme_classic(base_size = 14)
+
+  ggsave(filename = file.path("boxplots_svg", paste0("boxplot_", col, ".svg")),
+         plot = p, device = "svg", width = 6, height = 5)
+}
+
+
+```
 
 ```{r}
 chr1<-read.csv("../../../../02.analyses/01.GWAS/04.analysis_of_GWAS_outpout/analysis of GWAS outpout pisum/chr1S_1240520268/haplo_chr1S_1240520268.csv")
@@ -112,6 +152,7 @@ names(haplotype_cluster_pisum)[6] <- "emmeans"
 
 raw_data_pisum<-read.csv("../../../../02.analyses/01.GWAS/01_phenotipic_analysis/01.dataset_filtering/02_A.pisum/final filters/acyrthosiphon_pisum_filtered_6.csv")
 
+raw_data_pisum$ivip[raw_data_pisum$ivip == "Hedin2"] <- "Hedin"
 
 merge5<-merge(merge3,raw_data_pisum, by="ivip",all = TRUE)
 merge5$Favorable_Count <- rowSums(merge5[, 2:5] == "Favorable", na.rm = TRUE)
@@ -122,9 +163,17 @@ mod <- lmer(larvae_total_number ~ Favorable_Count + (1 |session/block), data = m
 
 emm <- emmeans(mod, "Favorable_Count")
 
+
+
+mod_cumulated_effect<-lm(emmean ~ haplo_chr1S_1240520268 + chr2_1461736473 + haplo_chr2_35683372 + haplo_chr2_920208494, data = merge_haplotype_pisum)
+
+
+R2    <- summary(mod_cumulated_effect)$r.squared
+R2adj <- summary(mod_cumulated_effect)$adj.r.squared
+cat("Variance explained by the 4 QTL: R2 =", round(R2, 3),
+    "| adjusted R2 =", round(R2adj, 3), "\n")
+
 ```
-
-
 
 ```{r}
 p <- ggplot(haplotype_cluster_pisum, aes(x = factor(Favorable_Count), y = emmeans)) +
@@ -150,4 +199,52 @@ ggsave(
 
 letters_pisum <- cld(emm, adjust = "tukey", Letters = letters)
 letters_pisum
+```
+
+```{r}
+
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(patchwork)   # install.packages("patchwork")
+
+fabae_cols <- c("haplo_chr1L_1703281021", "haplo_chr3_641834492",
+                "haplo_chr5_1299427225", "haplo_chr6_369308865")
+pisum_cols <- c("haplo_chr1S_1240520268", "chr2_1461736473",
+                "haplo_chr2_35683372", "haplo_chr2_920208494")
+
+make_row <- function(data, haplo_cols, row_title) {
+
+  df_long <- data %>%
+    pivot_longer(all_of(haplo_cols), names_to = "locus", values_to = "haplotype") %>%
+    filter(!is.na(haplotype)) %>%
+    mutate(locus = factor(locus, levels = haplo_cols))
+
+  ggplot(df_long, aes(x = haplotype, y = emmean)) +
+    geom_boxplot(fill = "grey85", colour = "black", outlier.shape = NA) +
+    geom_jitter(width = 0.15, alpha = 0.5, size = 2) +
+    scale_y_continuous(limits = c(0, 45), breaks = seq(0, 45, by = 5)) +
+    facet_wrap(~ locus, scales = "free_x", nrow = 1) +
+    labs(title = row_title, x = "Haplotype", y = "emmean") +
+    theme_classic(base_size = 18) +
+    theme(
+      axis.text         = element_text(size = 18, colour = "black"),
+      axis.title        = element_text(size = 20),
+      axis.ticks        = element_line(linewidth = 0.8),
+      axis.ticks.length = unit(0.25, "cm"),
+      axis.line         = element_line(linewidth = 0.8),
+      strip.text        = element_text(size = 16, face = "bold"),
+      strip.background  = element_blank(),
+      plot.title        = element_text(size = 22, face = "bold.italic"),
+      panel.spacing     = unit(1, "lines")
+    )
+}
+
+p_pisum <- make_row(merge_haplotype_pisum, pisum_cols, "A. pisum")
+p_fabae <- make_row(merge_haplotype_fabae, fabae_cols, "A. fabae")
+
+# pisum on top, fabae below
+p_all <- p_pisum / p_fabae
+
+ggsave("boxplots_grid_2x4.svg", p_all, device = "svg", width = 20, height = 12)
 ```
