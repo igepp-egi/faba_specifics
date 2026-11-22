@@ -1,0 +1,250 @@
+﻿ivip,number,seed_batch,species,type,tannins,name,synonym,donor,donor_code,date_receival,biological_status,geographic_origin,site_collection,genealogy,obtained_by,year_seed_catalog_registration,removed_from_catalog,wingerH_springP
+IVIP103448,2,KF2229,Vicia faba var. minor,Minor,-,Hedin /2,-,-,-,-,Breeding/research material,GERMANY,-,-,-,-,-,-
+IVIP100034,3,KF0158,Vicia faba subsp. paucijuga,Paucijuga,T,CH182,-,Welsh Plant Breeding Station,-,12/3/59,Traditional landrace,INDIA,-,-,-,-,-,P
+IVIP100081,4,JF2091,Vicia faba var. equina,Equina,T,ZBOROVICZKIJ,-,"Institute for Agrobotany Tapioszele, Hungary",-,20/04/67,Traditional landrace,HUNGARY,-,-,-,-,-,P
+IVIP100120,5,JF2092,Vicia faba var. equina,Equina,T,WIESELBURGER KLEINKOERNIGE,-,Vyzkumny Ustav Technickych Plodin a Luskovin,-,19/11/69,Traditional landrace,AUSTRIA,-,-,-,-,-,P
+IVIP100121,6,JF2093,Vicia faba var. equina,Equina,T,KRONACKER KLEINKOERNIGE,-,Vyzkumny Ustav Technickych Plodin a Luskovin,-,19/11/69,Traditional landrace,AUSTRIA,-,-,-,-,-,P
+IVIP100123,7,JF2094,Vicia faba var. equina,Equina,T,PREROVSKY,-,Vyzkumny Ustav Technickych Plodin a Luskovin,-,19/11/69,Traditional cultivar,CZECHIA,-,-,-,1939,-,P
+IVIP100124,8,JF2095,Vicia faba var. equina,Equina,T,POVAZSKY,-,Vyzkumny Ustav Technickych Plodin a Luskovin,-,19/11/69,Traditional cultivar,CZECHIA,-,-,-,1959,-,P
+IVIP100127,9,JF2096,Vicia faba var. equina,Equina,T,FRIBO,IPK FAB 204,Vyzkumny Ustav Technickych Plodin a Luskovin,-,19/11/69,Advanced or improved cultivar,GERMANY,-,-,-,-,-,P
+IVIP100159,10,KF0159a,Vicia faba var. minor,Minor,T,NOVA GRADISKA 159B,-,UNKNOWN,-,12/1/70,Traditional landrace,CROATIA,Nova Gradiska,ISSUED FROM 3384,-,-,-,P
+IVIP100197,11,KF0201,Vicia faba var. equina,Equina,T,NADWILANSKI,-,Plant Breeding and Acclimatization Institute - IHAR,-,16/03/70,Traditional cultivar,POLAND,-,-,-,1955,-,P
+IVIP100199,12,JF2097,Vicia faba var. equina,Equina,T,HERZ FREYA,-,Plant Breeding and Acclimatization Institute - IHAR,-,16/03/70,Traditional cultivar,GERMANY,-,-,-,1935,-,P
+IVIP100200,13,JF2098,Vicia faba var. minor,Minor,T,ACKERPERLE,IPK FAB 6548,Plant Breeding and Acclimatization Institute - IHAR,-,16/03/70,Advanced or improved cultivar,GERMANY,-,-,-,-,-,P
+IVIP100204,14,KF0160,Vicia faba var. minor,Paucijuga,T,PI 222216_A,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 222216,20/03/70,Traditional landrace,AFGHANISTAN,"From 63 miles south of Panjab, Kabul",-,-,-,-,P
+IVIP100205,15,KF0161,Vicia faba var. minor,Paucijuga,T,PI 223302_A,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 223302,20/03/70,Traditional landrace,AFGHANISTAN,"market Faizabad, Badakhshan.",-,-,-,-,P
+IVIP100217,16,KF0162,Vicia faba var. major,Major,T,PI 254004,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 254004,20/03/70,Traditional landrace,IRAQ,"market, Kirkuk",-,-,-,-,-
+IVIP100225,17,JF2099,Vicia faba var. equina,Equina,T,BURCHTINSKI,-,Institut Fur Genetik und Pflanzenzuchtung,-,6/4/70,Traditional landrace,BULGARIA,-,-,-,-,-,P
+IVIP100227,18,JF2100,Vicia faba var. major,Major,T,YAVNCH,-,Agricultural Research Organization Volcani Centre,-,9/4/70,Traditional landrace,ISRAEL,-,-,-,-,-,-
+IVIP100234,19,KF2224,Vicia faba var. equina,Equina,T,VIR 1772,-,N.I. Vavilov Institute of Plant Genetic Resources,1772,4/5/70,Traditional landrace,UKRAINE,Zakarpatska,-,-,-,-,P
+IVIP100236,20,JF2101,Vicia faba var. equina,Equina,T,VIR 1413,-,N.I. Vavilov Institute of Plant Genetic Resources,1413,4/5/70,Traditional landrace,GEORGIA,-,-,-,-,-,P
+IVIP100238,21,KF2205,Vicia faba var. equina,Equina,T,SHCHERBAKULSKIYE,SCERBOKULAKIJE,N.I. Vavilov Institute of Plant Genetic Resources,1667,4/5/70,Traditional landrace,RUSSIAN FEDERATION,Sakhalin,-,-,-,-,P
+IVIP100239,22,KF0163,Vicia faba var. equina,Equina,T,KUVERTA,-,N.I. Vavilov Institute of Plant Genetic Resources,1658,4/5/70,Traditional landrace,LATVIA,-,-,-,-,-,P
+IVIP100240,23,JF2102,Vicia faba var. equina,Equina,T,RUSSKIE CHERNYE,-,N.I. Vavilov Institute of Plant Genetic Resources,1375,4/5/70,Traditional landrace,RUSSIAN FEDERATION,Moscow,-,-,-,-,P
+IVIP100244,24,KF2206,Vicia faba var. minor,Minor,T,WESTNUJE,-,N.I. Vavilov Institute of Plant Genetic Resources,1869,4/5/70,Traditional landrace,TAJIKISTAN,-,-,-,-,-,P
+IVIP100249,25,JF2103,Vicia faba var. minor,Minor,T,KAMENCE,-,Institut Fur Genetik und Pflanzenzuchtung,1863,23/11/70,Traditional cultivar,BULGARIA,-,-,-,-,-,P
+IVIP100252,26,KF0164,Vicia faba var. major,Major,T,LOZEN,-,Institut Fur Genetik und Pflanzenzuchtung,1874,23/11/70,Traditional landrace,BULGARIA,-,-,-,-,-,P
+IVIP100267,27,KF0165,Vicia faba var. major,Major,T,PRECOCE D'AQUITAINE,-,"Instituto Nacional de Investigación y Tecnología Agraria y Alimentaria, Spain",VF0152,23/12/70,Advanced or improved cultivar,FRANCE,-,-,-,1973,1993,P
+IVIP100276,28,JF2104,Vicia faba var. equina,Equina,T,MARAIS POITEVIN,-,Services Agricoles La Roche Sur Yon,-,10/4/71,Traditional landrace,FRANCE,VENDEE,-,-,-,-,P
+IVIP100277,29,JF2105,Vicia faba var. minor,Minor,T,GERS,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 415027,10/4/71,Traditional landrace,FRANCE,GERS,-,-,-,-,1/2H
+IVIP100278,30,KF0166,Vicia faba var. minor,Minor,T,MONTIERS SUR SAULX,-,Services Agricoles Bar le Duc,-,10/4/71,Traditional landrace,FRANCE,MONTIERS SUR SAULX,-,-,-,-,1/2H
+IVIP100279,31,JF2106,Vicia faba var. minor,Minor,T,LORRAINE METZ,-,Services Agricoles Metz,-,10/4/71,Traditional landrace,FRANCE,MOZELLE,-,-,-,-,P
+IVIP100280,32,JF2107,Vicia faba var. minor,Minor,T,LORRAINE KOENIGSMAKER,-,Services Agricoles Metz,-,10/4/71,Traditional landrace,FRANCE,"Kœnigsmacker, Moselle",-,-,-,-,P
+IVIP100281,33,JF2108,Vicia faba var. minor,Minor,T,MEUSE,-,Services Agricoles Metz,-,10/4/71,Traditional landrace,FRANCE,MEUSE,-,-,-,-,P
+IVIP100285,34,JF2109,Vicia faba var. equina,Equina,T,POUILLY-en-AUXOIS 1,-,Coop Pouilly en Auxois,-,20/08/71,Traditional landrace,FRANCE,Pouilly en Auxois,-,-,-,-,H
+IVIP100287,35,JF2110,Vicia faba var. minor,Minor,T,CHAPELLE VOLAND,PI 415035,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 415035,30/08/71,Traditional landrace,FRANCE,"8 km NW de Bletterans, 200 m altitude",-,-,-,-,1/2H
+IVIP100288,36,JF2111,Vicia faba var. equina,Equina,T,LARNAUD,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 415036,30/08/71,Traditional landrace,FRANCE,"4 km au sud de Bletterans, 220 m altitude",-,-,-,-,1/2H
+IVIP100289,37,JF2112,Vicia faba var. equina,Equina,T,BRIOTTET,-,"Anonymous, Côte-d'Or",-,30/08/71,Traditional landrace,FRANCE,COTE D'OR,-,-,-,-,H
+IVIP100310,38,JF2113,Vicia faba var. minor,Minor,T,DULUC,-,"Anonymous, Haute-Garonne",-,13/03/72,Traditional landrace,FRANCE,"Toulouse, sud ouest",-,-,-,-,P
+IVIP100313,39,JF2114,Vicia faba var. minor,Minor,T,MAZENS,PI 415041,"Anonymous, Haute-Garonne",-,13/03/72,Traditional landrace,FRANCE,"Toulouse, sud ouest",-,-,-,-,P
+IVIP100319,40,JF2115,Vicia faba var. minor,Minor,T,MAIMINSKIYE MESTNYE,K1665,Institut für Pflanzengenetik und Kulturpflanzenforschung,FAB 199/65,25/04/72,Traditional landrace,RUSSIAN FEDERATION,-,-,-,-,-,P
+IVIP100320,41,JF2116,Vicia faba var. equina,Equina,T,ULADOVSKIE FIOLETOVYE,-,Institut für Pflanzengenetik und Kulturpflanzenforschung,FAB 212/68,25/04/72,Traditional landrace,UKRAINE,-,-,-,-,-,P
+IVIP100325,42,JF2117,Vicia faba var. equina,Equina,T,14B,-,Chilalo Agricultural Development Union,-,18/05/72,Traditional landrace,ETHIOPIA,-,-,-,-,-,P
+IVIP100328,43,JF2118,Vicia faba var. minor,Minor,T,38D,-,Chilalo Agricultural Development Union,-,18/05/72,Traditional landrace,ETHIOPIA,ITEYA,-,-,-,-,P
+IVIP100334,44,JF2119,Vicia faba var. equina,Equina,T,MORADOS DE CADIZ,-,Ambassade de France en Espagne,-,6/6/72,Traditional landrace,SPAIN,-,-,-,-,-,1/2H
+IVIP100336,45,JF2120,Vicia faba var. minor,Minor,T,CORAINES,-,TEZIER MAROC,-,5/7/72,Traditional landrace,MOROCCO,-,-,-,-,-,-
+IVIP100337,46,KF2207,Vicia faba var. major,Major,T,BELADI,-,Hudeiba Research Station,-,6/7/72,Traditional landrace,SUDAN,-,-,-,-,-,P
+IVIP100340,47,JF2121,Vicia faba var. minor,Minor,T,SILIAN,-,Hudeiba Research Station,-,6/7/72,Traditional landrace,SUDAN,Northern Party of Nothern Province,-,-,-,-,P
+IVIP100351,48,JF2122,Vicia faba var. major,Major,T,YAMATO WASE SORAMANE,-,-,-,27/09/72,Traditional landrace,JAPAN,-,-,-,-,-,P
+IVIP100355,49,JF2123,Vicia faba var. minor,Minor,T,M10868,-,"Institute For Fodder Crops, Larissa. GREECE",-,2/10/72,Traditional landrace,GREECE,-,-,-,-,-,P
+IVIP100364,50,JF2124,Vicia faba var. equina,Equina,T,BAM 116,PI 469156,"Faculty of agronomy of Karadj, IRAN",BROAD BEAN 116,12/10/72,Traditional landrace,IRAN (ISLAMIC REPUBLIC OF),BAM,-,-,-,-,P
+IVIP100375,51,JF2125,Vicia faba var. major,Major,T,HAJI ABAD,PI 469149,"Faculty of agronomy of Karadj, IRAN",BROAD BEAN 109,12/10/72,Traditional landrace,IRAN (ISLAMIC REPUBLIC OF),-,-,-,-,-,1/2H
+IVIP100376,52,KF0167,Vicia faba var. major,Major,T,KHASH,PI 469185,"Faculty of agronomy of Karadj, IRAN",BROAD BEAN 262,12/10/72,Traditional landrace,IRAN (ISLAMIC REPUBLIC OF),-,-,-,-,-,P
+IVIP100377,53,KF0168,Vicia faba var. minor,Minor,T,RAFSANDFAN 2,PI 415054,"Faculty of agronomy of Karadj, IRAN",BROAD BEAN 2,12/10/72,Traditional landrace,IRAN (ISLAMIC REPUBLIC OF),-,-,-,-,-,P
+IVIP100381,54,JF2126,Vicia faba var. major,Major,T,RASHT,-,"Faculty of agronomy of Karadj, IRAN",BROAD BEAN 4,12/10/72,Traditional landrace,IRAN (ISLAMIC REPUBLIC OF),-,-,-,-,-,P
+IVIP100382,55,KF0169,Vicia faba var. major,Major,T,CHALUS,-,"Faculty of agronomy of Karadj, IRAN",BROAD BEAN 5,12/10/72,Traditional landrace,IRAN (ISLAMIC REPUBLIC OF),-,-,-,-,-,P
+IVIP100387,56,JF2127,Vicia faba var. major,Major,T,G10,-,ENSAA DIJON,-,4/12/72,Traditional landrace,NEPAL,-,-,-,-,-,P
+IVIP100388,57,KF0170,Vicia faba var. major,Major,T,G11,-,ENSAA DIJON,-,4/12/72,Traditional landrace,NEPAL,-,-,-,-,-,P
+IVIP100390,58,KF2209,Vicia faba var. major,Major,T,MAYA CHINE,-,-,-,11/12/72,Traditional landrace,CHINA,-,-,-,-,-,P
+IVIP100391,59,KF2210,Vicia faba var. equina,Equina,T,KINGPI,-,-,-,11/12/72,Traditional landrace,CHINA,-,-,-,-,-,1/2H
+IVIP100393,60,JF2128,Vicia faba var. major,Major,T,TSEHSI TAPAI,-,-,-,11/12/72,Traditional landrace,CHINA,TAIWAN,-,-,-,-,1/2H
+IVIP100396,61,JF2129,Vicia faba var. equina,Equina,T,EGYPT 27.047,-,Ministère de l'Agriculture du Caire,-,5/7/72,Traditional landrace,EGYPT,-,-,-,-,-,-
+IVIP100397,62,JF2130,Vicia faba var. equina,Equina,T,EXHIBITION LONGPOD,-,ICARDA,27272,5/7/72,Traditional landrace,DENMARK,-,-,-,-,-,-
+IVIP100437,63,JF2131,Vicia faba var. equina,Equina,T,PICARDIE,-,BLONDEAU (ETS A),-,1/3/73,Traditional landrace,FRANCE,PICARDIE,-,-,-,-,P
+IVIP100455,64,JF2132,Vicia faba var. minor,Minor,T,DIANA,-,"Centre de recherche de Vlaardingen, UNILEVER",-,21/04/73,Advanced or improved cultivar,GERMANY,-,-,Saatzuchtwirtschaft Otto Breustedt GmbH,1975,-,P
+IVIP100612,65,KF2211,Vicia faba var. equina,Equina,T,REBAYA 40,-,"Institute for Agrobotany Tapioszele, Hungary",11.11.24,4/9/74,Traditional cultivar,EGYPT,-,-,-,-,-,-
+IVIP100613,66,JF2133,Vicia faba var. minor,Minor,T,PIRK,-,"Institute for Agrobotany Tapioszele, Hungary",11.11.28,4/9/74,Traditional landrace,HUNGARY,-,-,-,-,-,P
+IVIP100615,67,JF2134,Vicia faba var. equina,Equina,T,FLORENCE,-,"Institute for Agrobotany Tapioszele, Hungary",11.11.49,4/9/74,Traditional landrace,ITALY,-,-,-,-,-,-
+IVIP100633,68,JF2135,Vicia faba var. equina,Equina,T,CERNAJA,-,"Institute for Agrobotany Tapioszele, Hungary",11.2.644,4/9/74,Traditional landrace,HUNGARY,-,-,-,-,-,H
+IVIP100703,69,JF2136,Vicia faba var. equina,Equina,ZT1,BERYL,ITE,FOUNDATION for AGRICULTURAL PLANT BREEDING,-,28/02/76,Advanced or improved cultivar,NETHERLANDS,-,Threefold White x Minor,-,-,-,P
+IVIP100783,70,JF2137,Vicia faba var. minor,Minor,T,PI 286437_B,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 286437,10/1/77,Traditional landrace,NEPAL,KATHMANDU,-,-,-,-,P
+IVIP100796,71,JF2273,Vicia faba var. minor,Minor,T,AUSHRA,K1617,N.I. Vavilov Institute of Plant Genetic Resources,319899,10/1/77,Traditional landrace,LITHUANIA,-,-,-,-,-,P
+IVIP100839,72,JF2138,Vicia faba L.,-,T,PI 371800,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 371800,10/1/77,Traditional landrace,ISRAEL,Beit Dagan,-,-,-,-,-
+IVIP100860,73,JF2139,Vicia faba var. major,Major,T,HABILLA VERDE,-,UNKNOWN,-,8/4/77,Traditional landrace,ECUADOR,-,-,-,-,-,P
+IVIP100864,74,KF0171a,Vicia faba L.,Equina,T,HABA CHAUCHA,-,UNKNOWN,-,8/4/77,Traditional landrace,ECUADOR,-,-,-,-,-,P
+IVIP100869,75,JF2140,Vicia faba L.,-,T,HABA EXTRALARGA,-,Instituto Colombiano Agropecuario,-,21/04/77,Traditional landrace,COLOMBIA,-,-,-,-,-,P
+IVIP100870,76,JF2141,Vicia faba var. major,Major,T,HABA ROJA,-,Instituto Colombiano Agropecuario,-,21/04/77,Traditional landrace,COLOMBIA,-,-,-,-,-,P
+IVIP100872,77,JF2142,Vicia faba var. major,Major,T,VERDE DE LIMA,-,"Prospection Mr G. DUC, INRA DIJON",-,1/9/77,Traditional landrace,PERU,"Coastal area, Market of LIMA",-,-,-,-,P
+IVIP100874,78,JF2143,Vicia faba var. major,Major,T,ROJO DE SICUNDUI,-,"Prospection Mr G. DUC, INRA DIJON",-,1/9/77,Traditional landrace,PERU,"Coastal area, Farm land",-,-,-,-,P
+IVIP100878,79,JF2144,Vicia faba var. major,Major,T,AMARILLO CUZCO MOYOCOCCHA,-,"Prospection Mr G. DUC, INRA DIJON",-,1/9/77,Traditional landrace,PERU,"Andean area, Farm land of CUZCO",-,-,-,-,P
+IVIP100879,80,JF2145,Vicia faba var. major,Major,T,VERDE DE CUZCO,-,"Prospection Mr G. DUC, INRA DIJON",-,1/9/77,Traditional landrace,PERU,"Andean area, Farm land of CUZCO",-,-,-,-,P
+IVIP100887,81,JF2146,Vicia faba L.,-,T,VERDE CLARO DE PUNO,-,"Prospection Mr G. DUC, INRA DIJON",-,1/9/77,Traditional landrace,PERU,"Altiplano area, Farm land of PUNO",-,-,-,-,P
+IVIP100888,82,JF2147,Vicia faba var. major,Major,T,PARCAY CLARO DE LA PAZ PETIT,-,"Prospection Mr G. DUC, INRA DIJON",-,1/9/77,Traditional landrace,BOLIVIA,"Altiplano area, Farm land of LA PAZ",-,-,-,-,P
+IVIP100891,83,JF2148,Vicia faba var. major,Major,T,TOSTADO CLARO,-,"INRA Dijon, Mr DUC",-,1/9/77,Traditional landrace,PERU,-,-,-,-,-,P
+IVIP100899,84,KF0172,Vicia faba var. major,Major,T,SUNCCOPE,-,"INRA Dijon, Mr DUC",-,1/9/77,Traditional landrace,PERU,-,-,-,-,-,P
+IVIP100901,85,JF2149,Vicia faba var. major,Major,T,OCCANTE,-,"INRA Dijon, Mr DUC",-,1/9/77,Traditional landrace,ARGENTINA,-,-,-,-,-,-
+IVIP100922,86,JF2150,Vicia faba var. minor,Minor,T,CHACHA,-,Universidad Nacional Agraria La Molina,CUZCO 005,22/05/78,Traditional landrace,PERU,-,-,-,-,-,P
+IVIP100928,87,JF2151,Vicia faba var. equina,Equina,T,ESTRIADA MEDIANS,-,Universidad Nacional Agraria La Molina,CMP 5,22/05/78,Traditional landrace,PERU,-,-,-,-,-,P
+IVIP100947,88,JF2152,Vicia faba var. major,Major,T,HODRA,-,"Van Den Berg Seeds B.V., Naaldwijk",-,16/11/78,Traditional landrace,NETHERLANDS,-,-,-,-,-,P
+IVIP100950,89,JF2153,Vicia faba var. minor,Minor,T,2N41,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",2N41,7/12/78,Breeding/research material,AFGHANISTAN,-,-,-,-,-,P
+IVIP100953,90,JF2154,Vicia faba var. major,Major,ZT1,METISSA,-,"A.R.Zwaan and Zoon BV, Voorburg",-,17/01/79,Advanced or improved cultivar,NETHERLANDS,-,Threefold White x Felix,NICKERSON ZWAAN,1978,2000,P
+IVIP101049,91,JF2155,Vicia faba var. major,Major,T,PATIRANA,-,"Istituto di Genetica Vegetale, BARI",-,18/04/79,Traditional landrace,BOLIVIA,-,-,-,-,-,P
+IVIP101050,92,JF2156,Vicia faba var. equina,Equina,T,PANDOJA,-,"Istituto di Genetica Vegetale, BARI",-,18/04/79,Traditional landrace,BOLIVIA,-,-,-,-,-,P
+IVIP101056,93,JF2157,Vicia faba var. major,Major,T,TORALAPA,-,"Istituto di Genetica Vegetale, BARI",-,18/04/79,Traditional landrace,BOLIVIA,-,-,-,-,-,P
+IVIP101059,94,JF2158,Vicia faba var. major,Major,T,TIAHUANACO,-,"Istituto di Genetica Vegetale, BARI",-,18/04/79,Traditional landrace,BOLIVIA,-,-,-,-,-,P
+IVIP101062,95,JF2159,Vicia faba var. major,Major,T,VIOLETTA DI POLICORO,-,"Istituto di Genetica Vegetale, BARI",-,18/04/79,Traditional landrace,ITALY,-,-,-,-,-,1/2H
+IVIP101160,96,JF2160,Vicia faba var. equina,Equina,T,THAI 1,-,"Prospection Mr G. DUC, INRA DIJON",-,9/12/80,Traditional landrace,THAILAND,Bangkok market,-,-,-,-,P
+IVIP101161,97,KP2225,Vicia faba var. major,Major,T,THAI 2,-,"Prospection Mr G. DUC, INRA DIJON",-,9/12/80,Traditional landrace,THAILAND,Bangkok market,-,-,-,-,P
+IVIP101162,98,JF2161,Vicia faba var. major,Major,T,IMPERIAL WHITE LONGPOD,-,"Plant Breeding Institute, CAMBRIDGE",-,10/12/80,Traditional cultivar,UNITED KINGDOM,-,-,-,1973,-,P
+IVIP101179,99,JF2162,Vicia faba var. minor,Minor,T,MIKKO,-,Hankkija Plant Breeding Institute,-,11/10/81,Traditional landrace,FINLAND,-,"issued from a landrace from Parikkala, Southeast Finnish",-,1977,-,P
+IVIP101204,100,JF2163,Vicia faba var. equina,Equina,T,YELLOW,-,"Plant Breeding Institute, CAMBRIDGE, Mr BOND",-,1/2/82,Breeding/research material,UNITED KINGDOM,-,-,-,-,-,1/2H
+IVIP101205,101,JF2164,Vicia faba var. equina,Equina,T,PURPLE,-,"Plant Breeding Institute, CAMBRIDGE, Mr BOND",-,1/2/82,Breeding/research material,UNITED KINGDOM,-,-,-,-,-,1/2H
+IVIP101216,102,JF2165,Vicia faba var. equina,Equina,T,STRUBE ,-,RINGOT,-,15/02/82,Advanced or improved cultivar,GERMANY,-,-,Dr Hermann Strubbe,1954,1987,P
+IVIP101219,103,JF2166,Vicia faba var. equina,Equina,T,C28,-,"The Breeding Station Maribo, Copenhague, Mr POULSEN",-,1/3/82,Breeding/research material,DENMARK,-,-,-,-,-,P
+IVIP101235,104,JF2167,Vicia faba var. major,Major,T,ANALIPSIS,-,"Plant Breeding and Acclimatization Institute at Radzikow, PL 05-870 Błonie",-,18/03/82,Advanced or improved cultivar,POLAND,-,-,-,-,-,P
+IVIP101236,105,KF0203,Vicia faba var. major,Major,T,FULLBERGS KLEINE THUERINGEN,-,"Plant Breeding and Acclimatization Institute at Radzikow, PL 05-870 Błonie",-,18/03/82,Traditional landrace,GERMANY,-,-,-,-,-,P
+IVIP101240,106,JF2274,Vicia faba var. equina,Equina,T,SKALLA,-,"Plant Breeding and Acclimatization Institute at Radzikow, PL 05-870 Błonie",PL70029,18/03/82,Advanced or improved cultivar,GREECE,-,-,-,-,-,P
+IVIP101251,107,KF2212,Vicia faba var. equina,Equina,T,LIELPLATONSKIJ FAUVE,-,"Plant Breeding and Acclimatization Institute at Radzikow, PL 05-870 Błonie",-,18/03/82,Advanced or improved cultivar,LATVIA,-,-,-,-,-,P
+IVIP101262,108,KF0174,Vicia faba var. equina,Equina,T,PLUTO,-,"Plant Breeding and Acclimatization Institute at Radzikow, PL 05-870 Błonie",PL70016,18/03/82,Advanced or improved cultivar,CZECHIA,-,-,-,1967,-,P
+IVIP101274,109,KF0175,Vicia faba var. major,Major,T,CANDELARIA,-,UNKNOWN,-,5/5/82,Traditional landrace,COLOMBIA,-,-,-,-,-,P
+IVIP101289,110,JF2168,Vicia faba var. minor,Minor,T,MGD0110656,-,"Istituto di Genetica Vegetale, BARI",110656,3/4/82,Traditional landrace,YEMEN,-,-,-,-,-,-
+IVIP101293,111,JF2169,Vicia faba var. major,Major,faible T,MGD0110667,-,"Istituto di Genetica Vegetale, BARI",110667,3/4/82,Traditional landrace,YEMEN,-,-,-,-,-,-
+IVIP101309,112,JF2170,Vicia faba var. major,Major,T,MGD0108817,-,"Istituto di Genetica Vegetale, BARI",108817,3/4/82,Traditional landrace,GREECE,PATRASSO,-,-,-,-,1/2H
+IVIP101320,113,JF2171,Vicia faba var. major,Major,T,IG 11734,IG 11734,"Istituto di Genetica Vegetale, BARI",109320,3/4/82,Traditional landrace,ETHIOPIA,-,-,-,-,-,P
+IVIP101327,114,JF2172,Vicia faba var. major,Major,T,IG 11745,IG 11745,"Istituto di Genetica Vegetale, BARI",109330,3/4/82,Traditional landrace,ETHIOPIA,-,-,-,-,-,P
+IVIP101371,115,JF2173,Vicia faba var. major,Major,T,MGD0110530,-,"Istituto di Genetica Vegetale, BARI",110530,3/4/82,Traditional landrace,CYPRUS,Nicosia,-,-,-,-,1/2H
+IVIP101414,116,JF2174,Vicia faba var. minor,Minor,T,PI 430710,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 430710,20/09/82,Traditional landrace,ALGERIA,-,-,-,-,-,-
+IVIP101451,117,JF2275,Vicia faba var. major,Major,T,NEPAL,-,"Anonymous, Cavaillon",-,31/01/84,Traditional landrace,NEPAL,-,-,-,-,-,P
+IVIP101454,118,JF2175,Vicia faba var. minor,Minor,T,KORNBERGER KLEINKOERNIGE,IPK FAB242,-,-,31/01/84,Advanced or improved cultivar,AUSTRIA,-,-,Saatzucht Gleisdorf Ges.mbH,1956,-,P
+IVIP101460,119,KF0176,Vicia faba var. minor,Minor,T,FEVETTE DU YEMEN,-,"INRA Montpellier, Mr J. WERY",-,15/03/84,Traditional landrace,YEMEN,-,-,-,-,-,-
+IVIP101461,120,JF2176,Vicia faba var. major,Major,T,QUEBEC 1,-,"Departement de phytologie, Universite Laval",-,8/5/84,Traditional landrace,CANADA,Baie-Saint-Paul,-,-,-,-,P
+IVIP101462,121,JF2177,Vicia faba var. equina,Equina,T,QUEBEC 2,-,"Departement de phytologie, Universite Laval",-,8/5/84,Traditional landrace,CANADA,côte Sud,-,-,-,-,P
+IVIP101463,122,JF2178,Vicia faba var. equina,Equina,T,IVS 1,-,Durham University,-,24/07/84,Breeding/research material,UNITED KINGDOM,-,-,-,-,-,P
+IVIP101473,123,JF2179,Vicia faba var. equina,Equina,T,TROY,-,Norddeutsche Pflanzenzucht Hans-Georg Lembke KG,-,21/01/85,Advanced or improved cultivar,GERMANY,-,-,Norddeutsche Pflanzenzucht Hans-Georg Lembke KG,1985,1996,P
+IVIP101482,124,JF2180,Vicia faba var. equina,Equina,ZT1,OPTICA,CGN15640,CABO,-,22/02/85,Advanced or improved cultivar,NETHERLANDS,-,-,NICKERSON ZWAAN,1980,2005,P
+IVIP101487,125,JF2181,Vicia faba var. equina,Equina,T,PROTHABON 101,-,SEMILLAS BATLLE S.A,-,2/9/85,Advanced or improved cultivar,SPAIN,-,-,SEMILLAS BATLLE S.A,1984,2003,1/2H
+IVIP101496,126,JF2182,Vicia faba var. equina,Equina,T,TICOL,-,"The University of Nottingham, Sutton Bonington",-,25/01/86,Advanced or improved cultivar,UNITED KINGDOM,-,-,Plant Breeding Institute,-,1987,P
+IVIP101497,127,JF2183,Vicia faba subsp. paucijuga,Paucijuga,T,BLACK SEED,-,-,-,1/1/80,Traditional landrace,UNKNOWN,-,-,-,-,-,P
+IVIP101498,128,JF2184,Vicia faba var. equina,Equina,T,RENNES S6T6,-,"INRA Rennes, Mr P. BERTHELEM",S6T6,21/01/87,Breeding/research material,FRANCE,-,-,INRA,-,-,H
+IVIP101508,129,JF2185,Vicia faba var. equina,Equina,T,WEBO,IPK FAB6105,"Plant Breeding Institute, CAMBRIDGE, Mr BOND",-,21/09/87,Advanced or improved cultivar,GERMANY,-,-,KWS LOCHOW GMBH,1997,-,H
+IVIP101515,130,JF2186,Vicia faba var. major,Major,T,IG 105984,-,ICARDA,BPL 4225,23/11/87,Breeding/research material,MOROCCO,-,ILB 2612,-,-,-,1/2H
+IVIP101517,131,JF2187,Vicia faba var. equina,Equina,T,BPL 4531,-,ICARDA,BPL 4531,23/11/87,Breeding/research material,ECUADOR,-,ILB 2345,-,-,-,-
+IVIP101536,132,JF2188,Vicia faba var. major,Major,T,894 B,-,INRA Dijon,-,7/12/87,Breeding/research material,PERU,-,issued from 894,-,-,-,P
+IVIP101541,133,KF0177,Vicia faba var. equina,Equina,T,KISVARDAI 25-2,-,-,-,25/02/88,Breeding/research material,HUNGARY,-,-,-,-,-,P
+IVIP101550,134,KF0179,Vicia faba var. major,Major,T,PUNO 1/2/69,-,Centre de Recherche de Huancayo,-,1/8/88,Breeding/research material,PERU,-,-,-,-,-,P
+IVIP101561,135,JF2189,Vicia faba var. equina,Equina,T,TITICACA,-,"BiO3P, INRA RENNES, Mr. B. TIVOLI",-,15/01/89,Traditional landrace,PERU,"from a peasant, island of Taquile 3800 m",-,-,-,-,P
+IVIP101582,136,JF2190,Vicia faba var. major,Major,T,CHENG HU10,-,"INRA Dijon, Mr PICARD",-,7/9/89,Advanced or improved cultivar,CHINA,-,-,-,-,-,P
+IVIP101598,137,JF2191,Vicia faba var. major,Major,T,TESSALONIKI,-,"INRA Rennes, Mr LE GUEN",B988 ,24/11/89,Traditional landrace,GREECE,-,-,-,-,-,P
+IVIP101599,138,JF2192,Vicia faba var. equina,Equina,T,RENNES 89.13.6,-,"INRA Rennes, Mr LE GUEN",-,24/11/89,Breeding/research material,FRANCE,-,89.13.6.1.1.1.2.PL2,-,-,-,H
+IVIP101631,139,JF2193,Vicia faba var. equina,Equina,T,SKLADIA KLEINE,-,"ENSA RENNES, Mr POULAIN",-,1/2/90,Advanced or improved cultivar,GERMANY,-,-,Saatzuchtwirtschaft Otto Breustedt GmbH,1973,1987,P
+IVIP101648,140,JF2194,Vicia faba var. equina,Equina,T,MYTHOS,-,HANS GEORGE LEMBKE,-,1/2/90,Advanced or improved cultivar,GERMANY,-,-,HANS GEORGE LEMBKE,1985,1998,P
+IVIP101649,141,JF2195,Vicia faba var. minor,Minor,T,PICCOLO,-,HANS GEORGE LEMBKE,-,1/2/90,Advanced or improved cultivar,GERMANY,-,-,HANS GEORGE LEMBKE,-,-,P
+IVIP101653,142,KF2213,Vicia faba var. major,Major,T,SEVILLE,-,"INRA Dijon, Mr CAUDWELL",-,1/2/90,Traditional landrace,SPAIN,-,-,-,-,-,1/2H
+IVIP101659,143,JF2196,Vicia faba subsp. paucijuga,Paucijuga,T,NA 112,-,Plant Breeding International,-,31/01/91,Traditional landrace,PAKISTAN,-,-,-,-,-,P
+IVIP101676,144,KF0180,Vicia faba var. major,Major,T,H0213 LUPIDOU,-,"CAAS, Beijing",H0213,13/01/92,Traditional landrace,CHINA,YUNNAN,-,-,-,-,1/2H
+IVIP101692,145,JF2197,Vicia faba var. equina,Equina,T,H1212 SHOUCHANG DOU,-,"CAAS, Beijing",H1212,13/01/92,Traditional landrace,CHINA,"SHOUCHANG DOU, ZHEJIANG",-,-,-,-,1/2H
+IVIP101698,146,KF0181,Vicia faba var. equina,Equina,T,H1305 SHOUCHANG DOU,-,"CAAS, Beijing",H1305,13/01/92,Traditional landrace,CHINA,ANHUI,-,-,-,-,1/2H
+IVIP101699,147,JF2198,Vicia faba var. equina,Equina,T,H1646 QUINGHUDOU,-,"CAAS, Beijing",H1646,13/01/92,Traditional landrace,CHINA,SICHUAN,-,-,-,-,1/2H
+IVIP101701,148,JF2199,Vicia faba var. minor,Minor,T,H1731 DAHUDOU,-,"CAAS, Beijing",H1731,13/01/92,Traditional landrace,CHINA,GUIZHOU,-,-,-,-,1/2H
+IVIP101704,149,JF2200,Vicia faba var. major,Major,T,H1745 ROUHUDOU,-,"CAAS, Beijing",H1745,13/01/92,Traditional landrace,CHINA,GUIZHOU,-,-,-,-,1/2H
+IVIP101709,150,KF2215,Vicia faba var. major,Major,T,H1769 SHAYANGDOU,-,"CAAS, Beijing",H1769,13/01/92,Traditional landrace,CHINA,"SHAYANG, GUIZHOU",-,-,-,-,1/2H
+IVIP101723,151,KF0182,Vicia faba var. equina,Equina,ZT2,H2553 BAIHUAZHU,-,"CAAS, Beijing",H2553,13/01/92,Traditional landrace,CHINA,JIANGSU,-,-,-,-,1/2H
+IVIP101731,152,KF0183,Vicia faba var. major,Major,T,XIBEI 1,-,"CAAS, Beijing",-,13/01/92,Traditional landrace,CHINA,GANSU,-,-,-,-,P
+IVIP101736,153,JF2201,Vicia faba var. minor,Minor,T,TIANMENDOU,-,"CAAS, Beijing",-,13/01/92,Traditional landrace,CHINA,"TIANMEN town, HUBEI",-,-,-,-,1/2H
+IVIP101737,154,JF2202,Vicia faba var. equina,Equina,T,WUCHANG,-,"CAAS, Beijing",-,13/01/92,Traditional landrace,CHINA,"WUCHANG, WUHAN town, HUBEI",-,-,-,-,1/2H
+IVIP101738,155,KF0185,Vicia faba var. major,Major,T,SHANDONG CANDOU 1,-,"CAAS, Beijing",-,13/01/92,Traditional landrace,CHINA,SHANDONG,-,-,-,-,P
+IVIP101747,156,KF0186,Vicia faba var. major,Major,T,AGUADULCE,-,"INRA Dijon, Mr CAUDWELL",-,7/2/92,Traditional cultivar,SPAIN,-,-,-,-,-,1/2H
+IVIP101748,157,JF2203,Vicia faba var. equina,Equina,T,CASTEL,-,Tourneur Grandes Cultures Obtentions,-,7/2/92,Advanced or improved cultivar,FRANCE,-,-,Tourneur Grandes Cultures Obtentions,1987,2011,1/2H
+IVIP101757,158,JF2204,Vicia faba var. major,Major,T,HG115.C,-,INRA Rennes,-,7/2/92,Breeding/research material,FRANCE,-,-,-,-,-,P
+IVIP101777,159,JF2205,Vicia faba var. minor,Minor,T,ASCOTT,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",-,1/1/04,Advanced or improved cultivar,FRANCE,-,-,BLONDEAU (ETS A),1954,1994,P
+IVIP101783,160,JF2206,Vicia faba var. equina,Equina,ZT1,CRESTA,-,Plant Breeding International,-,10/2/93,Advanced or improved cultivar,UNITED KINGDOM,-,Ewir x Rowena x Eureka,SAATBAU LINZ,-,1996,P
+IVIP101791,161,JF2207,Vicia faba var. equina,Equina,T,ALFRED,-,Cebeco Seed Innovations Ltd,-,15/10/93,Advanced or improved cultivar,NETHERLANDS,-,issued from MINICA,Cebeco Seed Innovations Ltd,1982,1997,P
+IVIP101799,162,JF2208,Vicia faba var. equina,Equina,T,F607,-,Tourneur Grandes Cultures Obtentions,-,15/10/93,Breeding/research material,FRANCE,-,-,Tourneur Grandes Cultures Obtentions,-,-,1/2H
+IVIP101812,163,KF0187a,Vicia faba var. equina,Equina,T,CPI 13825,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 284338,1/10/93,Traditional landrace,LEBANON,-,-,-,-,-,-
+IVIP101838,164,JF2209,Vicia faba var. major,Major,T,GIANT THREE SEEDED,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 469135,1/10/93,Traditional landrace,JAPAN,-,-,-,-,-,P
+IVIP101847,165,JF2210,Vicia faba var. major,Major,T,VELMA,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 469147,1/10/93,Traditional landrace,IRAN (ISLAMIC REPUBLIC OF),-,-,-,-,-,P
+IVIP101859,166,JF2211,Vicia faba var. major,Major,T,ANAUAN PIERE,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 469160,1/10/93,Traditional landrace,IRAN (ISLAMIC REPUBLIC OF),-,-,-,-,-,P
+IVIP101880,167,JF2212,Vicia faba var. equina,Equina,T,PI 469182,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 469182,1/10/93,Traditional landrace,JORDAN,-,-,-,-,-,-
+IVIP101908,168,JF2213,Vicia faba var. equina,Equina,T,UCHUCULU,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 478505,1/10/93,Traditional landrace,BOLIVIA,La Paz,-,-,-,-,-
+IVIP101913,169,JF2214,Vicia faba var. major,Major,T,PI 499959,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 499959,1/10/93,Traditional landrace,CHINA,"Market, Chengdu, Sichuan",-,-,-,-,P
+IVIP101957,170,KF0188,Vicia faba var. major,Major,T,PI 567886,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 567886,1/10/93,Traditional landrace,TURKEY,"seed storage in Guvemalan village, 34km after Gonen on way to Biga, Canakkale Province. Elevation: 50 m",-,-,-,-,1/2H
+IVIP101978,171,JF2215,Vicia faba var. minor,Minor,T,PI  223302_C,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 223302,1/10/93,Traditional landrace,AFGHANISTAN,-,issued from 223302,-,-,-,P
+IVIP101986,172,JF2216,Vicia faba var. major,Major,T,IG 99374,IG 99374,ICARDA,ILB 4180,1/11/93,Traditional landrace,PORTUGAL,Santarem. Liteiros, 9 km de T. Novas,-,-,-,-
+IVIP102062,173,JF2217,Vicia faba var. equina,Equina,T,TL SJOEDIN,-,Swedish Seed Association Svalöf,-,18/03/95,mutant,SWEDEN,-,neutron mutant from Primus,-,1962,-,P
+IVIP102063,174,JF2218,Vicia faba var. minor,Minor,ZT2,POULSEN White Flower ,-,"The Breeding Station Maribo, Copenhague, Mr POULSEN",-,18/03/95,Breeding/research material,DENMARK,-,-,-,-,-,P
+IVIP102070,175,JF2219,Vicia faba var. equina,Equina,T,SORAVI,-,INRA,-,19/02/97,Advanced or improved cultivar,FRANCE,-,-,INRA,1977,1997,H
+IVIP102073,176,JF2220,Vicia faba var. equina,Equina,ZT1,BLANDINE,-,INRA,-,19/02/97,Advanced or improved cultivar,FRANCE,-,Weirboon x Kodrim x Bianka x Kompacta,INRA,1985,1995,P
+IVIP102077,177,JF2221,Vicia faba var. equina,Equina,T,MAYA,-,SERASEM,-,19/02/97,Advanced or improved cultivar,FRANCE,-,issued from TROY,SERASEM,1996,-,P
+IVIP102080,178,JF2222,Vicia faba var. minor,Minor,ZT2,TYROL,-,Saatzucht Gleisdorf Ges.mbH,-,19/02/97,Advanced or improved cultivar,AUSTRIA,-,-,Saatzucht Gleisdorf Ges.mbH,1995,2003,P
+IVIP102081,179,JF2223,Vicia faba var. major,Major,T,CRIMSON FLOWERED,-,Henry Doubleday Research Association,-,19/02/97,Traditional landrace,UNITED KINGDOM,-,-,-,1778,-,P
+IVIP102088,180,JF2224,Vicia faba var. major,Major,T,LIXIA 2,-,YUNNAN UNIVERSITY,-,1/1/98,Traditional landrace,CHINA,LIXIA,-,-,-,-,P
+IVIP102121,181,JF2225,Vicia faba var. major,Major,T,1521M,-,INRA Dijon,-,1/1/98,Breeding/research material,CHINA,-,-,-,-,-,H
+IVIP102124,182,JF2226,Vicia faba var. major,Major,T,HUAIANBAIPI H1023,-,INRA Dijon,-,1/1/98,Breeding/research material,CHINA,-,ISSUed FROM 1682 grs beige,-,-,-,1/2H
+IVIP102161,183,JF2227,Vicia faba var. major,Major,ZT1,TROIS FOIS BLANCHE,-,Baumaux,-,1/1/99,Traditional cultivar,FRANCE,-,-,-,-,-,P
+IVIP102180,184,JF2228,Vicia faba var. equina,Equina,T,KK13,-,"Georg‐August‐Universitaet, Department of Crop Sciences, Goettingen, M. LINK",-,1/1/99,Breeding/research material,GERMANY,-,lignée de KleineKornberger,-,-,-,P
+IVIP102184,185,JF2229,Vicia faba var. major,Major,T,GIZA 402,IG 100187,ICARDA,-,1/3/01,Advanced or improved cultivar,EGYPT,-,(Rebaya 40 x F.216)x unknown parent,Agricultural Research Center,1979,-,-
+IVIP102188,186,KF0189,Vicia faba var. major,Major,T,GIZA 716,IG 118266,ICARDA,-,1/3/01,Advanced or improved cultivar,EGYPT,-,from a multi-parent cross (461/842/83)*(503/453/83),Agricultural Research Center,-,-,-
+IVIP102191,187,JF2230,Vicia faba var. equina,Equina,ZT,STW,-,ICARDA,-,1/3/01,Spontaneous mutant,SUDAN,-,mutant of individual Sudan plant,-,-,-,P
+IVIP102192,188,JF2231,Vicia faba var. equina,Equina,T,SHAMBAT 75,-,ICARDA,-,1/3/01,Advanced or improved cultivar,SUDAN,-,-,"AGRICULTURAL RESEARCH CORPORATION, SUDAN",1990,-,P
+IVIP102198,189,KF0190,Vicia faba L.,Equina,T,CS20DK,-,ICARDA,-,1/3/01,Advanced or improved cultivar,ETHIOPIA,-,-,Holetta Agricultural Research Center,1977,-,P
+IVIP102200,190,KF2216,Vicia faba var. equina,Equina,T,BULGA 70,-,ICARDA,-,1/3/01,Advanced or improved cultivar,ETHIOPIA,-,-,Holetta Agricultural Research Center,1994,-,P
+IVIP102220,191,JF2232,Vicia faba var. equina,Equina,T,K 0285,-,YUNNAN UNIVERSITY,-,1/6/01,Traditional landrace,CHINA,-,-,-,-,-,P
+IVIP102244,192,KF0191,Vicia faba var. major,Major,T,K 0131,-,YUNNAN UNIVERSITY,-,1/1/03,Traditional landrace,CHINA,-,-,-,-,-,P
+IVIP102249,193,JF2233,Vicia faba var. equina,Equina,ZT,K 0764,-,YUNNAN UNIVERSITY,-,1/1/03,Traditional landrace,CHINA,-,-,-,-,-,P
+IVIP102261,194,JF2234,Vicia faba var. major,Major,T,COLUMBA MAJOR,-,"USDA, ARS, Western Regional Plant Introduction Station, Washington State University, PULLMAN",PI 469127,1/1/04,Traditional landrace,FRANCE,-,-,-,-,-,P
+IVIP102275,195,KF0192,Vicia faba var. equina,Equina,T,1268.ZV,-,INRA Dijon,-,1/3/05,Breeding/research material,GREECE,-,issued from 1268,INRA DIJON,-,-,-
+IVIP102277,196,KF2217,Vicia faba var. major,Major,T,MARR 43.2.69,-,INRA Dijon,-,1/3/05,Breeding/research material,PERU,-,-,INRA DIJON,-,-,P
+IVIP102300,197,JF2235,Vicia faba var. minor,Minor,T,AD23 MAINTENEUR,-,INRA Dijon,-,1/3/05,Breeding/research material,FRANCE,-,issued from AD23,-,-,-,P
+IVIP102302,198,JF2236,Vicia faba var. equina,Equina,T,G58 MAINTENEUR,-,INRA Dijon,-,1/3/05,Breeding/research material,FRANCE,-,-,-,-,-,P
+IVIP102305,199,JF2237,Vicia faba subsp. paucijuga,Paucijuga,T,VF27,-,Institute for Sustainable Agriculture,-,1/3/05,Traditional landrace,ETHIOPIA,-,-,-,-,-,P
+IVIP102307,200,JF2238,Vicia faba var. equina,Equina,ZT2,CH170,-,INRA Rennes,-,1/3/05,Breeding/research material,UNITED KINGDOM,-,-,-,-,-,P
+IVIP102327,201,JF2239,Vicia faba var. minor,Minor,T,POUILLY,-,INRA Dijon,-,1/3/05,Breeding/research material,FRANCE,-,-,-,-,-,H
+IVIP102335,202,JF2240,Vicia faba var. major,Major,T,TEZIER MERVEILLE,-,GEVES,-,1/3/05,Advanced or improved cultivar,FRANCE,-,-,TEZIER S.A.,-,-,P
+IVIP102337,203,JF2241,Vicia faba var. equina,Equina,T,ALEX,-,GEVES,-,1/3/05,Advanced or improved cultivar,DENMARK,-,-,MARIBO,1988,1992,P
+IVIP102345,204,KF0193,Vicia faba var. equina,Equina,T,GRYF,-,GEVES,-,1/3/05,Advanced or improved cultivar,POLAND,-,-,Hodowla Roslin Cn Sp.Z O.O,1988,1997,P
+IVIP102346,250,KF2223,-,-,-,Herra,-,-,-,-,-,-,-,-,-,-,-,-
+IVIP102348,205,JF2242,Vicia faba var. equina,Equina,T,MARIS BEAGLE,-,GEVES,-,1/3/05,Advanced or improved cultivar,UNITED KINGDOM,-,-,Plant Breeding Institute,1974,1989,1/2H
+IVIP102355,206,JF2243,Vicia faba var. equina,Equina,T,PAVANE,-,ICARDA,IG 130647,1/3/05,Advanced or improved cultivar,FRANCE,-,-,CLAUSE,1962,1988,P
+IVIP102356,207,KF0194,Vicia faba var. minor,Minor,T,PRIMEPERLE,-,GEVES,-,1/3/05,Advanced or improved cultivar,FRANCE,-,-,-,-,-,P
+IVIP102361,208,JF2244,Vicia faba var. equina,Equina,T,CAGNOTE,-,GEVES,-,1/3/05,Advanced or improved cultivar,FRANCE,-,-,BLONDEAU (ETS A),1985,2000,P
+IVIP102365,209,JF2245,Vicia faba var. minor,Minor,T,KARL,-,Norddeutsche Pflanzenzucht Hans-Georg Lembke KG,-,1/3/05,Advanced or improved cultivar,FRANCE,-,-,BLONDEAU (ETS A),1990,2010,H
+IVIP102366,210,JF2246,Vicia faba var. equina,Equina,T,DIVA,HAW,INRA DIJON,-,1/3/05,Advanced or improved cultivar,FRANCE,-,-,INRA,2002,-,H
+IVIP102372,211,JF2247,Vicia faba var. equina,Equina,T,HIVERNA,-,Universitaet Hohenheim,-,1/3/05,Advanced or improved cultivar,GERMANY,-,-,H. LITTMANN KG,1986,-,H
+IVIP102378,212,JF2248,Vicia faba var. equina,Equina,T,QUASAR,-,UNKNOWN,-,1/3/05,Advanced or improved cultivar,UNITED KINGDOM,-,-,INSTITUTE OF PLANT SCIENCE,1990,2001,1/2H
+IVIP102389,213,JF2249,Vicia faba var. equina,Equina,T,BARACA,-,AGROVEGETAL,-,1/3/05,Advanced or improved cultivar,SPAIN,-,-,ETSIAM-Universidad de Córdoba,1998,-,1/2H
+IVIP102394,214,JF2250,Vicia faba var. equina,Equina,T,ESPRESSO,-,Norddeutsche Pflanzenzucht Hans-Georg Lembke KG,-,1/3/05,Advanced or improved cultivar,GERMANY,-,-,Norddeutsche Pflanzenzucht Hans-Georg Lembke KG,2003,-,P
+IVIP102397,215,JF2251,Vicia faba var. minor,Minor,ZT1,GLORIA,-,"Saatzucht Gleisdorf Ges.mbH, Ms J. WINKLER",-,1/3/05,Advanced or improved cultivar,AUSTRIA,-,-,Saatzucht Gleisdorf Ges.mbH,1993,-,P
+IVIP102405,216,JF2252,Vicia faba var. equina,Equina,T,JOEGEVA,-,Jogeva Plant Breeding Institute,-,1/3/05,Traditional landrace,ESTONIA,-,-,Jõgeva Plant Breeding Institute,1956,-,P
+IVIP102442,217,KF0195,Vicia faba var. major,Major,T,REINA BLANCA,-,"John Innes Centre, Mr M. Ambrose",-,1/3/05,Traditional cultivar,SPAIN,-,-,SEMILLAS FITO,1979,-,1/2H
+IVIP102446,218,JF2253,Vicia faba var. major,Major,T,The SUTTON,"=miniatuur, '= the midget","John Innes Centre, Mr M. Ambrose",-,1/3/05,Advanced or improved cultivar,UNITED KINGDOM,-,-,-,1973,-,P
+IVIP102454,219,JF2254,Vicia faba var. minor,Minor,T,MARTOCK,-,"John Innes Centre, Mr M. Ambrose",-,1/3/05,Traditional landrace,UNITED KINGDOM,Devon,-,-,-,-,P
+IVIP102485,220,KF2218,Vicia faba var. equina,Equina,ZT,SYLV694,-,INRA Dijon,-,1/3/05,Breeding/research material,FRANCE,-,SYLV694(2)(1)(1)(1)(3),INRA DIJON,-,-,P
+IVIP102492,221,JF2255,Vicia faba var. major,Major,T,VF48,-,"ETSIAM-Universidad de Cordoba, Mr CUBERO",-,1/1/06,Traditional landrace,PERU,-,-,-,-,-,P
+IVIP102516,222,JF2256,Vicia faba var. minor,Minor,T,29H.1.15.B[],-,INRA Rennes,RF9417,1/1/06,Breeding/research material,FRANCE,-,29H.1.15.B.(1.12)1 MC1.3,INRA RENNES,-,-,1/2H
+IVIP102529,223,JF2257,Vicia faba var. major,Major,T,BROCAL,-,INRA Rennes,RF9431,1/1/06,Advanced or improved cultivar,SPAIN,-,-,ETSIAM-Universidad de Córdoba,1987,2010,1/2H
+IVIP102547,224,KF2219,Vicia faba var. major,Major,T,YEMEN.95,-,INRA Rennes,RF9456,1/1/06,Breeding/research material,YEMEN,-,YEMEN.95.10,-,-,-,1/2H
+IVIP102578,225,JF2258,Vicia faba var. equina,Equina,T,ILB938.[],-,ICARDA,RF9498,1/1/06,Breeding/research material,ECUADOR,-,BPL938.9.22.2,-,-,-,P
+IVIP102649,226,KF2220,Vicia faba var. equina,Equina,T,NC58 DZR-11,-,INRA Rennes,SF9045,1/1/06,Breeding/research material,ETHIOPIA,-,-,-,-,-,-
+IVIP102658,227,JF2259,Vicia faba var. minor,Minor,T,PGRC/E 25157-1,-,INRA Rennes,SF9051,1/1/06,Breeding/research material,ETHIOPIA,-,-,-,-,-,-
+IVIP102702,228,JF2260,Vicia faba var. minor,Minor,T,IRENA H3.T3[],-,INRA Rennes,SF9092,1/1/06,Breeding/research material,FRANCE,-,H3.T3.1.3.17.3.MLFM4.5.1.G1,-,-,-,H
+IVIP102732,229,JF2276,Vicia faba var. major,Major,T,H3025,-,INRA Rennes,H3025,1/1/06,Traditional landrace,CHINA,-,-,-,-,-,P
+IVIP102737,230,KF2221,Vicia faba L.,-,T,H3319 HU DOU,-,INRA Rennes,H3319,1/1/06,Traditional landrace,CHINA,-,-,-,-,-,P
+IVIP103046,231,JF2261,Vicia faba var. minor,Minor,T,ZARDEW SCHWARZ,-,"Universitaet Hohenheim, Mr KITTLITZ",40181,2/2/06,Traditional landrace,AFGHANISTAN,-,-,-,-,-,P
+IVIP103069,232,JF2262,Vicia faba var. equina,Equina,T,ANATOLIEN 43970,-,"Universitaet Hohenheim, Mr KITTLITZ",43970,2/2/06,Traditional landrace,TURKEY,-,-,-,-,-,-
+IVIP103078,233,JF2263,Vicia faba var. equina,Equina,T,LORRAINE KITLITZ,-,"Universitaet Hohenheim, Mr KITTLITZ",44740,2/2/06,Traditional landrace,-,-,-,-,-,-,P
+IVIP103087,234,KF2222,Vicia faba var. major,Major,T,HYLON 1,-,"Universitaet Hohenheim, Mr KITTLITZ",50070,2/2/06,Advanced or improved cultivar,UNITED KINGDOM,-,-,-,1980,-,P
+IVIP103156,235,JF2264,Vicia faba var. major,Major,T,REGION HAOUZ 341,-,"Universitaet Hohenheim, Mr KITTLITZ",47080,2/2/06,Traditional landrace,MOROCCO,-,-,-,-,-,-
+IVIP103212,236,JF2265,Vicia faba var. minor,Minor,T,OUTLOOK,CN107326,"Universitaet Hohenheim, Mr KITTLITZ",52350,2/2/06,Advanced or improved cultivar,CANADA,-,issued from TARVIN,University of Saskatchewan,1982,-,P
+IVIP103228,237,JF2266,Vicia faba var. major,Major,T,MONASTERY,BIH001,Faculty of Agriculture Banja Luka,-,1/10/08,Traditional landrace,BOSNIA AND HERZEGOVINA,-,-,-,-,-,P
+IVIP103263,238,KF0196,Vicia faba var. equina,Minor,T,VIR 1339,-,N.I. Vavilov Institute of Plant Genetic Resources,1339,9/10/08,Traditional landrace,AZERBAIJAN,LANKARAN,-,-,-,-,1/2H
+IVIP103268,239,JF2267,Vicia faba var. equina,Equina,T,VIR 1444,-,N.I. Vavilov Institute of Plant Genetic Resources,1444,14/10/08,Traditional landrace,MONGOLIA,-,-,-,-,-,P
+IVIP103274,240,JF2268,Vicia faba var. minor,Minor,T,BOSHY EARLY BUSH,-,N.I. Vavilov Institute of Plant Genetic Resources,1539,20/10/08,Traditional landrace,INDIA,Uttar-Pradesh,-,-,-,-,P
+IVIP103278,241,JF2269,Vicia faba var. minor,Minor,T,VIR 1576,-,N.I. Vavilov Institute of Plant Genetic Resources,1576,24/10/08,Traditional landrace,INDIA,GUJARAT,-,-,-,-,P
+IVIP103279,242,KF0197a,Vicia faba var. minor,Paucijuga,T,VIR 1579,-,N.I. Vavilov Institute of Plant Genetic Resources,1579,25/10/08,Traditional landrace,SUDAN,-,-,-,-,-,P
+IVIP103284,243,JF2277,Vicia faba var. minor,Minor,T,VESUVIO,-,N.I. Vavilov Institute of Plant Genetic Resources,1717,30/10/08,Traditional landrace,ITALY,-,-,-,-,-,1/2H
+IVIP103287,244,JF2270,Vicia faba var. minor,Minor,T,MARIS BEAD,-,"John Innes Centre, Mr M. Ambrose",96,3/12/09,Advanced or improved cultivar,UNITED KINGDOM,-,-,-,1964,-,P
+IVIP103288,245,KF0198,Vicia faba var. major,Major,T,BACKI PETROVAC 1,-,"Institute of Field and Vegetable Crops, Novi Sad, A. MIKIC",17,27/09/10,Traditional landrace,SERBIA,-,-,-,-,-,-
+IVIP103295,246,KF0199,Vicia faba var. major,Major,T,DUNIS 2,-,"Institute of Field and Vegetable Crops, Novi Sad, A. MIKIC",16,27/09/10,Traditional landrace,SERBIA,-,-,-,-,-,-
+IVIP103304,247,JF2271,Vicia faba var. major,Major,T,TEKIJE 1,-,"Institute of Field and Vegetable Crops, Novi Sad, A. MIKIC",13,27/09/10,Traditional landrace,SERBIA,-,-,-,-,-,-
+IVIP103312,248,JF2272,Vicia faba var. equina,Equina,T,BOURDON,-,GEVES,9/918907,3/1/12,Advanced or improved cultivar,UNITED KINGDOM,-,-,Plant Breeding Institute,1982,1995,H
+IVIP103314,249,KF0200,Vicia faba var. equina,Minor,ZT1,MANDOLINE,SR 4168,"Agri-Obtentions, Guyancourt",-,1/2/12,Advanced or improved cultivar,FRANCE,-,-,SERASEM,2009,2013,P
