@@ -220,6 +220,14 @@ ggsave(
   width  = 7,
   height = 8
 )
+
+ggsave(
+  "Manhattan_BLINK_composite.png",
+  composite_blink,
+  width  = 7,
+  height = 8,
+  dpi    = 300
+)
 ```
 
 ## MLMM composite (pisum on top = A, fabae below = B)
@@ -268,5 +276,13 @@ ggsave(
   composite_mlmm,
   width  = 7,
   height = 8
+)
+
+ggsave(
+  "Manhattan_MLMM_composite.png",
+  composite_blink,
+  width  = 7,
+  height = 8,
+  dpi    = 300
 )
 ```
